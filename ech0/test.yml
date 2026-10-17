@@ -1,0 +1,26 @@
+tested: 2026-10-18
+result: pass
+card-kit: "a2dd494"
+edgible-cli: 1.4.12
+files: sha256:d3bb3331b7d80f96
+machine: darwin/arm64, docker 29.4.3
+images:
+  - sn0wl1n/ech0:v5.8.0@sha256:77c236b0a6981a8f32132b9bd61a960405c7de9827e28f5d36cf08e018ac632e
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    ech0: pass
+  checks:
+    owner-signs-in: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"owners": 1}
+measured:
+  ech0:
+    memory: 25 MB
+    images: 41 MB
+    data: 1 MB
+duration: 2m
+by: agent

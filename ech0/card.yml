@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: ech0
+  description: Ech0, a lightweight publishing platform for short posts, public with the owner's own login
+  type: app
+
+applications:
+  - name: ech0
+    what: Ech0, the public timeline and the owner's editor
+    from: sn0wl1n/ech0:v5.8.0
+    port: 6277
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [none]
+    place: ech0
+
+data:
+  volumes:
+    ech0-data:
+      class: irreplaceable
+  fingerprint:
+    service: ech0
+    command: >-
+      if wget -qO- http://127.0.0.1:6277/api/init/status | grep -q '"owner_exists":true';
+      then echo '{"owners": 1}'; else echo '{"owners": 0}'; fi
+
+places:
+  ech0:
+    memory: 256 MB
+    disk: 1.5 GB
+    arch: [amd64, arm64]
+    gpu: none

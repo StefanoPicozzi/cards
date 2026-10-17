@@ -1,0 +1,26 @@
+# Compose file for the ech0 card.
+# The host port, ORG_LABEL and the secrets come from card.env. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+# The image has no healthcheck of its own, so this file adds one on /api/hello.
+
+name: ech0
+
+services:
+  ech0:
+    image: sn0wl1n/ech0:v5.8.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${ECH0_PORT:?set ECH0_PORT in card.env}:6277"
+    environment:
+      JWT_SECRET: ${ECH0_JWT_SECRET:?set ECH0_JWT_SECRET in card.env}
+    volumes:
+      - ech0-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:6277/api/hello"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+volumes:
+  ech0-data: {}

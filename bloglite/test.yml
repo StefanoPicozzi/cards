@@ -1,0 +1,27 @@
+tested: 2026-10-19
+result: pass
+card-kit: "97da7ad"
+edgible-cli: 1.4.12
+files: sha256:94608df48731151e
+machine: darwin/arm64, docker 29.4.3
+images:
+  - alpine:3.20.3@sha256:1e42bbe2508154c9126d48c2b8a75420c3544343bf86fd041fb7527e017a4b4a
+  - zot.huijzer.xyz/bloglite:3.0.0@sha256:d6f1daebbb67a47680e6a62ae1d99ef6dffe85f1fdf5bd8692d38738e1e1ac63
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    bloglite: pass
+  checks:
+    owner-signs-in: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"posts": 0}
+measured:
+  bloglite:
+    memory: 3 MB
+    images: 10 MB
+    data: 147 KB
+duration: 3m
+by: agent

@@ -1,0 +1,38 @@
+# Compose file for the bloglite card.
+# The host port, ORG_LABEL and the secrets come from card.env. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+# The image's own health command is used as the healthcheck.
+
+name: bloglite
+
+services:
+  bloglite:
+    image: zot.huijzer.xyz/bloglite:3.0.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${BLOGLITE_PORT:?set BLOGLITE_PORT in card.env}:3000"
+    environment:
+      BLOGLITE_USERNAME: ${BLOGLITE_ADMIN_USER:?set BLOGLITE_ADMIN_USER in card.env}
+      BLOGLITE_PASSWORD: ${BLOGLITE_ADMIN_PASSWORD:?set BLOGLITE_ADMIN_PASSWORD in card.env}
+      BLOGLITE_DOMAIN: ${BLOGLITE_DOMAIN:-bloglite.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+    volumes:
+      - bloglite-data:/data
+    healthcheck:
+      test: ["CMD", "/bloglite", "check-health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+  # The bloglite image has no shell, so the data fingerprint runs here and reads the
+  # blog over the Compose network.
+  bloglite-tools:
+    image: alpine:3.20.3
+    restart: unless-stopped
+    command: ["sleep", "infinity"]
+    depends_on:
+      bloglite:
+        condition: service_healthy
+
+volumes:
+  bloglite-data: {}

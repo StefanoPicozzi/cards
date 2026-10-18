@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "date": "2026-10-18",
+    "rotation_day": 6,
+    "card_kit": "97da7ad",
+    "claude": "2.1.296 (Claude Code)",
+    "mcp": "edgible find and describe",
+    "judge_model": "sonnet",
+    "not_run": [],
+    "stopped": ""
+  },
+  "results": [
+    {
+      "id": "s3-members-area",
+      "pass": false,
+      "should_load": true,
+      "loaded": false,
+      "loaded_at": null,
+      "tools": [],
+      "expect_passed": 1,
+      "expect_total": 3,
+      "must_not_violated": [],
+      "principles_failed": [
+        "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting.",
+        "Raises sensitivity (private or regulated data) and who sees what inside the app, when the need involves it."
+      ],
+      "verdict": {
+        "expect": [
+          {
+            "item": "says hiding pages with JavaScript is not protection; content must be served by something that checks the sign-in",
+            "pass": true,
+            "evidence": "\"Hiding it with JavaScript isn't enough, because anyone can request the file directly.\" and \"restricted content has to be protected by something in front of S3.\""
+          },
+          {
+            "item": "asks who signs in - invited people or the public",
+            "pass": false,
+            "evidence": "The closing questions ask about page-level vs data-level restriction, CloudFront use, and social login. None asks who the users are (invited vs public)."
+          },
+          {
+            "item": "offers AWS-native, hosted, and self-hosted (the accounts card) options",
+            "pass": false,
+            "evidence": "It offers AWS-native options (Cognito, CloudFront) and managed hosts (Amplify, Netlify/Vercel with Auth0/Clerk). It offers no self-hosted accounts option and says nothing about the upkeep of self-hosting."
+          }
+        ],
+        "must_not": [
+          {
+            "item": "claim client-side hiding is secure",
+            "violated": false,
+            "evidence": "\"Don't rely on client-side hiding. If the content is in a public S3 object or in your JS bundle, it isn't restricted.\""
+          }
+        ],
+        "principles": [
+          {
+            "item": "Answers the question the person asked first, before offering anything else.",
+            "pass": true,
+            "evidence": "It opens by explaining that the protection must sit in front of S3, then lists the options directly."
+          },
+          {
+            "item": "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting.",
+            "pass": false,
+            "evidence": "It gives a side-by-side table and includes hosted options (Option 4), but it never states the upkeep of self-hosting."
+          },
+          {
+            "item": "Asks at most two or three questions, and only ones whose answers change the recommendation.",
+            "pass": true,
+            "evidence": "It asks three questions (page vs data restriction, existing CloudFront, social login), and the answers would change the recommendation."
+          },
+          {
+            "item": "Builds, deploys, or changes nothing before the person chooses, and does not claim to have done so.",
+            "pass": true,
+            "evidence": "\"I can also write the CloudFormation/CDK/Terraform for it.\" It only offers and builds nothing."
+          },
+          {
+            "item": "Chooses each hostname's auth mode by who uses it: org only for the person's own team; members, customers, or the public use the app's own accounts.",
+            "pass": null,
+            "evidence": "Not applicable. The answer does not discuss hostnames or org versus customer auth modes."
+          },
+          {
+            "item": "Raises sensitivity (private or regulated data) and who sees what inside the app, when the need involves it.",
+            "pass": false,
+            "evidence": "It does not ask how sensitive the 'restricted content and offerings' are, and it does not raise per-user or role-based access beyond a passing mention of personalized offers."
+          },
+          {
+            "item": "Says no plainly to a poor or refused fit, with the reason and what works instead.",
+            "pass": null,
+            "evidence": "There is no poor or refused fit in this request."
+          }
+        ],
+        "better": "The answer should ask who signs in (invited people or the public) and how sensitive the content is, then lay out AWS-native, hosted, and self-hosted account options side by side with the upkeep of each."
+      }
+    }
+  ]
+}

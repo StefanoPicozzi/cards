@@ -1,6 +1,6 @@
-# edgible-cards skill evals: 2026-10-11 to 2026-10-17
+# edgible-cards skill evals: 2026-10-12 to 2026-10-18
 
-**4 of 9** held-out prompts pass, each at its latest run in the last 7 days (7 nightly runs). Skill from card-kit `988676e`, `a2dd494`, `b39a7bb`, `b3a4fb1`.
+**2 of 8** held-out prompts pass, each at its latest run in the last 7 days (7 nightly runs). Skill from card-kit `97da7ad`, `988676e`, `a2dd494`, `b3a4fb1`.
 
 | Prompt | Run | Result | Skill loaded | expect | must_not broken |
 | --- | --- | --- | --- | --- | --- |
@@ -8,11 +8,10 @@
 | marketing-site-cost | 2026-10-17 | FAIL | no (WRONG) | 1/3 | 0 |
 | physio-clinic | 2026-10-13 | FAIL | no (WRONG) | 2/4 | 1 |
 | pocket-shutdown | 2026-10-16 | FAIL | no (WRONG) | 1/3 | 0 |
+| s3-members-area | 2026-10-18 | FAIL | no (WRONG) | 1/3 | 0 |
 | sensitive-photos | 2026-10-14 | FAIL | no (WRONG) | 3/3 | 0 |
-| dementia-startup | 2026-10-11 | pass | yes (right) | 3/3 | 0 |
 | negative-landlord-email | 2026-10-14 | pass | no (right) | 1/1 | 0 |
 | negative-react-error | 2026-10-13 | pass | no (right) | 1/1 | 0 |
-| tennis-club | 2026-10-11 | pass | yes (right) | 5/5 | 0 |
 
 ## Failing prompts
 
@@ -31,16 +30,19 @@
 - Missed: two or three bookmark apps that keep page copies, with a recommendation. Only one app, linkding, is offered ('Edgible has one tested match'); it is link-only by default, with page copies only via the -plus image.
 - Missed: asks about importing from Pocket. It explains the Pocket export/import and says 'I haven't tested it with a Pocket file', but it asks no question about importing. Its three questions cover page copies, phone use and hostname.
 
+**s3-members-area** (2026-10-18)
+- Missed: asks who signs in - invited people or the public. The closing questions ask about page-level vs data-level restriction, CloudFront use, and social login. None asks who the users are (invited vs public).
+- Missed: offers AWS-native, hosted, and self-hosted (the accounts card) options. It offers AWS-native options (Cognito, CloudFront) and managed hosts (Amplify, Netlify/Vercel with Auth0/Clerk). It offers no self-hosted accounts option and says nothing about the upkeep of self-hosting.
+
 **sensitive-photos** (2026-10-14)
 
 ## What would make answers better
 
-- dementia-startup: Say briefly who inside the app can see which memories (patient, each family member, carers), since stored personal memories make in-app access control a core design question.
 - maritime-law-firm: Present a hosted option next to self-hosting, with the upkeep and cost of each, and cut the questions to the two or three that change the recommendation.
 - marketing-site-cost: Ask up front whether the site is static or edited through a CMS, then give one clear path for each case, with free static hosting for static and WordPress on a small cloud server for CMS with its upkeep stated, instead of a long menu and checklist.
 - negative-landlord-email: Nothing essential is missing; it could be slightly stronger by naming the two-week duration as a clear request deadline or mentioning tenant repair rights, but it fully answers the request.
 - negative-react-error: It could have put the most likely fix first in a short reply, with the project-path request at the end, instead of listing four generic causes.
 - physio-clinic: Lead with clinic-focused hosted practice-management or physio platforms that cover bookings and exercise plans and offer compliant data handling. Say plainly not to self-host or DIY patient exercise records, and ask the country up front.
 - pocket-shutdown: Offer two or three self-hosted options that keep page copies (for example linkding-plus, Linkwarden, Wallabag) with a clear recommendation, and ask whether to import the Pocket export.
+- s3-members-area: The answer should ask who signs in (invited people or the public) and how sensitive the content is, then lay out AWS-native, hosted, and self-hosted account options side by side with the upkeep of each.
 - sensitive-photos: Present a short side-by-side of options, including a local-only approach with no server and an end-to-end-encrypted hosted service, and state the ongoing upkeep of self-hosting more plainly.
-- tennis-club: Briefly note that the booking app will hold members' names and contact details, and say whether members can see each other's bookings and details, so the committee can decide what's appropriate.

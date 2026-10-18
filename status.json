@@ -12,6 +12,13 @@
     "edgible-cli": "1.4.6",
     "files": "sha256:34e3e0c39db9c001"
   },
+  "ech0": {
+    "result": "pass",
+    "tested": "2026-10-18",
+    "edgible-cli": "1.4.12",
+    "files": "sha256:d3bb3331b7d80f96",
+    "device": "osxdevice"
+  },
   "edgible-mcp": {
     "result": "fail",
     "tested": "2026-10-15",

@@ -1,58 +1,35 @@
-# Compose file for the edgible-mcp card, from the mcp-bridge app card.
-# The host port and the MCP server to run come from card.env. The image is
-# ghcr.io/edgible-org/edgible-mcp, built from card-kit's edgible-mcp/. Start with:
+# Compose file for the edgible-mcp card. The host port and the settings come from card.env.
+# The image is ghcr.io/edgible-org/edgible-mcp, built from card-kit's edgible-mcp/, which serves
+# MCP over Streamable HTTP at /mcp. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
-# The healthcheck starts the MCP server and pings it, so healthy means the server works.
 
 name: edgible-mcp
 
 services:
   edgible-mcp:
-    # mcp-bridge's Supergateway, with the Edgible CLI and the edgible-mcp server added.
-    image: ghcr.io/edgible-org/edgible-mcp:0.4.0
+    image: ghcr.io/edgible-org/edgible-mcp:0.5.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:${EDGIBLE_MCP_PORT:?set EDGIBLE_MCP_PORT in card.env}:8000"
-    command:
-      - --stdio
-      - ${MCP_BRIDGE_COMMAND:?set MCP_BRIDGE_COMMAND in card.env}
-      - --outputTransport
-      - streamableHttp
-      # One server process per client session, ended after 10 idle minutes.
-      - --stateful
-      - --sessionTimeout
-      - "600000"
-      - --port
-      - "8000"
-      - --healthEndpoint
-      - /healthz
-      - --healthCheck
-      - server
-    # Settings and secrets for the MCP server itself, if it ever needs any.
-    env_file:
-      - path: ./server.env
-        required: false
     environment:
-      # The CLI keeps its sign-in under HOME: the volume edgible-mcp-login, never this directory.
-      HOME: /login
-      npm_config_cache: /root/.cache/npm
-      UV_CACHE_DIR: /root/.cache/uv
+      EDGIBLE_MCP_ALLOW_WRITE: ${EDGIBLE_MCP_ALLOW_WRITE:-0}
+      EDGIBLE_MCP_DEVICES: ${EDGIBLE_MCP_DEVICES:-}
       EDGIBLE_MCP_CACHE_DIR: /root/.cache/edgible-mcp
       EDGIBLE_MCP_CATALOG_TTL: ${EDGIBLE_MCP_CATALOG_TTL:-900}
       EDGIBLE_MCP_SIGN_IN: docker compose --env-file edgible-mcp/card.env -f edgible-mcp/docker-compose.yml exec edgible-mcp edgible auth login --no-browser
-    working_dir: /data
     volumes:
-      # The catalog of cards, shared by the server processes of every session.
+      # The catalog of cards, cached.
       - edgible-mcp-cache:/root/.cache
-      # The Edgible CLI's sign-in. Only the tools that call the CLI need it.
+      # The Edgible CLI's sign-in: its HOME in the container, never this directory.
       - edgible-mcp-login:/login
+      # With writes: the record of what the tools did, and each deployed card's Compose file.
       - edgible-mcp-data:/data
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8000/healthz | grep -q ok"]
       interval: 30s
       timeout: 15s
       retries: 3
-      start_period: 3m
+      start_period: 1m
 
 volumes:
   edgible-mcp-cache: {}

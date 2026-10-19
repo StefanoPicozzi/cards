@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Card
 metadata:
   name: edgible-mcp
-  description: Read-only Edgible tools for Claude and other assistants, published with mcp-bridge
+  description: Edgible tools for Claude and other assistants, read-only unless you allow writes
   type: app
 
 applications:
   - name: edgible-mcp
     what: Edgible MCP tools over Streamable HTTP
-    from: ghcr.io/edgible-org/edgible-mcp:0.4.0
+    from: ghcr.io/edgible-org/edgible-mcp:0.5.0
     port: 8000
     protocol: https
     subtype: existing
@@ -16,9 +16,21 @@ applications:
     authModes: [api-key]
     place: edgible-mcp
 
+data:
+  volumes:
+    # The catalog of cards, fetched again when missing.
+    edgible-mcp-cache:
+      class: cache
+    # The Edgible CLI's sign-in: lost, you sign the server in again.
+    edgible-mcp-login:
+      class: cache
+    # The write tools' record and Compose files: the apps keep running without them.
+    edgible-mcp-data:
+      class: cache
+
 places:
   edgible-mcp:
-    memory: 384 MB
+    memory: 256 MB
     disk: 1.5 GB
     arch: [amd64, arm64]
     gpu: none

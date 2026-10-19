@@ -45,6 +45,7 @@ App cards used to live in Edgible/starters, as starters. That repo is archived, 
 | [accounts](accounts) | Sign-up and sign-in for your visitors, and the console that manages them | not tested yet |
 | [assistant](assistant) | Chat that answers from your own documents, and the model that runs it | not tested yet |
 | [ci](ci) | Your own Git forge with CI, and the runner on a machine of its own | [![ci status](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgible-org%2Fcards%2Ftest-status%2Fci.json)](https://github.com/edgible-org/cards/blob/test-status/status.json) |
+| [edgible-connector](edgible-connector) | Edgible in Claude's web, desktop and phone apps, signed in with Edgible | [![edgible-connector status](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgible-org%2Fcards%2Ftest-status%2Fedgible-connector.json)](https://github.com/edgible-org/cards/blob/test-status/status.json) |
 | [litellm](litellm) | Metered model API and its admin, one LiteLLM process | not tested yet |
 | [n8n](n8n) | Locked editor and open webhook hostname, one n8n process | not tested yet |
 | [website](website) | Public React site, its editor, open tracker, locked dashboard, locked monitor | not tested yet |

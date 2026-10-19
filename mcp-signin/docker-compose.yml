@@ -1,0 +1,30 @@
+# Compose file for the mcp-signin card. Ports and settings come from card.env. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+# The image is ghcr.io/edgible-org/mcp-signin, built from card-kit's mcp-signin/.
+
+name: mcp-signin
+
+services:
+  mcp-signin:
+    image: ghcr.io/edgible-org/mcp-signin:0.1.1
+    restart: unless-stopped
+    ports:
+      # Both on 127.0.0.1: Edgible's web server on this machine is the one proxy in front.
+      - "127.0.0.1:${MCP_SIGNIN_PORT:?set MCP_SIGNIN_PORT in card.env}:8000"
+      - "127.0.0.1:${MCP_SIGNIN_LOGIN_PORT:?set MCP_SIGNIN_LOGIN_PORT in card.env}:8001"
+    environment:
+      MCP_UPSTREAM_URL: ${MCP_UPSTREAM_URL:?set MCP_UPSTREAM_URL in card.env}
+      EDGIBLE_ORGANIZATION_ID: ${EDGIBLE_ORGANIZATION_ID:?set EDGIBLE_ORGANIZATION_ID in card.env}
+      MCP_SIGNIN_PUBLIC_URL: ${MCP_SIGNIN_URL:-https://mcp-signin.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.app}
+      MCP_SIGNIN_LOGIN_URL: ${MCP_SIGNIN_LOGIN_URL:-https://mcp-signin-login.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.app}
+      MCP_SIGNIN_USERS: ${MCP_SIGNIN_USERS:-}
+      MCP_SIGNIN_NAME: ${MCP_SIGNIN_NAME:-this MCP server}
+      MCP_SIGNIN_PURPOSE: ${MCP_SIGNIN_PURPOSE:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      # Registered clients and tokens, kept hashed: a restart signs no one out.
+      - mcp-signin-data:/data
+
+volumes:
+  mcp-signin-data: {}

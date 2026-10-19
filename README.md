@@ -21,6 +21,7 @@ App cards used to live in Edgible/starters, as starters. That repo is archived, 
 
 | Card | What | Status |
 | --- | --- | --- |
+| [cogento](cogento) | Cogento membership for a club, with sign-in and Stripe, on a machine the club runs | not tested yet |
 | [gitea](gitea) | Gitea, your own Git forge, with Git over HTTPS and SSH | [![gitea status](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgible-org%2Fcards%2Ftest-status%2Fgitea.json)](https://github.com/edgible-org/cards/blob/test-status/status.json) |
 | [immich](immich) | Immich, your photo and video library, for its phone apps and the web | [![immich status](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgible-org%2Fcards%2Ftest-status%2Fimmich.json)](https://github.com/edgible-org/cards/blob/test-status/status.json) |
 | [jellyfin](jellyfin) | Jellyfin, your films, shows and music, streamed to its apps and the web | [![jellyfin status](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgible-org%2Fcards%2Ftest-status%2Fjellyfin.json)](https://github.com/edgible-org/cards/blob/test-status/status.json) |

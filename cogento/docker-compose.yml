@@ -1,0 +1,76 @@
+# Compose file for the cogento card.
+# The host port, ORG_LABEL and the passwords come from card.env. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+
+name: cogento
+
+services:
+  cogento:
+    image: ghcr.io/edgible-org/cogento-ui:1.0.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${COGENTO_PORT:?set COGENTO_PORT in card.env}:80"
+    environment:
+      LOGTO_ENDPOINT: ${COGENTO_LOGTO_ENDPOINT:-}
+      LOGTO_APP_ID: ${COGENTO_LOGTO_APP_ID:-}
+    depends_on:
+      cogento-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  cogento-api:
+    image: ghcr.io/edgible-org/cogento-api:1.0.0
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: cogento-db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: cogento
+      POSTGRES_PASSWORD: ${COGENTO_DB_PASSWORD:?set COGENTO_DB_PASSWORD in card.env}
+      STRIPE_KEY_ENCRYPTION_KEY: ${COGENTO_STRIPE_KEY_ENCRYPTION_KEY:?set COGENTO_STRIPE_KEY_ENCRYPTION_KEY in card.env}
+      SESSION_SECRET_KEY: ${COGENTO_SESSION_SECRET:?set COGENTO_SESSION_SECRET in card.env}
+      UNSUBSCRIBE_SECRET_KEY: ${COGENTO_UNSUBSCRIBE_SECRET:?set COGENTO_UNSUBSCRIBE_SECRET in card.env}
+      LOGTO_ENDPOINT: ${COGENTO_LOGTO_ENDPOINT:-}
+      LOGTO_APP_ID: ${COGENTO_LOGTO_APP_ID:-}
+      UI_BASE_URL: ${COGENTO_URL:-https://cogento.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      CORS_ORIGINS: ${COGENTO_URL:-https://cogento.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      SHARED_SUPERUSER_EMAIL: ${COGENTO_SUPERUSER_EMAIL:-}
+      ONBOARDING_BY_INVITE: ${COGENTO_ONBOARDING_BY_INVITE:-true}
+      COGENTO_ENVIRONMENT: production
+    volumes:
+      - cogento-files:/volumes/tenant
+    depends_on:
+      cogento-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  cogento-db:
+    image: postgres:15.15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cogento
+      POSTGRES_PASSWORD: ${COGENTO_DB_PASSWORD:?set COGENTO_DB_PASSWORD in card.env}
+      POSTGRES_DB: postgres
+      SHARED_SUPERUSER_EMAIL: ${COGENTO_SUPERUSER_EMAIL:-}
+    volumes:
+      - cogento-db-data:/var/lib/postgresql/data
+      - ./db/00_bootstrap_shared_db.sh:/docker-entrypoint-initdb.d/00_bootstrap_shared_db.sh:ro
+      - ./db/bootstrap_shared_schema.sql:/docker-entrypoint-initdb.d/bootstrap_shared_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cogento -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  cogento-db-data: {}
+  cogento-files: {}

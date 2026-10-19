@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: cogento
+  description: Cogento membership for a club, with sign-in and Stripe, on a machine the club runs
+  type: app
+
+applications:
+  - name: cogento
+    what: Cogento membership site
+    from: ghcr.io/edgible-org/cogento-ui:1.0.0
+    database: postgres:15.15-alpine
+    port: 80
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [none]
+    place: cogento
+
+places:
+  cogento:
+    memory: 1 GB
+    disk: 4 GB
+    arch: [amd64, arm64]
+    gpu: none
+
+data:
+  volumes:
+    cogento-db-data:
+      class: irreplaceable
+    cogento-files:
+      class: irreplaceable
+  fingerprint:
+    service: cogento-db
+    command: psql -U "$POSTGRES_USER" -d cogento_shared -tAc "select json_build_object('tenants', (select count(*) from tenants))"

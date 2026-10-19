@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: edgible-connector
+  description: Edgible in Claude's web, desktop and phone apps, signed in with Edgible
+  type: pattern
+
+applications:
+  - name: mcp-signin
+    what: The connector's address, MCP and OAuth, passed on to edgible-mcp
+    from: ghcr.io/edgible-org/mcp-signin:0.1.1
+    port: 8020
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [none]
+    place: connector
+
+  - name: mcp-signin-login
+    what: The sign-in page, same process as mcp-signin
+    from: ghcr.io/edgible-org/mcp-signin:0.1.1
+    port: 8021
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [org]
+    place: connector
+
+data:
+  volumes:
+    # Registered assistants and tokens: losing them signs everyone out, and nothing else.
+    mcp-signin-data:
+      class: cache
+    # The catalog of cards, fetched again when missing.
+    edgible-mcp-cache:
+      class: cache
+    # The Edgible CLI's sign-in: lost, you sign the server in again.
+    edgible-mcp-login:
+      class: cache
+    # The write tools' record and Compose files: the apps keep running without them.
+    edgible-mcp-data:
+      class: cache
+
+places:
+  connector:
+    memory: 256 MB
+    disk: 1.5 GB
+    arch: [amd64, arm64]
+    gpu: none

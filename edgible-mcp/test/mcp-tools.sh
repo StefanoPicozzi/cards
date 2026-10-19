@@ -1,6 +1,6 @@
 # A check for test-card, run after Verify with card.env exported and HOSTNAME_<APP> set.
 # From the mcp-bridge app card's check. An MCP client's whole path through Edgible: with a
-# fresh Edgible API key it opens a session over Streamable HTTP, lists the three tools, and
+# fresh Edgible API key it initializes over Streamable HTTP, lists the three tools, and
 # calls each one. whats_running must answer whether or not the server's Edgible sign-in has
 # been made: a test's fresh volume has none. A wrong key is refused. The key is deleted
 # afterwards, and never printed.
@@ -36,8 +36,8 @@ session=
 code=$(rpc '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"edgible-mcp-test","version":"1"}}}')
 [ "$code" = 200 ] || { echo "initialize answered $code"; exit 1; }
 answer | jq -e '.result.serverInfo.name' >/dev/null || { echo "initialize gave no serverInfo"; exit 1; }
+# The server is stateless: it may answer with no Mcp-Session-Id, and then every call stands alone.
 session=$(sed -n 's/^[Mm]cp-[Ss]ession-[Ii]d: *\([^[:space:]]*\).*/\1/p' "$tmp/headers")
-[ -n "$session" ] || { echo "no Mcp-Session-Id in the answer"; exit 1; }
 
 rpc '{"jsonrpc":"2.0","method":"notifications/initialized"}' >/dev/null
 

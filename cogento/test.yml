@@ -1,0 +1,26 @@
+tested: 2026-10-20
+result: pass
+card-kit: "97da7ad"
+edgible-cli: 1.4.12
+files: sha256:c2f0058ec918a487
+machine: darwin/arm64, docker 29.4.3
+images:
+  - ghcr.io/edgible-org/cogento-api:1.0.0@sha256:eef343cd3eca66d47ea4ce34f41dc0c0131f3d6622bc5695e7607081c916393c
+  - ghcr.io/edgible-org/cogento-ui:1.0.0@sha256:28c6b3bcf557bf30ee9624fec010e86b16520586bdeeddf135e56f7fcd8aa59c
+  - postgres:15.15-alpine@sha256:1d1095b0503145be79c79239372aefadfacf6b7c33c9245bbf99ce4b6b89c737
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    cogento: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"tenants": 0}
+measured:
+  cogento:
+    memory: 116 MB
+    images: 224 MB
+    data: 49 MB
+duration: 3m
+by: agent

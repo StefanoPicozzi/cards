@@ -26,7 +26,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, `MCP_UPSTREAM_URL` to the MCP server behind (on this machine, `http://host.docker.internal:<port>/mcp`), and `ORG_LABEL`. Check fills `EDGIBLE_ORGANIZATION_ID` from the CLI. Set `MCP_SIGNIN_USERS` to limit who may sign in, and `MCP_SIGNIN_NAME` and `MCP_SIGNIN_PURPOSE` to what the consent page should say.
+Set `DEVICE` to a name `edgible device list` prints, `MCP_UPSTREAM_URL` to the MCP server behind (a service in the same Compose project, or with Docker Desktop a port on this machine through `host.docker.internal`), and `ORG_LABEL`. Check fills `EDGIBLE_ORGANIZATION_ID` from the CLI. Set `MCP_SIGNIN_USERS` to limit who may sign in, and `MCP_SIGNIN_NAME` and `MCP_SIGNIN_PURPOSE` to what the consent page should say.
 
 ```bash
 nano mcp-signin/card.env

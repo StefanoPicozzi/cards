@@ -6,6 +6,8 @@ files: sha256:13d0cf578c27f1cb
 machine: darwin/arm64, docker 29.4.3
 images:
   - owncloud/ocis:8.2.1@sha256:5e007d702b78d70e5aeade14ec9da46044664996df6c9482630dedadcc74bffc
+image_facts:
+  owncloud/ocis:8.2.1: {user: "1000", archs: ["amd64", "arm64"], healthcheck: false}
 steps:
   check-env: pass
   start: pass

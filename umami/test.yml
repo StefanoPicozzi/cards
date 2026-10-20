@@ -8,6 +8,8 @@ images:
   - ghcr.io/edgible-org/card-secrets:0.1.1@sha256:51a6ca5d5f3994c8e2e7a504be14c59cbc3eca81733801fd605934f239c2d00e
   - ghcr.io/umami-software/umami:3.4.0@sha256:85909afc45bdcda1917394594a087421fdbb05610fded0fa9f6fb861abb2f367
   - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+image_facts:
+  ghcr.io/umami-software/umami:3.4.0: {user: "nextjs", archs: ["amd64", "arm64"], healthcheck: false}
 steps:
   check-env: pass
   start: pass

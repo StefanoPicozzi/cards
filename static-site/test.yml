@@ -7,6 +7,8 @@ machine: darwin/arm64, docker 29.4.3
 images:
   - caddy:2.11.7-alpine@sha256:d8542f48d34a9cf4e4c11a478865229840e87e4c96ea3f439101f31a5d35f75f
   - curlimages/curl:8.22.0@sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777
+image_facts:
+  caddy:2.11.7-alpine: {user: "root", archs: [], healthcheck: false}
 steps:
   check-env: pass
   start: pass

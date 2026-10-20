@@ -6,6 +6,8 @@ files: sha256:79acb7288e106e79
 machine: darwin/arm64, docker 29.4.3
 images:
   - vaultwarden/server:1.37.4@sha256:efb3cde962015fcc036b2ea625242248611943b27212ebf4392841fb30fad055
+image_facts:
+  vaultwarden/server:1.37.4: {user: "root", archs: ["amd64", "arm", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass

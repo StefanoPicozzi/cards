@@ -6,6 +6,8 @@ files: sha256:9668d4305692658c
 machine: darwin/arm64, docker 29.4.3
 images:
   - jellyfin/jellyfin:12.2.20261005-225228@sha256:357724bf0ae27a672c7cbaa899db2d9abeb13dbd8657ccce750258a4c059d037
+image_facts:
+  jellyfin/jellyfin:12.2.20261005-225228: {user: "root", archs: ["amd64", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass

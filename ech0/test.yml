@@ -6,6 +6,8 @@ files: sha256:d3bb3331b7d80f96
 machine: darwin/arm64, docker 29.4.3
 images:
   - sn0wl1n/ech0:v5.8.0@sha256:77c236b0a6981a8f32132b9bd61a960405c7de9827e28f5d36cf08e018ac632e
+image_facts:
+  sn0wl1n/ech0:v5.8.0: {user: "root", archs: ["amd64", "arm64"], healthcheck: false}
 steps:
   check-env: pass
   start: pass

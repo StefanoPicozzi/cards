@@ -1,5 +1,6 @@
 # Compose file for the openclaw card: OpenClaw's own Compose setup, with its Gateway on this
-# machine's loopback only. Ports, the model and the Gateway token come from card.env. Start with:
+# machine's loopback only. Ports and the model come from card.env; the Gateway token is made
+# on this machine by openclaw-secrets. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # openclaw-setup runs OpenClaw's onboarding once, then the Gateway starts. openclaw-cli runs
 # OpenClaw's own commands, such as approving a device:
@@ -16,7 +17,6 @@ x-openclaw-env: &openclaw-env
   OPENCLAW_WORKSPACE_DIR: /home/node/.openclaw/workspace
   OPENCLAW_GATEWAY_PORT: "18789"
   # The Gateway token, and the model's key: OpenClaw reads them from here, never from its files.
-  OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:?set OPENCLAW_GATEWAY_TOKEN in card.env}
   GEMINI_API_KEY: ${GEMINI_API_KEY:-}
   DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
   CUSTOM_API_KEY: ${OPENCLAW_MODEL_KEY:-}
@@ -30,6 +30,18 @@ x-openclaw-hardening: &openclaw-hardening
   init: true
 
 services:
+  # Makes the Gateway token (card.yml secrets:) if it does not exist yet, as a file in the volume
+  # openclaw-card-secrets, then exits. It never changes it after. Every OpenClaw service starts
+  # through the loader, which puts the token in its environment.
+  openclaw-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        OPENCLAW_GATEWAY_TOKEN=openssl rand -hex 32
+    volumes:
+      - openclaw-card-secrets:/run/card-secrets
+
   openclaw-setup:
     image: ghcr.io/openclaw/openclaw:2026.10.5
     <<: *openclaw-hardening
@@ -42,13 +54,17 @@ services:
       OPENCLAW_MODEL_URL: ${OPENCLAW_MODEL_URL:-}
       OPENCLAW_FALLBACK_MODEL: ${OPENCLAW_FALLBACK_MODEL:-}
       OPENCLAW_FALLBACK_URL: ${OPENCLAW_FALLBACK_URL:-}
-    entrypoint: ["sh", "/setup.sh"]
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "/setup.sh"]
+    depends_on:
+      openclaw-secrets:
+        condition: service_completed_successfully
     configs:
       - source: openclaw-setup
         target: /setup.sh
     volumes:
       - openclaw-data:/home/node/.openclaw
       - openclaw-secrets:/home/node/.config/openclaw
+      - openclaw-card-secrets:/run/card-secrets:ro
 
   openclaw:
     image: ghcr.io/openclaw/openclaw:2026.10.5
@@ -58,6 +74,7 @@ services:
       openclaw-setup:
         condition: service_completed_successfully
     environment: *openclaw-env
+    entrypoint: ["tini", "-s", "--", "sh", "/run/card-secrets/.load", "node", "/app/docker-entrypoint.mjs"]
     command: ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789"]
     ports:
       # Loopback only: the Control UI is an admin console over an agent with a shell.
@@ -69,6 +86,7 @@ services:
       # The agent's config, memory, sessions and workspace.
       - openclaw-data:/home/node/.openclaw
       - openclaw-secrets:/home/node/.config/openclaw
+      - openclaw-card-secrets:/run/card-secrets:ro
     healthcheck:
       test: ["CMD", "node", "dist/docker-healthcheck.js"]
       interval: 30s
@@ -87,10 +105,11 @@ services:
     environment:
       <<: *openclaw-env
       BROWSER: echo
-    entrypoint: ["node", "dist/index.js"]
+    entrypoint: ["sh", "/run/card-secrets/.load", "node", "dist/index.js"]
     volumes:
       - openclaw-data:/home/node/.openclaw
       - openclaw-secrets:/home/node/.config/openclaw
+      - openclaw-card-secrets:/run/card-secrets:ro
 
 configs:
   openclaw-setup:
@@ -99,3 +118,4 @@ configs:
 volumes:
   openclaw-data: {}
   openclaw-secrets: {}
+  openclaw-card-secrets: {}

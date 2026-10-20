@@ -23,6 +23,9 @@ data:
       class: irreplaceable
     openclaw-secrets:
       class: irreplaceable
+    # The card's secrets, made on the device: the Gateway token.
+    openclaw-card-secrets:
+      class: irreplaceable
     # From the edgible-mcp card: the catalog cache, the CLI's sign-in, the tools' record.
     edgible-mcp-cache:
       class: cache
@@ -36,6 +39,24 @@ data:
       d=/home/node/.openclaw &&
       echo "{\"sessions\": $(find $d/agents -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' '),
       \"workspace_files\": $(find $d/workspace -type f 2>/dev/null | wc -l | tr -d ' ')}"
+
+secrets:
+  OPENCLAW_GATEWAY_TOKEN:
+    kind: human
+    make: openssl rand -hex 32
+    for: the Control UI, pasted once per browser after Edgible's sign-in
+  GEMINI_API_KEY:
+    kind: external
+    from: https://aistudio.google.com/apikey (free tier)
+    required: false
+  OPENCLAW_MODEL_KEY:
+    kind: external
+    from: the OpenAI-compatible model's provider, if it needs a key
+    required: false
+  DEEPSEEK_API_KEY:
+    kind: external
+    from: https://platform.deepseek.com/api_keys, for the fallback model
+    required: false
 
 places:
   agent:

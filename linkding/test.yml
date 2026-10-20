@@ -7,6 +7,8 @@ machine: darwin/arm64, docker 29.4.3
 images:
   - ghcr.io/edgible-org/card-secrets:0.1.1@sha256:51a6ca5d5f3994c8e2e7a504be14c59cbc3eca81733801fd605934f239c2d00e
   - ghcr.io/sissbruecker/linkding:1.47.0@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522
+image_facts:
+  ghcr.io/sissbruecker/linkding:1.47.0: {user: "root", archs: ["amd64", "arm", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass

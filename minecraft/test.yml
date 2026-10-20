@@ -6,6 +6,8 @@ files: sha256:6046352d46e423c6
 machine: darwin/arm64, docker 29.4.3
 images:
   - itzg/minecraft-server:2026.9.2@sha256:de5d1b1a83eba576f6c8a688fac2a3523ce457724cdebc8ea48d7818b74cdf6e
+image_facts:
+  itzg/minecraft-server:2026.9.2: {user: "root", archs: ["amd64", "arm64", "riscv64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass

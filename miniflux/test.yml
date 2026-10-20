@@ -7,6 +7,8 @@ machine: darwin/arm64, docker 29.4.3
 images:
   - miniflux/miniflux:2.3.3@sha256:49d7b60987616387c306a8023087b31f2c9b7b21288b523026cb04058e8b6dbb
   - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+image_facts:
+  miniflux/miniflux:2.3.3: {user: "65534", archs: ["amd64", "arm", "arm64", "riscv64"], healthcheck: false}
 steps:
   check-env: pass
   start: pass

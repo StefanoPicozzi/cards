@@ -6,6 +6,8 @@ files: sha256:6199cdf758f1f0fa
 machine: darwin/arm64, docker 29.4.3
 images:
   - ghcr.io/edgible-org/mcp-signin:0.1.1@sha256:1cd75fb7b2edc34bafc67c4904ffa684ccb6e8f16004fb7d63f34c87b5e3c199
+image_facts:
+  ghcr.io/edgible-org/mcp-signin:0.1.1: {user: "node", archs: ["amd64", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass

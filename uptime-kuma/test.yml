@@ -6,6 +6,8 @@ files: sha256:a91b802be389bcbb
 machine: darwin/arm64, docker 29.4.3
 images:
   - louislam/uptime-kuma:2.5.5-slim@sha256:9c56a772a7df53f444a404c579e87a27bd0c201375d00d6745a75bf8138f4342
+image_facts:
+  louislam/uptime-kuma:2.5.5-slim: {user: "root", archs: ["amd64", "arm", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass

@@ -6,6 +6,8 @@ files: sha256:098b9afbd66d64de
 machine: darwin/arm64, docker 29.4.3
 images:
   - supercorp/supergateway:4.1.0-uvx@sha256:660c97d4ee58498f4654e1dc60682f4f4ccab363025c9b8b415d04b4e823025e
+image_facts:
+  supercorp/supergateway:4.1.0-uvx: {user: "root", archs: ["amd64", "arm64"], healthcheck: false}
 steps:
   check-env: pass
   start: pass

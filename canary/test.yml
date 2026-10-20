@@ -6,6 +6,8 @@ files: sha256:3712b7817e12d025
 machine: darwin/arm64, docker 29.4.3
 images:
   - traefik/whoami:v1.12.0@sha256:c4717a8d1f0134a7444e24f881160e033991f23027c6c5a9a3f8fd22e70d1d44
+image_facts:
+  traefik/whoami:v1.12.0: {user: "root", archs: ["amd64", "arm", "arm64"], healthcheck: false}
 steps:
   check-env: pass
   start: pass

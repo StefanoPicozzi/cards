@@ -7,6 +7,8 @@ machine: darwin/arm64, docker 29.4.3
 images:
   - lukevella/rallly:4.7.0@sha256:0a362dc5fd8977826fe78e69aaeee8e15879b81aab69813976e02e13584e5181
   - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+image_facts:
+  lukevella/rallly:4.7.0: {user: "nextjs", archs: ["amd64", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass

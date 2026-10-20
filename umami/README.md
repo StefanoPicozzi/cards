@@ -10,9 +10,15 @@ One process on two hostnames. `umami` is the dashboard, behind `org`. `analytics
 
 The `analytics` hostname serves the whole Umami process, so its login page is public too. Umami's own password protects it, which is why Start changes the default password before anything is published.
 
-To use it in a card, copy the `umami` and `umami-db` services, the volume, and the four `UMAMI_` lines in `card.env`, then put the tracking snippet from the dashboard into your site with the `analytics` hostname.
+To use it in a card, copy the `umami-secrets`, `umami` and `umami-db` services, both volumes, and the `secrets:` section of [card.yml](card.yml), then put the tracking snippet from the dashboard into your site with the `analytics` hostname.
 
-Page views, sites and accounts live in the volume `umami-db-data`. Minimum recommended for the place `umami`: 384 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU.
+Page views, sites and accounts live in the volume `umami-db-data`.
+
+No password or key is in `card.env`. At first start `umami-secrets` makes the four that card.yml's `secrets:` declares on the machine, one file each in the volume `umami-secrets`, and never changes them after. The database reads its password from that file, and Umami starts through a loader that reads them. They never leave the machine, and nothing else needs to know them. The one a person needs, the admin's password, you see with:
+
+```bash
+docker compose --env-file umami/card.env -f umami/docker-compose.yml run --rm --no-deps umami-secrets show UMAMI_ADMIN_PASSWORD
+``` Minimum recommended for the place `umami`: 384 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU.
 
 The Compose file is [docker-compose.yml](docker-compose.yml), the settings [card.env](card.env), the card [card.yml](card.yml), and the last test [test.yml](test.yml).
 
@@ -30,7 +36,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints. The three secrets are generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints. There are no secrets to fill: Start makes them on the machine.
 
 ```bash
 nano umami/card.env
@@ -43,7 +49,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py umami
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -52,7 +58,7 @@ docker compose --env-file umami/card.env -f umami/docker-compose.yml up -d --wai
 docker compose --env-file umami/card.env -f umami/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Umami starts with the account `admin` and the password `umami`, and the `analytics` hostname will make its login page public. Change that password now, before Publish:
+`--wait` returns when each service is running, and healthy when it has a healthcheck. `umami-secrets` makes the secrets first and exits. Umami starts with the account `admin` and the password `umami`, and the `analytics` hostname will make its login page public. Change that password now, before Publish:
 
 ```bash
 sh umami/prepare.sh
@@ -70,6 +76,9 @@ cd "$(dirname "$0")"
 set -a; . ./card.env; set +a
 COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
 
+# The new password is the human secret umami-secrets made on this machine.
+UMAMI_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps umami-secrets show UMAMI_ADMIN_PASSWORD)
+
 B="http://127.0.0.1:$UMAMI_PORT"
 H='Content-Type: application/json'
 token=$(curl -fsS -X POST "$B/api/auth/login" -H "$H" -d '{"username":"admin","password":"umami"}' \
@@ -79,7 +88,7 @@ curl -fsS -X POST "$B/api/me/password" -H "$H" -H "Authorization: Bearer $token"
 echo "admin's password is now UMAMI_ADMIN_PASSWORD"
 ```
 
-It prints `admin's password is now UMAMI_ADMIN_PASSWORD`. Sign in as `admin` with that password.
+It prints `admin's password is now UMAMI_ADMIN_PASSWORD`. Sign in as `admin` with that password, which the `show` command in What prints.
 
 ### 5. Publish
 
@@ -150,7 +159,7 @@ docker compose --env-file umami/card.env -f umami/docker-compose.yml down
 
 ### 3. Delete the data
 
-Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `umami-secrets.tgz` holds the passwords and keys: keep it as safe as the data, since the data needs it.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=umami); do

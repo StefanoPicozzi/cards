@@ -16,6 +16,12 @@ applications:
     authModes: [none]
     place: linkding
 
+secrets:
+  LINKDING_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -base64 24
+    for: the admin's first sign-in; change it under Settings after
+
 places:
   linkding:
     memory: 384 MB

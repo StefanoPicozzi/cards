@@ -1,6 +1,6 @@
 # A check for test-card, run after Verify with card.env exported and HOSTNAME_<APP> set.
 # linkding is on none, so this signs in through the public hostname, which also proves
-# LD_CSRF_TRUSTED_ORIGINS: the admin from card.env gets in, and a wrong password does not.
+# LD_CSRF_TRUSTED_ORIGINS: the admin from card.env, with the password the card made, gets in, and a wrong password does not.
 set -eu
 B="https://$HOSTNAME_LINKDING"
 jar=$(mktemp); trap 'rm -f "$jar"' EXIT

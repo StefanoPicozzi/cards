@@ -6,7 +6,7 @@ A short-post blog or notes feed on a hosted service lives under that service's t
 
 ## What
 
-One app, `ech0`, on the place `ech0`, on `none`. A blog is public, so readers need no Edgible sign-in, and the owner's own login in Ech0 protects publishing. `prepare.sh` makes that owner from `ECH0_ADMIN_USER` and `ECH0_ADMIN_PASSWORD` and closes sign-up before the site is published, because the first account to register on a fresh Ech0 becomes its owner. The image is `sn0wl1n/ech0:v5.8.0`, from Docker Hub, and the Compose file adds a healthcheck on `/api/hello`.
+One app, `ech0`, on the place `ech0`, on `none`. A blog is public, so readers need no Edgible sign-in, and the owner's own login in Ech0 protects publishing. `prepare.sh` makes that owner, `ECH0_ADMIN_USER`, with the password the card made on the machine, and closes sign-up before the site is published, because the first account to register on a fresh Ech0 becomes its owner. The image is `sn0wl1n/ech0:v5.8.0`, from Docker Hub, and the Compose file adds a healthcheck on `/api/hello`.
 
 Posts, uploads, users and settings live in the volume `ech0-data`, at `/app/data`. Back it up. Minimum recommended for the place `ech0`: 256 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU.
 
@@ -26,7 +26,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, and `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints. The owner's email is only an address on the account, so any will do. The password and the token secret are generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints, and `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints. The owner's email is only an address on the account, so any will do. There are no secrets to fill: Start makes them on the machine.
 
 ```bash
 nano ech0/card.env
@@ -39,7 +39,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py ech0
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -64,6 +64,10 @@ sh ech0/prepare.sh
 set -eu
 cd "$(dirname "$0")"
 set -a; . ./card.env; set +a
+COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The card made this password on this machine at Start (ech0-secrets).
+ECH0_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps ech0-secrets show ECH0_ADMIN_PASSWORD)
 
 B="http://127.0.0.1:$ECH0_PORT/api"
 H='Content-Type: application/json'
@@ -124,7 +128,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code}\n' "https://<ech0 hostname>"
 ```
 
-The public timeline, with no Edgible sign-in. Sign in as `ECH0_ADMIN_USER` with `ECH0_ADMIN_PASSWORD`, and change the password in Ech0's settings.
+The public timeline, with no Edgible sign-in. Sign in as `ECH0_ADMIN_USER` with the password the card made (`docker compose --env-file ech0/card.env -f ech0/docker-compose.yml run --rm --no-deps ech0-secrets show ECH0_ADMIN_PASSWORD` prints it), and change the password in Ech0's settings.
 
 The rest of the setup is in the [Ech0 docs](https://github.com/lin-snow/Ech0).
 
@@ -146,7 +150,7 @@ docker compose --env-file ech0/card.env -f ech0/docker-compose.yml down
 
 ### 3. Delete the data
 
-Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `ech0-secrets.tgz` holds the card's passwords and keys: keep it as safe as the data, which needs them.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=ech0); do

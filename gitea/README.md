@@ -12,7 +12,7 @@ Both are on `none`, deliberately. `git` over HTTPS, a CI runner, API tokens and 
 
 Gitea shows its addresses in clone URLs, so `ROOT_URL` is `https://gitea.<ORG_LABEL>.<EDGIBLE_DOMAIN>` (or `GITEA_URL`), and SSH clones use `gitea-ssh.<ORG_LABEL>.<EDGIBLE_DOMAIN>` on port `22222`. Postgres runs beside it as `gitea-db`. The images are `gitea/gitea:28.1.0` and `postgres:17.11-alpine`.
 
-To use it in a card, copy the `gitea` and `gitea-db` services, the two volumes, and the `GITEA_` lines. A CI runner joins it with a registration token from **Site Administration**, then **Actions**, then **Runners**.
+To use it in a card, copy the `gitea-secrets`, `gitea` and `gitea-db` services, the three volumes, card.yml's `secrets:`, and the `GITEA_` lines. A CI runner joins it with a registration token from **Site Administration**, then **Actions**, then **Runners**.
 
 Repositories, attachments and settings live in the volume `gitea-data`, and users, issues and pull requests in `gitea-db-data`. Minimum recommended for the place `gitea`: 256 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU.
 
@@ -32,7 +32,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints, and `GITEA_ADMIN_EMAIL` to your address. The three secrets are generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints, `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints, and `GITEA_ADMIN_EMAIL` to your address. There are no secrets to fill: Start makes them on the machine.
 
 ```bash
 nano gitea/card.env
@@ -45,7 +45,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py gitea
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -71,6 +71,9 @@ set -eu
 cd "$(dirname "$0")"
 set -a; . ./card.env; set +a
 COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The card made this password on this machine at Start (gitea-secrets).
+GITEA_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps gitea-secrets show GITEA_ADMIN_PASSWORD)
 
 $COMPOSE exec -T -u git gitea \
   gitea admin user create --admin --username gitadmin \
@@ -117,7 +120,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code}\n' "https://<gitea hostname>"
 ```
 
-That prints `200`. Open the hostname and sign in as `gitadmin` with `GITEA_ADMIN_PASSWORD`. **Register** is not offered: registration is off.
+That prints `200`. Open the hostname and sign in as `gitadmin` with the password the card made on the machine; see it with `docker compose --env-file gitea/card.env -f gitea/docker-compose.yml run --rm --no-deps gitea-secrets show GITEA_ADMIN_PASSWORD`. **Register** is not offered: registration is off.
 
 `gitea-ssh` is a TCP app on port `22222`, with no auth mode.
 
@@ -150,7 +153,7 @@ docker compose --env-file gitea/card.env -f gitea/docker-compose.yml down
 
 ### 3. Delete the data
 
-Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `gitea-secrets.tgz` holds the card's passwords and keys: keep it as safe as the data, which needs them.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=gitea); do

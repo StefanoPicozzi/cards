@@ -1,10 +1,22 @@
 # Compose file for the jellyfin card, from the Compose example in Jellyfin's docs.
-# The host port and the media folder come from card.env. Start with:
+# The host port and the media folder come from card.env. The admin's password is made on this
+# machine by jellyfin-secrets, for prepare.sh, and never leaves it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 
 name: jellyfin
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume jellyfin-secrets, then exits. It never changes one that exists.
+  jellyfin-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        JELLYFIN_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - jellyfin-secrets:/run/card-secrets
+
   jellyfin:
     image: jellyfin/jellyfin:12.2.20261005-225228
     restart: unless-stopped
@@ -15,6 +27,10 @@ services:
       - jellyfin-cache:/cache
       # Your films, shows and music, read-only. Jellyfin never changes them.
       - ${JELLYFIN_MEDIA_DIR:?set JELLYFIN_MEDIA_DIR in card.env}:/media:ro
+    # Only prepare.sh reads the admin's password, but up --wait needs a service to wait for it.
+    depends_on:
+      jellyfin-secrets:
+        condition: service_completed_successfully
     # For hardware transcoding on Linux with an Intel or AMD GPU, uncomment:
     # devices:
     #   - /dev/dri:/dev/dri
@@ -22,3 +38,4 @@ services:
 volumes:
   jellyfin-config: {}
   jellyfin-cache: {}
+  jellyfin-secrets: {}

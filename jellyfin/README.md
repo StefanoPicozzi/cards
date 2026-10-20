@@ -10,7 +10,7 @@ One app, `jellyfin`, on the place `jellyfin`, on `none`. That is deliberate: Jel
 
 It runs one service, `jellyfin`, from the image Jellyfin publishes, pinned to `12.2.20261005-225228`. Your media folder is mounted read-only, so Jellyfin never changes your files. Hardware transcoding is optional: on Linux with an Intel or AMD GPU, uncomment the `devices:` lines in the Compose file. Without it, Jellyfin transcodes on the CPU, or not at all when the app plays the file as it is.
 
-To use it in a card, copy the `jellyfin` service, its two volumes, and the `JELLYFIN_` lines.
+To use it in a card, copy the `jellyfin-secrets` and `jellyfin` services, the three volumes, card.yml's `secrets:`, and the `JELLYFIN_` lines.
 
 Settings, users and watch history live in the volume `jellyfin-config`, and artwork and transcodes in `jellyfin-cache`. Back up `jellyfin-config`; the cache rebuilds. Your media stays in `JELLYFIN_MEDIA_DIR`, outside Docker. The memory below is Jellyfin's own documented minimum, which is higher than an empty test library measures; transcoding several streams wants more. The disk is for Jellyfin itself, not your media. Minimum recommended for the place `jellyfin`: 4 GB of memory and 10 GB of disk, on an arm64 or amd64 machine, with a GPU if you have one (it runs without).
 
@@ -30,7 +30,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, and `JELLYFIN_MEDIA_DIR` to the full path of the folder that holds your media. Keep that folder outside `jellyfin/`, because the last Tear down step deletes `jellyfin/`. The admin password is generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints, and `JELLYFIN_MEDIA_DIR` to the full path of the folder that holds your media. Keep that folder outside `jellyfin/`, because the last Tear down step deletes `jellyfin/`. There is no password to fill: Start makes the admin's on the machine.
 
 ```bash
 nano jellyfin/card.env
@@ -43,7 +43,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py jellyfin
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -69,6 +69,9 @@ set -eu
 cd "$(dirname "$0")"
 set -a; . ./card.env; set +a
 COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The card made this password on this machine at Start (jellyfin-secrets).
+JELLYFIN_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps jellyfin-secrets show JELLYFIN_ADMIN_PASSWORD)
 
 B="http://127.0.0.1:$JELLYFIN_PORT"
 H='Content-Type: application/json'
@@ -115,7 +118,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code}\n' "https://<jellyfin hostname>"
 ```
 
-That prints `302`: Jellyfin sending you to its web app, with no Edgible sign-in, as its apps need. Sign in with `JELLYFIN_ADMIN_USER` and `JELLYFIN_ADMIN_PASSWORD`, and add a library pointing at `/media`. In a Jellyfin app, set the server to `https://<jellyfin hostname>` and sign in the same way.
+That prints `302`: Jellyfin sending you to its web app, with no Edgible sign-in, as its apps need. Sign in with `JELLYFIN_ADMIN_USER` and the password the card made (`docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml run --rm --no-deps jellyfin-secrets show JELLYFIN_ADMIN_PASSWORD` prints it), and add a library pointing at `/media`. In a Jellyfin app, set the server to `https://<jellyfin hostname>` and sign in the same way.
 
 The rest of the setup is in the [Jellyfin docs](https://jellyfin.org/docs).
 
@@ -137,7 +140,7 @@ docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml down
 
 ### 3. Delete the data
 
-Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `jellyfin-secrets.tgz` holds the card's passwords and keys: keep it as safe as the data, which needs them.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=jellyfin); do

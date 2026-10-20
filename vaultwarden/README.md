@@ -10,7 +10,7 @@ One app, `vaultwarden`, on the place `vaultwarden`, on `none`. That is deliberat
 
 Vaultwarden must know its own address, so `DOMAIN` is `https://vaultwarden.<ORG_LABEL>.<EDGIBLE_DOMAIN>`, or `VAULTWARDEN_URL` on your own domain. The image is `vaultwarden/server:1.37.4`, with its own healthcheck.
 
-The admin token here is a long random string. Vaultwarden also accepts an Argon2 hash of it (`docker run --rm -it vaultwarden/server:1.37.4 /vaultwarden hash`), which it recommends; in `card.env`, write each `$` in the hash as `$$`.
+The admin token is a long random string the card makes on the machine at first start, in the volume `vaultwarden-secrets`; it never leaves the machine. Vaultwarden prints a notice recommending an Argon2 hash of it instead.
 
 Vaults, attachments and settings live in the volume `vaultwarden-data`. Back it up; it holds everyone's encrypted vault. Minimum recommended for the place `vaultwarden`: 256 MB of memory and 1.5 GB of disk, on an arm64, amd64 or 32-bit arm machine, with no GPU.
 
@@ -30,7 +30,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, and `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints. The admin token is generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints, and `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints. There is no token to fill: Start makes it on the machine.
 
 ```bash
 nano vaultwarden/card.env
@@ -43,7 +43,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py vaultwarden
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -85,7 +85,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code}\n' "https://<vaultwarden hostname>"
 ```
 
-That prints `200`: the web vault, with no Edgible sign-in, as the apps need. Open `https://<vaultwarden hostname>/admin`, enter `VAULTWARDEN_ADMIN_TOKEN`, and invite yourself under **Users**. With no mail server set up, the invited address can then create its account on the web vault. Then point a Bitwarden app at `https://<vaultwarden hostname>` as a self-hosted server.
+That prints `200`: the web vault, with no Edgible sign-in, as the apps need. Open `https://<vaultwarden hostname>/admin`, enter the admin token (`docker compose --env-file vaultwarden/card.env -f vaultwarden/docker-compose.yml run --rm --no-deps vaultwarden-secrets show VAULTWARDEN_ADMIN_TOKEN` prints it), and invite yourself under **Users**. With no mail server set up, the invited address can then create its account on the web vault. Then point a Bitwarden app at `https://<vaultwarden hostname>` as a self-hosted server.
 
 The rest of the setup is in the [Vaultwarden docs](https://github.com/dani-garcia/vaultwarden/wiki).
 
@@ -107,7 +107,7 @@ docker compose --env-file vaultwarden/card.env -f vaultwarden/docker-compose.yml
 
 ### 3. Delete the data
 
-Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `vaultwarden-secrets.tgz` holds the card's passwords and keys: keep it as safe as the data, which needs them.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=vaultwarden); do

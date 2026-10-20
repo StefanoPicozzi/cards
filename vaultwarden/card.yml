@@ -16,6 +16,12 @@ applications:
     authModes: [none]
     place: vaultwarden
 
+secrets:
+  VAULTWARDEN_ADMIN_TOKEN:
+    kind: human
+    make: openssl rand -base64 48
+    for: the /admin page, where you invite people
+
 places:
   vaultwarden:
     memory: 256 MB

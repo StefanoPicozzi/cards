@@ -1,5 +1,6 @@
 # Compose file for the wordpress card.
-# The host port, ORG_LABEL and the passwords come from card.env. Start with:
+# The host port and ORG_LABEL come from card.env. The passwords are made on this machine by
+# wordpress-secrets, at first start, and never leave it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # wordpress-cli runs only on demand, for the Install step: --profile cli run --rm wordpress-cli wp ...
 
@@ -9,13 +10,25 @@ x-wordpress-env: &wordpress-env
   WORDPRESS_DB_HOST: wordpress-db
   WORDPRESS_DB_USER: wordpress
   WORDPRESS_DB_NAME: wordpress
-  WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?set WORDPRESS_DB_PASSWORD in card.env}
+  WORDPRESS_DB_PASSWORD_FILE: /run/card-secrets/WORDPRESS_DB_PASSWORD
   # WordPress keeps its own address; it is the published hostname, or your own domain.
   WORDPRESS_CONFIG_EXTRA: |
     define('WP_HOME', '${WORDPRESS_URL:-https://wordpress.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}');
     define('WP_SITEURL', '${WORDPRESS_URL:-https://wordpress.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}');
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume wordpress-secrets, then exits. It never changes one that exists.
+  wordpress-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        WORDPRESS_DB_PASSWORD=openssl rand -hex 16
+        WORDPRESS_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - wordpress-secrets:/run/card-secrets
+
   wordpress:
     image: wordpress:7.1.3-php8.3-apache
     restart: unless-stopped
@@ -24,6 +37,7 @@ services:
     environment: *wordpress-env
     volumes:
       - wordpress-files:/var/www/html
+      - wordpress-secrets:/run/card-secrets:ro
     depends_on:
       wordpress-db:
         condition: service_healthy
@@ -40,10 +54,14 @@ services:
     environment:
       MARIADB_DATABASE: wordpress
       MARIADB_USER: wordpress
-      MARIADB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?set WORDPRESS_DB_PASSWORD in card.env}
+      MARIADB_PASSWORD_FILE: /run/card-secrets/WORDPRESS_DB_PASSWORD
       MARIADB_RANDOM_ROOT_PASSWORD: "1"
     volumes:
       - wordpress-db-data:/var/lib/mysql
+      - wordpress-secrets:/run/card-secrets:ro
+    depends_on:
+      wordpress-secrets:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
@@ -58,6 +76,7 @@ services:
     environment: *wordpress-env
     volumes:
       - wordpress-files:/var/www/html
+      - wordpress-secrets:/run/card-secrets:ro
     depends_on:
       wordpress-db:
         condition: service_healthy
@@ -65,3 +84,4 @@ services:
 volumes:
   wordpress-files: {}
   wordpress-db-data: {}
+  wordpress-secrets: {}

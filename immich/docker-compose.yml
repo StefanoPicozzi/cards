@@ -1,5 +1,6 @@
 # Compose file for the immich card, from the Compose file Immich publishes for v3.3.1.
-# The host port and the secrets come from card.env. Start with:
+# The host port comes from card.env. The passwords are made on this machine by immich-secrets,
+# at first start, and never leave it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 
 name: immich
@@ -8,11 +9,23 @@ x-immich-env: &immich-env
   DB_HOSTNAME: immich-db
   DB_USERNAME: immich
   DB_DATABASE_NAME: immich
-  DB_PASSWORD: ${IMMICH_DB_PASSWORD:?set IMMICH_DB_PASSWORD in card.env}
+  DB_PASSWORD_FILE: /run/card-secrets/IMMICH_DB_PASSWORD
   REDIS_HOSTNAME: immich-redis
   IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume immich-secrets, then exits. It never changes one that exists.
+  immich-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        IMMICH_DB_PASSWORD=openssl rand -hex 16
+        IMMICH_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - immich-secrets:/run/card-secrets
+
   immich-server:
     image: ghcr.io/immich-app/immich-server:v3.3.1
     restart: unless-stopped
@@ -21,6 +34,7 @@ services:
     environment: *immich-env
     volumes:
       - immich-library:/data
+      - immich-secrets:/run/card-secrets:ro
     depends_on:
       immich-redis:
         condition: service_healthy
@@ -45,15 +59,20 @@ services:
     image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: ${IMMICH_DB_PASSWORD:?set IMMICH_DB_PASSWORD in card.env}
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/IMMICH_DB_PASSWORD
       POSTGRES_USER: immich
       POSTGRES_DB: immich
       POSTGRES_INITDB_ARGS: "--data-checksums"
     volumes:
       - immich-db-data:/var/lib/postgresql/data
+      - immich-secrets:/run/card-secrets:ro
+    depends_on:
+      immich-secrets:
+        condition: service_completed_successfully
     shm_size: 128mb
 
 volumes:
   immich-library: {}
   immich-db-data: {}
   immich-model-cache: {}
+  immich-secrets: {}

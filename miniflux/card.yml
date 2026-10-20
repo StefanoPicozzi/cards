@@ -17,6 +17,19 @@ applications:
     authModes: [org]
     place: miniflux
 
+secrets:
+  MINIFLUX_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: miniflux-db
+      command: psql -U miniflux -d miniflux -c "ALTER USER miniflux PASSWORD '$MINIFLUX_DB_PASSWORD'"
+  MINIFLUX_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -hex 16
+    for: admin's sign-in, made by Miniflux on first start
+
 places:
   miniflux:
     memory: 384 MB

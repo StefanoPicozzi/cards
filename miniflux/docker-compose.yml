@@ -1,21 +1,41 @@
 # Compose file for the miniflux card.
-# The host port, ORG_LABEL and the passwords come from card.env. Start with:
+# The host port and ORG_LABEL come from card.env. The passwords are made on this machine by
+# miniflux-secrets, at first start, and never leave it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 
 name: miniflux
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume miniflux-secrets, then exits. It never changes one that exists.
+  miniflux-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        MINIFLUX_DB_PASSWORD=openssl rand -hex 16
+        MINIFLUX_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - miniflux-secrets:/run/card-secrets
+
   miniflux:
     image: miniflux/miniflux:2.3.3
     restart: unless-stopped
     ports:
       - "127.0.0.1:${MINIFLUX_PORT:?set MINIFLUX_PORT in card.env}:8080"
+    # Miniflux reads these only from the environment, so it starts through the loader, which sets
+    # them from the secret files and then runs the image's own start command.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command:
+      - >-
+        export DATABASE_URL="postgres://miniflux:$$MINIFLUX_DB_PASSWORD@miniflux-db/miniflux?sslmode=disable"
+        ADMIN_PASSWORD="$$MINIFLUX_ADMIN_PASSWORD" && exec /usr/bin/miniflux
+    volumes:
+      - miniflux-secrets:/run/card-secrets:ro
     environment:
-      DATABASE_URL: postgres://miniflux:${MINIFLUX_DB_PASSWORD:?set MINIFLUX_DB_PASSWORD in card.env}@miniflux-db/miniflux?sslmode=disable
       RUN_MIGRATIONS: "1"
       CREATE_ADMIN: "1"
       ADMIN_USERNAME: admin
-      ADMIN_PASSWORD: ${MINIFLUX_ADMIN_PASSWORD:?set MINIFLUX_ADMIN_PASSWORD in card.env}
       BASE_URL: ${MINIFLUX_URL:-https://miniflux.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
     depends_on:
       miniflux-db:
@@ -33,9 +53,13 @@ services:
     environment:
       POSTGRES_DB: miniflux
       POSTGRES_USER: miniflux
-      POSTGRES_PASSWORD: ${MINIFLUX_DB_PASSWORD:?set MINIFLUX_DB_PASSWORD in card.env}
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/MINIFLUX_DB_PASSWORD
     volumes:
       - miniflux-db-data:/var/lib/postgresql/data
+      - miniflux-secrets:/run/card-secrets:ro
+    depends_on:
+      miniflux-secrets:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U miniflux -d miniflux"]
       interval: 5s
@@ -44,3 +68,4 @@ services:
 
 volumes:
   miniflux-db-data: {}
+  miniflux-secrets: {}

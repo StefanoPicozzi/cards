@@ -16,6 +16,12 @@ applications:
     authModes: [none]
     place: owncloud
 
+secrets:
+  OWNCLOUD_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -base64 18 | tr -d '/+='
+    for: admin's sign-in, read by ownCloud on its first start
+
 places:
   owncloud:
     memory: 1 GB

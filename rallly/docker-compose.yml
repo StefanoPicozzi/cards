@@ -1,18 +1,38 @@
 # Compose file for the rallly card.
-# The host port, ORG_LABEL and the secrets come from card.env. Start with:
+# The host port, ORG_LABEL and the mail settings come from card.env. The database password and
+# the session secret are made on this machine by rallly-secrets, at first start. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 
 name: rallly
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume rallly-secrets, then exits. It never changes one that exists.
+  rallly-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        RALLLY_DB_PASSWORD=openssl rand -hex 16
+        RALLLY_SECRET=openssl rand -hex 32
+    volumes:
+      - rallly-secrets:/run/card-secrets
+
   rallly:
     image: lukevella/rallly:4.7.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:${RALLLY_PORT:?set RALLLY_PORT in card.env}:3000"
+    # Rallly reads these only from the environment, so it starts through the loader, which sets
+    # them from the secret files and then runs the image's own start command.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command:
+      - >-
+        export DATABASE_URL="postgresql://rallly:$$RALLLY_DB_PASSWORD@rallly-db:5432/rallly"
+        SECRET_PASSWORD="$$RALLLY_SECRET" && exec docker-entrypoint.sh ./docker-start.sh
+    volumes:
+      - rallly-secrets:/run/card-secrets:ro
     environment:
-      DATABASE_URL: postgresql://rallly:${RALLLY_DB_PASSWORD:?set RALLLY_DB_PASSWORD in card.env}@rallly-db:5432/rallly
-      SECRET_PASSWORD: ${RALLLY_SECRET:?set RALLLY_SECRET in card.env}
       NEXT_PUBLIC_BASE_URL: ${RALLLY_URL:-https://rallly.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
       ALLOWED_EMAILS: ${RALLLY_ALLOWED_EMAILS:?set RALLLY_ALLOWED_EMAILS in card.env}
       SUPPORT_EMAIL: ${RALLLY_SMTP_FROM:-noreply@example.com}
@@ -37,9 +57,13 @@ services:
     environment:
       POSTGRES_DB: rallly
       POSTGRES_USER: rallly
-      POSTGRES_PASSWORD: ${RALLLY_DB_PASSWORD:?set RALLLY_DB_PASSWORD in card.env}
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/RALLLY_DB_PASSWORD
     volumes:
       - rallly-db-data:/var/lib/postgresql/data
+      - rallly-secrets:/run/card-secrets:ro
+    depends_on:
+      rallly-secrets:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U rallly -d rallly"]
       interval: 5s
@@ -48,3 +72,4 @@ services:
 
 volumes:
   rallly-db-data: {}
+  rallly-secrets: {}

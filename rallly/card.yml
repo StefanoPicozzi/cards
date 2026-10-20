@@ -17,6 +17,23 @@ applications:
     authModes: [none]
     place: rallly
 
+secrets:
+  RALLLY_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: rallly-db
+      command: psql -U rallly -d rallly -c "ALTER USER rallly PASSWORD '$RALLLY_DB_PASSWORD'"
+  RALLLY_SECRET:
+    kind: internal
+    use: signing
+    make: openssl rand -hex 32
+  RALLLY_SMTP_PASSWORD:
+    kind: external
+    from: your mail provider, with RALLLY_SMTP_USER
+    required: false
+
 places:
   rallly:
     memory: 512 MB

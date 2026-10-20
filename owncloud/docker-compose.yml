@@ -1,15 +1,30 @@
 # Compose file for the owncloud card.
-# The host port, ORG_LABEL and the admin password come from card.env. Start with:
+# The host port and ORG_LABEL come from card.env. The admin's password is made on this machine
+# by owncloud-secrets, at first start, and never leaves it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # The first start makes the config and the admin, so nobody can claim it by being first.
 
 name: owncloud
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume owncloud-secrets, then exits. It never changes one that exists.
+  owncloud-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        OWNCLOUD_ADMIN_PASSWORD=openssl rand -base64 18 | tr -d '/+='
+    volumes:
+      - owncloud-secrets:/run/card-secrets
+
   owncloud:
     image: owncloud/ocis:8.2.1
     restart: unless-stopped
-    entrypoint: ["/bin/sh", "-c", "ocis init || true; ocis server"]
+    # ownCloud reads the admin's password only from the environment, so it starts through the
+    # loader, which sets it from the secret file, then makes the config once and serves.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command: ['export IDM_ADMIN_PASSWORD="$$OWNCLOUD_ADMIN_PASSWORD"; ocis init || true; exec ocis server']
     ports:
       - "127.0.0.1:${OWNCLOUD_PORT:?set OWNCLOUD_PORT in card.env}:9200"
     environment:
@@ -18,13 +33,17 @@ services:
       PROXY_TLS: "false"
       PROXY_HTTP_ADDR: 0.0.0.0:9200
       OCIS_INSECURE: "false"
-      IDM_ADMIN_PASSWORD: ${OWNCLOUD_ADMIN_PASSWORD:?set OWNCLOUD_ADMIN_PASSWORD in card.env}
       IDM_CREATE_DEMO_USERS: "false"
       OCIS_LOG_LEVEL: warn
     volumes:
       - owncloud-config:/etc/ocis
       - owncloud-data:/var/lib/ocis
+      - owncloud-secrets:/run/card-secrets:ro
+    depends_on:
+      owncloud-secrets:
+        condition: service_completed_successfully
 
 volumes:
   owncloud-config: {}
   owncloud-data: {}
+  owncloud-secrets: {}

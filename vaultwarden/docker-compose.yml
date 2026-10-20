@@ -1,11 +1,23 @@
 # Compose file for the vaultwarden card.
-# The host port, ORG_LABEL and the admin token come from card.env. Start with:
+# The host port and ORG_LABEL come from card.env. The admin token is made on this machine by
+# vaultwarden-secrets, at first start, and never leaves it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # The image's own healthcheck applies.
 
 name: vaultwarden
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume vaultwarden-secrets, then exits. It never changes one that exists.
+  vaultwarden-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        VAULTWARDEN_ADMIN_TOKEN=openssl rand -base64 48
+    volumes:
+      - vaultwarden-secrets:/run/card-secrets
+
   vaultwarden:
     image: vaultwarden/server:1.37.4
     restart: unless-stopped
@@ -17,9 +29,14 @@ services:
       SIGNUPS_ALLOWED: "false"
       INVITATIONS_ALLOWED: "true"
       SHOW_PASSWORD_HINT: "false"
-      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN:?set VAULTWARDEN_ADMIN_TOKEN in card.env}
+      ADMIN_TOKEN_FILE: /run/card-secrets/VAULTWARDEN_ADMIN_TOKEN
     volumes:
       - vaultwarden-data:/data
+      - vaultwarden-secrets:/run/card-secrets:ro
+    depends_on:
+      vaultwarden-secrets:
+        condition: service_completed_successfully
 
 volumes:
   vaultwarden-data: {}
+  vaultwarden-secrets: {}

@@ -1,0 +1,29 @@
+tested: 2026-10-20
+result: pass
+card-kit: "0cb7037"
+edgible-cli: 1.4.12
+files: sha256:d91537144ac60bb4
+machine: darwin/arm64, docker 29.4.3
+images:
+  - ghcr.io/edgible-org/edgible-mcp:0.5.0@sha256:08ff5622c5778e6b5b24a536d8b6141ab81cb27504335ed741fe3ac3e9ffa69f
+  - ghcr.io/openclaw/openclaw:2026.10.5@sha256:f40d1e66fd14d8c5b49c832f4100f83b53fdc01f5108f7db11de38fd0ee6dbe5
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    openclaw: pass
+  checks:
+    edgible-tools: pass
+    gateway: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"sessions": 1, "workspace_files": 26}
+measured:
+  agent:
+    memory: 1.5 GB
+    images: 1.5 GB
+    data: 152 MB
+duration: 3m
+by: person
+notes: openclaw's port 18789 was taken on the test machine, so it was tested on 18790. openclaw is taken in the test org, so it was published as test-openclaw.

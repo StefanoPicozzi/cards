@@ -20,8 +20,8 @@ services:
     environment:
       DB_URL: postgres://logto:${LOGTO_DB_PASSWORD:?set LOGTO_DB_PASSWORD in card.env}@db:5432/logto
       TRUST_PROXY_HEADER: 1
-      ENDPOINT: ${ACCOUNTS_URL:-https://accounts.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
-      ADMIN_ENDPOINT: ${ACCOUNTS_ADMIN_URL:-https://accounts-admin.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      ENDPOINT: ${ACCOUNTS_URL:-https://accounts.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
+      ADMIN_ENDPOINT: ${ACCOUNTS_ADMIN_URL:-https://accounts-admin.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
     depends_on:
       db:
         condition: service_healthy

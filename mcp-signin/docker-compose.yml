@@ -15,8 +15,8 @@ services:
     environment:
       MCP_UPSTREAM_URL: ${MCP_UPSTREAM_URL:?set MCP_UPSTREAM_URL in card.env}
       EDGIBLE_ORGANIZATION_ID: ${EDGIBLE_ORGANIZATION_ID:?set EDGIBLE_ORGANIZATION_ID in card.env}
-      MCP_SIGNIN_PUBLIC_URL: ${MCP_SIGNIN_URL:-https://mcp-signin.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.app}
-      MCP_SIGNIN_LOGIN_URL: ${MCP_SIGNIN_LOGIN_URL:-https://mcp-signin-login.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.app}
+      MCP_SIGNIN_PUBLIC_URL: ${MCP_SIGNIN_URL:-https://mcp-signin.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
+      MCP_SIGNIN_LOGIN_URL: ${MCP_SIGNIN_LOGIN_URL:-https://mcp-signin-login.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
       MCP_SIGNIN_USERS: ${MCP_SIGNIN_USERS:-}
       MCP_SIGNIN_NAME: ${MCP_SIGNIN_NAME:-this MCP server}
       MCP_SIGNIN_PURPOSE: ${MCP_SIGNIN_PURPOSE:-}

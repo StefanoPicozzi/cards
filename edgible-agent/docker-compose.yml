@@ -37,7 +37,7 @@ services:
     restart: "no"
     environment:
       <<: *openclaw-env
-      OPENCLAW_URL: ${OPENCLAW_URL:-https://openclaw.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.app}
+      OPENCLAW_URL: ${OPENCLAW_URL:-https://openclaw.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
       OPENCLAW_MODEL_PROVIDER: ${OPENCLAW_MODEL_PROVIDER:-gemini}
       OPENCLAW_MODEL: ${OPENCLAW_MODEL:-google/gemini-3.5-flash}
       OPENCLAW_MODEL_URL: ${OPENCLAW_MODEL_URL:-}

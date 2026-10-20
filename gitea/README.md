@@ -10,7 +10,7 @@ One process on two hostnames, on the place `gitea`. `gitea` is the web, the API,
 
 Both are on `none`, deliberately. `git` over HTTPS, a CI runner, API tokens and webhooks cannot get past an Edgible sign-in, so `org` would break them. Gitea's own protections take its place: registration is off, so only the admin adds people; the web installer is never served (`INSTALL_LOCK`); and the admin is made from the command line before anything is public, with a generated password.
 
-Gitea shows its addresses in clone URLs, so `ROOT_URL` is `https://gitea.<ORG_LABEL>.edgible.com` (or `GITEA_URL`), and SSH clones use `gitea-ssh.<ORG_LABEL>.edgible.com` on port `22222`. Postgres runs beside it as `gitea-db`. The images are `gitea/gitea:28.1.0` and `postgres:17.11-alpine`.
+Gitea shows its addresses in clone URLs, so `ROOT_URL` is `https://gitea.<ORG_LABEL>.<EDGIBLE_DOMAIN>` (or `GITEA_URL`), and SSH clones use `gitea-ssh.<ORG_LABEL>.<EDGIBLE_DOMAIN>` on port `22222`. Postgres runs beside it as `gitea-db`. The images are `gitea/gitea:28.1.0` and `postgres:17.11-alpine`.
 
 To use it in a card, copy the `gitea` and `gitea-db` services, the two volumes, and the `GITEA_` lines. A CI runner joins it with a registration token from **Site Administration**, then **Actions**, then **Runners**.
 

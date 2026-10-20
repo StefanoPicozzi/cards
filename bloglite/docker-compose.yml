@@ -14,7 +14,7 @@ services:
     environment:
       BLOGLITE_USERNAME: ${BLOGLITE_ADMIN_USER:?set BLOGLITE_ADMIN_USER in card.env}
       BLOGLITE_PASSWORD: ${BLOGLITE_ADMIN_PASSWORD:?set BLOGLITE_ADMIN_PASSWORD in card.env}
-      BLOGLITE_DOMAIN: ${BLOGLITE_DOMAIN:-bloglite.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      BLOGLITE_DOMAIN: ${BLOGLITE_DOMAIN:-bloglite.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
     volumes:
       - bloglite-data:/data
     healthcheck:

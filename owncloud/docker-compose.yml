@@ -13,7 +13,7 @@ services:
     ports:
       - "127.0.0.1:${OWNCLOUD_PORT:?set OWNCLOUD_PORT in card.env}:9200"
     environment:
-      OCIS_URL: ${OWNCLOUD_URL:-https://owncloud.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      OCIS_URL: ${OWNCLOUD_URL:-https://owncloud.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
       # Edgible ends TLS, so ownCloud speaks plain HTTP behind it.
       PROXY_TLS: "false"
       PROXY_HTTP_ADDR: 0.0.0.0:9200

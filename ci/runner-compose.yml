@@ -10,7 +10,7 @@ services:
     image: docker.gitea.com/act_runner:5.0.0
     restart: unless-stopped
     environment:
-      GITEA_INSTANCE_URL: ${GITEA_URL:-https://gitea.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      GITEA_INSTANCE_URL: ${GITEA_URL:-https://gitea.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
       GITEA_RUNNER_REGISTRATION_TOKEN: ${GITEA_RUNNER_TOKEN:?set GITEA_RUNNER_TOKEN in card.env}
       GITEA_RUNNER_NAME: ${RUNNER_DEVICE:-runner}
       GITEA_RUNNER_LABELS: ${GITEA_RUNNER_LABELS:-ubuntu-latest:docker://node:22-bookworm-slim}

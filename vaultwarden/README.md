@@ -8,7 +8,7 @@ A password manager is the one service whose data you most want on a machine you 
 
 One app, `vaultwarden`, on the place `vaultwarden`, on `none`. That is deliberate: the Bitwarden phone apps, desktop apps and browser extensions cannot get past an Edgible sign-in, so `org` would lock them out. Vaultwarden's own protections take its place: every vault is encrypted with its owner's master password, sign-ups are off (`SIGNUPS_ALLOWED: "false"`), so nobody can create an account unless you invite them, and the `/admin` page needs `VAULTWARDEN_ADMIN_TOKEN`.
 
-Vaultwarden must know its own address, so `DOMAIN` is `https://vaultwarden.<ORG_LABEL>.edgible.com`, or `VAULTWARDEN_URL` on your own domain. The image is `vaultwarden/server:1.37.4`, with its own healthcheck.
+Vaultwarden must know its own address, so `DOMAIN` is `https://vaultwarden.<ORG_LABEL>.<EDGIBLE_DOMAIN>`, or `VAULTWARDEN_URL` on your own domain. The image is `vaultwarden/server:1.37.4`, with its own healthcheck.
 
 The admin token here is a long random string. Vaultwarden also accepts an Argon2 hash of it (`docker run --rm -it vaultwarden/server:1.37.4 /vaultwarden hash`), which it recommends; in `card.env`, write each `$` in the hash as `$$`.
 

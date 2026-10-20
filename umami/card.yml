@@ -27,6 +27,27 @@ applications:
     authModes: [none]
     place: umami
 
+secrets:
+  UMAMI_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: umami-db
+      command: psql -U umami -d umami -c "ALTER USER umami PASSWORD '$UMAMI_DB_PASSWORD'"
+  UMAMI_APP_SECRET:
+    kind: internal
+    use: signing
+    make: openssl rand -base64 32
+  UMAMI_TWO_FACTOR_KEY:
+    kind: internal
+    use: encryption
+    make: openssl rand -hex 32
+  UMAMI_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -hex 16
+    for: the admin's sign-in, set by prepare.sh in place of the default umami
+
 places:
   umami:
     memory: 384 MB

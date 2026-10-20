@@ -6,7 +6,7 @@ Bookmarks kept in one browser's sync are tied to that browser and that company. 
 
 ## What
 
-One app, `linkding`, on the place `linkding`, on `none`. That is deliberate: the linkding browser extension and the community phone apps call its API with a token, and cannot get past an Edgible sign-in, so `org` would lock them out. linkding's own login takes its place: it has no sign-up page, so the only account is the admin made from `LINKDING_ADMIN_USER` and `LINKDING_ADMIN_PASSWORD` on first start, and the admin adds anyone else under **Admin**. Logins and saves come from the public hostname, so `LD_CSRF_TRUSTED_ORIGINS` is `https://linkding.<ORG_LABEL>.<EDGIBLE_DOMAIN>`, or `LINKDING_URL` on your own domain. The image is `ghcr.io/sissbruecker/linkding:1.47.0`, from GitHub's registry, with its own healthcheck. Its `-plus` variant adds Chromium for saving pages as HTML snapshots, at several times the size.
+One app, `linkding`, on the place `linkding`, on `none`. That is deliberate: the linkding browser extension and the community phone apps call its API with a token, and cannot get past an Edgible sign-in, so `org` would lock them out. linkding's own login takes its place: it has no sign-up page, so the only account is the admin made on first start, named `LINKDING_ADMIN_USER`, and the admin adds anyone else under **Admin**. Logins and saves come from the public hostname, so `LD_CSRF_TRUSTED_ORIGINS` is `https://linkding.<ORG_LABEL>.<EDGIBLE_DOMAIN>`, or `LINKDING_URL` on your own domain. The image is `ghcr.io/sissbruecker/linkding:1.47.0`, from GitHub's registry, with its own healthcheck. Its `-plus` variant adds Chromium for saving pages as HTML snapshots, at several times the size.
 
 Bookmarks, tags, users and settings live in the SQLite database in the volume `linkding-data`. Back it up. Minimum recommended for the place `linkding`: 384 MB of memory and 1.5 GB of disk, on an arm64, amd64 or 32-bit arm machine, with no GPU.
 
@@ -26,7 +26,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, and `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints. The admin password is generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints, and `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints. There is no password to fill: Start makes the admin's on the machine.
 
 ```bash
 nano linkding/card.env
@@ -39,7 +39,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py linkding
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -81,7 +81,13 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code}\n' "https://<linkding hostname>"
 ```
 
-The login page, with no Edgible sign-in, as the browser extension needs. Sign in as `LINKDING_ADMIN_USER` with `LINKDING_ADMIN_PASSWORD`, and change the password under **Settings**. For the browser extension, copy the REST API token from **Settings → Integrations**.
+The login page, with no Edgible sign-in, as the browser extension needs. Sign in as `LINKDING_ADMIN_USER` with the password `linkding-secrets` made on the machine at first start, and change it under **Settings**. See it with:
+
+```bash
+docker compose --env-file linkding/card.env -f linkding/docker-compose.yml run --rm --no-deps linkding-secrets show LINKDING_ADMIN_PASSWORD
+```
+
+It never left the machine, and nothing else knows it. For the browser extension, copy the REST API token from **Settings → Integrations**.
 
 The rest of the setup is in the [linkding docs](https://linkding.link).
 

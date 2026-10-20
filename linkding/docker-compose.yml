@@ -1,25 +1,45 @@
 # Compose file for the linkding card.
-# The host port, ORG_LABEL and the admin password come from card.env. Start with:
+# The host port, ORG_LABEL and the admin's name come from card.env. The admin's password is
+# made on this machine by linkding-secrets, at first start, and never leaves it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # The image's own healthcheck applies.
 
 name: linkding
 
 services:
+  # Makes the admin's password (card.yml secrets:) if it does not exist yet, as a file in the
+  # volume linkding-secrets, then exits. It never changes it after.
+  linkding-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.1
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        LINKDING_ADMIN_PASSWORD=openssl rand -base64 24
+    volumes:
+      - linkding-secrets:/run/card-secrets
+
   linkding:
     image: ghcr.io/sissbruecker/linkding:1.47.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:${LINKDING_PORT:?set LINKDING_PORT in card.env}:9090"
+    # linkding reads the password only from the environment, so it starts through the loader,
+    # which reads the secret file and then runs the image's own start command.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command: ['export LD_SUPERUSER_PASSWORD="$$LINKDING_ADMIN_PASSWORD" && exec ./bootstrap.sh']
     environment:
       # Made on first start, and left alone after that. linkding has no sign-up page,
       # so nobody else gets an account unless the admin adds one.
       LD_SUPERUSER_NAME: ${LINKDING_ADMIN_USER:?set LINKDING_ADMIN_USER in card.env}
-      LD_SUPERUSER_PASSWORD: ${LINKDING_ADMIN_PASSWORD:?set LINKDING_ADMIN_PASSWORD in card.env}
       # Logins and saves are POSTs from the public hostname.
       LD_CSRF_TRUSTED_ORIGINS: ${LINKDING_URL:-https://linkding.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
     volumes:
       - linkding-data:/etc/linkding/data
+      - linkding-secrets:/run/card-secrets:ro
+    depends_on:
+      linkding-secrets:
+        condition: service_completed_successfully
 
 volumes:
   linkding-data: {}
+  linkding-secrets: {}

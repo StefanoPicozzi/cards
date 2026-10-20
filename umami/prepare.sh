@@ -7,6 +7,9 @@ cd "$(dirname "$0")"
 set -a; . ./card.env; set +a
 COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
 
+# The new password is the human secret umami-secrets made on this machine.
+UMAMI_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps umami-secrets show UMAMI_ADMIN_PASSWORD)
+
 B="http://127.0.0.1:$UMAMI_PORT"
 H='Content-Type: application/json'
 token=$(curl -fsS -X POST "$B/api/auth/login" -H "$H" -d '{"username":"admin","password":"umami"}' \

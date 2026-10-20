@@ -1,8 +1,8 @@
 tested: 2026-10-20
 result: pass
-card-kit: "7b74744"
+card-kit: "6815bfa"
 edgible-cli: 1.4.12
-files: sha256:6a585ad21ba34abd
+files: sha256:6199cdf758f1f0fa
 machine: darwin/arm64, docker 29.4.3
 images:
   - ghcr.io/edgible-org/mcp-signin:0.1.1@sha256:1cd75fb7b2edc34bafc67c4904ffa684ccb6e8f16004fb7d63f34c87b5e3c199
@@ -18,9 +18,9 @@ steps:
   teardown: pass
 measured:
   mcp-signin:
-    memory: 31 MB
+    memory: 29 MB
     images: 65 MB
     data: 8 KB
-duration: 4m
+duration: 3m
 by: person
-notes: mcp-signin-login's port 8021 was taken on the test machine, so it was tested on 8022.
+notes: mcp-signin's port 8020 was taken on the test machine, so it was tested on 8022. mcp-signin-login's port 8023 was taken on the test machine, so it was tested on 8024. mcp-signin is taken in the test org, so it was published as test-mcp-signin. mcp-signin-login is taken in the test org, so it was published as test-mcp-signin-login.

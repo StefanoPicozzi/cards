@@ -1,8 +1,8 @@
 tested: 2026-10-20
 result: pass
-card-kit: "e0ec272"
+card-kit: "0cb7037"
 edgible-cli: 1.4.12
-files: sha256:e51f32dc2b9e8fa2
+files: sha256:3f9929a4ebce3138
 machine: darwin/arm64, docker 29.4.3
 images:
   - ghcr.io/openclaw/openclaw:2026.10.5@sha256:f40d1e66fd14d8c5b49c832f4100f83b53fdc01f5108f7db11de38fd0ee6dbe5
@@ -24,3 +24,4 @@ measured:
     data: 152 MB
 duration: 3m
 by: person
+notes: openclaw's port 18789 was taken on the test machine, so it was tested on 18790. openclaw is taken in the test org, so it was published as test-openclaw.

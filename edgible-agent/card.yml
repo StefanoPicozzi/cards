@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: edgible-agent
+  description: Your own AI agent that looks after your Edgible apps, from your phone
+  type: pattern
+
+applications:
+  - name: openclaw
+    what: OpenClaw Gateway and Control UI, with Edgible's tools and skill
+    from: ghcr.io/openclaw/openclaw:2026.10.5
+    port: 18789
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [org]
+    place: agent
+
+data:
+  volumes:
+    # From the openclaw card: the agent's config, memory, sessions and workspace.
+    openclaw-data:
+      class: irreplaceable
+    openclaw-secrets:
+      class: irreplaceable
+    # From the edgible-mcp card: the catalog cache, the CLI's sign-in, the tools' record.
+    edgible-mcp-cache:
+      class: cache
+    edgible-mcp-login:
+      class: cache
+    edgible-mcp-data:
+      class: cache
+  fingerprint:
+    service: openclaw
+    command: >-
+      d=/home/node/.openclaw &&
+      echo "{\"sessions\": $(find $d/agents -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' '),
+      \"workspace_files\": $(find $d/workspace -type f 2>/dev/null | wc -l | tr -d ' ')}"
+
+places:
+  agent:
+    memory: 2.5 GB
+    disk: 3 GB
+    arch: [amd64, arm64]
+    gpu: none

@@ -20,11 +20,23 @@ data:
   volumes:
     ech0-data:
       class: irreplaceable
+    ech0-secrets:
+      class: irreplaceable        # the card's secrets, made on the device: back up with the data
   fingerprint:
     service: ech0
     command: >-
       if wget -qO- http://127.0.0.1:6277/api/init/status | grep -q '"owner_exists":true';
       then echo '{"owners": 1}'; else echo '{"owners": 0}'; fi
+
+secrets:
+  ECH0_JWT_SECRET:
+    kind: internal
+    use: signing
+    make: openssl rand -hex 32
+  ECH0_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -hex 16
+    for: the owner's sign-in, set by prepare.sh
 
 places:
   ech0:

@@ -10,7 +10,7 @@ One app, `immich`, on the place `immich`, on `none`. That is deliberate: Immich'
 
 It runs four services, from the Compose file Immich publishes for v3.3.1: `immich-server`, `immich-machine-learning` for face recognition and smart search, `immich-redis`, and `immich-db`, a Postgres with vector search. The images are pinned to `v3.3.1`, with the digests Immich publishes for Redis and Postgres. To run without machine learning, remove that service; Immich then skips those features.
 
-To use it in a card, copy the four services, the `x-immich-env` block, the three volumes, and the `IMMICH_` lines.
+To use it in a card, copy the five services, the `x-immich-env` block, the four volumes, card.yml's `secrets:`, and the `IMMICH_` lines.
 
 Photos and videos live in the volume `immich-library`, the database in `immich-db-data`, and machine learning's models in `immich-model-cache`. Back up the first two together. The memory and disk below follow Immich's own documented minimum, which is higher than an empty test library measures; disk is for Immich itself, so add room for your photos and about 20% more for thumbnails. Minimum recommended for the place `immich`: 6 GB of memory and 10 GB of disk, on an arm64 or amd64 machine, with a GPU if you have one (it runs without).
 
@@ -30,7 +30,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, and `IMMICH_ADMIN_EMAIL` to your address, which is also the admin's login. The two passwords are generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints, and `IMMICH_ADMIN_EMAIL` to your address, which is also the admin's login. There are no passwords to fill: Start makes them on the machine.
 
 ```bash
 nano immich/card.env
@@ -43,7 +43,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py immich
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -69,6 +69,9 @@ set -eu
 cd "$(dirname "$0")"
 set -a; . ./card.env; set +a
 COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The card made this password on this machine at Start (immich-secrets).
+IMMICH_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps immich-secrets show IMMICH_ADMIN_PASSWORD)
 
 curl -fsS -X POST "http://127.0.0.1:$IMMICH_PORT/api/auth/admin-sign-up" \
   -H "Content-Type: application/json" \
@@ -108,7 +111,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code}\n' "https://<immich hostname>"
 ```
 
-That prints `200`: the web app, with no Edgible sign-in, as the phone apps need. Sign in with `IMMICH_ADMIN_EMAIL` and `IMMICH_ADMIN_PASSWORD`. In the phone app, set the server to `https://<immich hostname>` and sign in the same way.
+That prints `200`: the web app, with no Edgible sign-in, as the phone apps need. Sign in with `IMMICH_ADMIN_EMAIL` and the password the card made; see it with `docker compose --env-file immich/card.env -f immich/docker-compose.yml run --rm --no-deps immich-secrets show IMMICH_ADMIN_PASSWORD`. In the phone app, set the server to `https://<immich hostname>` and sign in the same way.
 
 The rest of the setup is in the [Immich docs](https://docs.immich.app).
 
@@ -130,7 +133,7 @@ docker compose --env-file immich/card.env -f immich/docker-compose.yml down
 
 ### 3. Delete the data
 
-Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `immich-secrets.tgz` holds the card's passwords and keys: keep it as safe as the data, which needs them.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=immich); do

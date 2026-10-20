@@ -1,10 +1,24 @@
 # Compose file for the gitea card.
-# Ports, ORG_LABEL and the secrets come from card.env. Start with:
+# Ports and ORG_LABEL come from card.env. The passwords and keys are made on this machine by
+# gitea-secrets, at first start, and never leave it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 
 name: gitea
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume gitea-secrets, then exits. It never changes one that exists.
+  gitea-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        GITEA_DB_PASSWORD=openssl rand -hex 16
+        GITEA_SECRET_KEY=openssl rand -hex 32
+        GITEA_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - gitea-secrets:/run/card-secrets
+
   gitea:
     image: gitea/gitea:28.1.0
     restart: unless-stopped
@@ -18,17 +32,18 @@ services:
       GITEA__database__HOST: gitea-db:5432
       GITEA__database__NAME: gitea
       GITEA__database__USER: gitea
-      GITEA__database__PASSWD: ${GITEA_DB_PASSWORD:?set GITEA_DB_PASSWORD in card.env}
+      GITEA__database__PASSWD__FILE: /run/card-secrets/GITEA_DB_PASSWORD
       GITEA__server__ROOT_URL: ${GITEA_URL:-https://gitea.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}/
       GITEA__server__SSH_DOMAIN: gitea-ssh.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}
       GITEA__server__SSH_PORT: ${GITEA_SSH_PORT:?set GITEA_SSH_PORT in card.env}
-      GITEA__security__SECRET_KEY: ${GITEA_SECRET_KEY:?set GITEA_SECRET_KEY in card.env}
+      GITEA__security__SECRET_KEY__FILE: /run/card-secrets/GITEA_SECRET_KEY
       # The web installer is never served; the admin is made from the command line.
       GITEA__security__INSTALL_LOCK: "true"
       # The hostname is open to anyone, so nobody may register; the admin adds people.
       GITEA__service__DISABLE_REGISTRATION: "true"
     volumes:
       - gitea-data:/data
+      - gitea-secrets:/run/card-secrets:ro
     depends_on:
       gitea-db:
         condition: service_healthy
@@ -45,9 +60,13 @@ services:
     environment:
       POSTGRES_DB: gitea
       POSTGRES_USER: gitea
-      POSTGRES_PASSWORD: ${GITEA_DB_PASSWORD:?set GITEA_DB_PASSWORD in card.env}
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/GITEA_DB_PASSWORD
     volumes:
       - gitea-db-data:/var/lib/postgresql/data
+      - gitea-secrets:/run/card-secrets:ro
+    depends_on:
+      gitea-secrets:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U gitea -d gitea"]
       interval: 5s
@@ -57,3 +76,4 @@ services:
 volumes:
   gitea-data: {}
   gitea-db-data: {}
+  gitea-secrets: {}

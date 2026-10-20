@@ -26,7 +26,7 @@ curl -fsSL https://github.com/Edgible/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, `ORG_LABEL` to the label in your hostnames, `RALLLY_ALLOWED_EMAILS` to the organizers' addresses, and the `RALLLY_SMTP_` lines to a mail server. The three secrets are generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints, `ORG_LABEL` to the label in your hostnames, `RALLLY_ALLOWED_EMAILS` to the organizers' addresses, and the `RALLLY_SMTP_` lines to a mail server. The database password and session secret need nothing: Start makes them on the machine.
 
 ```bash
 nano rallly/card.env
@@ -39,7 +39,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py rallly
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -103,7 +103,7 @@ docker compose --env-file rallly/card.env -f rallly/docker-compose.yml down
 
 ### 3. Delete the data
 
-Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `rallly-secrets.tgz` holds the card's passwords and keys: keep it as safe as the data, which needs them.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=rallly); do

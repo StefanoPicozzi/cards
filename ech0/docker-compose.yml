@@ -1,20 +1,39 @@
 # Compose file for the ech0 card.
-# The host port, ORG_LABEL and the secrets come from card.env. Start with:
+# The host port and ORG_LABEL come from card.env. The secrets are made on this machine by
+# ech0-secrets, at first start, and never leave it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # The image has no healthcheck of its own, so this file adds one on /api/hello.
 
 name: ech0
 
 services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume ech0-secrets, then exits. It never changes one that exists.
+  ech0-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        ECH0_JWT_SECRET=openssl rand -hex 32
+        ECH0_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - ech0-secrets:/run/card-secrets
+
   ech0:
     image: sn0wl1n/ech0:v5.8.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:${ECH0_PORT:?set ECH0_PORT in card.env}:6277"
-    environment:
-      JWT_SECRET: ${ECH0_JWT_SECRET:?set ECH0_JWT_SECRET in card.env}
+    # Ech0 reads its token secret only from the environment, so it starts through the loader,
+    # which reads the secret file and then runs the image's own start command.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command: ['export JWT_SECRET="$$ECH0_JWT_SECRET" && exec /app/ech0 serve']
     volumes:
       - ech0-data:/app/data
+      - ech0-secrets:/run/card-secrets:ro
+    depends_on:
+      ech0-secrets:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:6277/api/hello"]
       interval: 10s
@@ -24,3 +43,4 @@ services:
 
 volumes:
   ech0-data: {}
+  ech0-secrets: {}

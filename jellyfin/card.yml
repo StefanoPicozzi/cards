@@ -16,6 +16,12 @@ applications:
     authModes: [none]
     place: jellyfin
 
+secrets:
+  JELLYFIN_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -hex 16
+    for: the admin's sign-in, set by prepare.sh
+
 places:
   jellyfin:
     memory: 4 GB

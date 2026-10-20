@@ -5,6 +5,10 @@
 set -eu
 cd "$(dirname "$0")"
 set -a; . ./card.env; set +a
+COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The card made this password on this machine at Start (ech0-secrets).
+ECH0_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps ech0-secrets show ECH0_ADMIN_PASSWORD)
 
 B="http://127.0.0.1:$ECH0_PORT/api"
 H='Content-Type: application/json'

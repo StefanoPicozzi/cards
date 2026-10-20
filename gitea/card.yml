@@ -27,6 +27,23 @@ applications:
     authModes: [none]
     place: gitea
 
+secrets:
+  GITEA_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: gitea-db
+      command: psql -U gitea -d gitea -c "ALTER USER gitea PASSWORD '$GITEA_DB_PASSWORD'"
+  GITEA_SECRET_KEY:
+    kind: internal
+    use: signing
+    make: openssl rand -hex 32
+  GITEA_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -hex 16
+    for: gitadmin's sign-in, set by prepare.sh
+
 places:
   gitea:
     memory: 256 MB

@@ -17,6 +17,19 @@ applications:
     authModes: [none]
     place: immich
 
+secrets:
+  IMMICH_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: immich-db
+      command: psql -U immich -d immich -c "ALTER USER immich PASSWORD '$IMMICH_DB_PASSWORD'"
+  IMMICH_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -hex 16
+    for: the admin's sign-in, set by prepare.sh
+
 places:
   immich:
     memory: 6 GB

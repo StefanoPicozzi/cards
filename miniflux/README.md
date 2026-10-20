@@ -10,7 +10,7 @@ One app, `miniflux`, on port `8080` in the place `miniflux`, behind `org`, so on
 
 `org` suits a browser. Miniflux's API, and the Fever and Google Reader APIs that mobile and desktop reader apps use, cannot get past an Edgible sign-in. To use such an app, publish the hostname with `none` instead, and Miniflux's own login is then the only protection.
 
-To use it in a card, copy the `miniflux` and `miniflux-db` services, the volume, and the `MINIFLUX_` lines and `ORG_LABEL` in `card.env`.
+To use it in a card, copy the `miniflux-secrets`, `miniflux` and `miniflux-db` services, the volumes, card.yml's `secrets:`, and the `MINIFLUX_` lines and `ORG_LABEL` in `card.env`.
 
 Feeds, entries, read state and accounts live in the volume `miniflux-db-data`. Minimum recommended for the place `miniflux`: 384 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU.
 
@@ -30,7 +30,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints, and `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints, so Miniflux builds its links for the hostname Publish makes. Set `MINIFLUX_URL` only for your own domain. The two passwords are generated in the next step.
+Set `DEVICE` to a name `edgible device list` prints, and `ORG_LABEL` to the part after the app name in a hostname `edgible app list` prints, so Miniflux builds its links for the hostname Publish makes. Set `MINIFLUX_URL` only for your own domain. There are no passwords to fill: Start makes them on the machine.
 
 ```bash
 nano miniflux/card.env
@@ -43,7 +43,7 @@ curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/
 python3 check-env.py miniflux
 ```
 
-It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
 
 ### 4. Start
 
@@ -52,7 +52,7 @@ docker compose --env-file miniflux/card.env -f miniflux/docker-compose.yml up -d
 docker compose --env-file miniflux/card.env -f miniflux/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Miniflux runs its database migrations and makes the admin `admin` with `MINIFLUX_ADMIN_PASSWORD` on its first start, so there is no setup page to publish.
+`--wait` returns when each service is running, and healthy when it has a healthcheck. Miniflux runs its database migrations and makes the admin `admin` on its first start, with the password the card made (`docker compose --env-file miniflux/card.env -f miniflux/docker-compose.yml run --rm --no-deps miniflux-secrets show MINIFLUX_ADMIN_PASSWORD` prints it), so there is no setup page to publish.
 
 ### 5. Publish
 
@@ -85,7 +85,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' "https://<miniflux hostname>"
 ```
 
-That prints `302` and an `edgible.com/application-access/` address, so the org sign-in is in front. That prints `302` and an `edgible.com/application-access/` address, so the org sign-in is in front. Open the hostname in a browser, sign in, then sign in to Miniflux as `admin` with `MINIFLUX_ADMIN_PASSWORD` from `card.env`.
+That prints `302` and an `edgible.com/application-access/` address, so the org sign-in is in front. Open the hostname in a browser, sign in, then sign in to Miniflux as `admin` with the password the card made (see Start).
 
 The rest of the setup is in the [Miniflux docs](https://miniflux.app/docs/).
 
@@ -107,7 +107,7 @@ docker compose --env-file miniflux/card.env -f miniflux/docker-compose.yml down
 
 ### 3. Delete the data
 
-Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `miniflux-secrets.tgz` holds the card's passwords and keys: keep it as safe as the data, which needs them.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=miniflux); do

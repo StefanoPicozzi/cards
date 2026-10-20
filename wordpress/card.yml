@@ -17,6 +17,17 @@ applications:
     authModes: [none]
     place: wordpress
 
+secrets:
+  WORDPRESS_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    on-move: carry            # MariaDB keeps it in its data, and its root password is random
+  WORDPRESS_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -hex 16
+    for: admin's sign-in, set by prepare.sh
+
 places:
   wordpress:
     memory: 384 MB

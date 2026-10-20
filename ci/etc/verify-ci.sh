@@ -5,7 +5,7 @@
 # Reads GITEA_ADMIN_PASSWORD from the environment, and the Gitea address from GITEA_URL,
 # or else from HOSTNAME_GITEA, or else from ORG_LABEL.
 set -eu
-url=${GITEA_URL:-https://${HOSTNAME_GITEA:-gitea.$ORG_LABEL.edgible.com}}
+url=${GITEA_URL:-https://${HOSTNAME_GITEA:-gitea.$ORG_LABEL.${EDGIBLE_DOMAIN:-edgible.app}}}
 api() { curl -fsS -u "gitadmin:$GITEA_ADMIN_PASSWORD" -H 'Content-Type: application/json' "$@"; }
 
 case "${1:-}" in

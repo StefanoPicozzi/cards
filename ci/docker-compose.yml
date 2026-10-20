@@ -19,8 +19,8 @@ services:
       GITEA__database__NAME: gitea
       GITEA__database__USER: gitea
       GITEA__database__PASSWD: ${GITEA_DB_PASSWORD:?set GITEA_DB_PASSWORD in card.env}
-      GITEA__server__ROOT_URL: ${GITEA_URL:-https://gitea.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}/
-      GITEA__server__SSH_DOMAIN: gitea-ssh.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com
+      GITEA__server__ROOT_URL: ${GITEA_URL:-https://gitea.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}/
+      GITEA__server__SSH_DOMAIN: gitea-ssh.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}
       GITEA__server__SSH_PORT: ${GITEA_SSH_PORT:?set GITEA_SSH_PORT in card.env}
       GITEA__security__SECRET_KEY: ${GITEA_SECRET_KEY:?set GITEA_SECRET_KEY in card.env}
       # The web installer is never served; the admin is made from the command line.

@@ -12,7 +12,7 @@ services:
     ports:
       - "127.0.0.1:${VAULTWARDEN_PORT:?set VAULTWARDEN_PORT in card.env}:80"
     environment:
-      DOMAIN: ${VAULTWARDEN_URL:-https://vaultwarden.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      DOMAIN: ${VAULTWARDEN_URL:-https://vaultwarden.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
       # The hostname is open to anyone, so nobody may sign up unless invited from /admin.
       SIGNUPS_ALLOWED: "false"
       INVITATIONS_ALLOWED: "true"

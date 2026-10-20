@@ -16,7 +16,7 @@ services:
       CREATE_ADMIN: "1"
       ADMIN_USERNAME: admin
       ADMIN_PASSWORD: ${MINIFLUX_ADMIN_PASSWORD:?set MINIFLUX_ADMIN_PASSWORD in card.env}
-      BASE_URL: ${MINIFLUX_URL:-https://miniflux.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      BASE_URL: ${MINIFLUX_URL:-https://miniflux.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
     depends_on:
       miniflux-db:
         condition: service_healthy

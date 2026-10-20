@@ -13,7 +13,7 @@ services:
     environment:
       DATABASE_URL: postgresql://rallly:${RALLLY_DB_PASSWORD:?set RALLLY_DB_PASSWORD in card.env}@rallly-db:5432/rallly
       SECRET_PASSWORD: ${RALLLY_SECRET:?set RALLLY_SECRET in card.env}
-      NEXT_PUBLIC_BASE_URL: ${RALLLY_URL:-https://rallly.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}
+      NEXT_PUBLIC_BASE_URL: ${RALLLY_URL:-https://rallly.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
       ALLOWED_EMAILS: ${RALLLY_ALLOWED_EMAILS:?set RALLLY_ALLOWED_EMAILS in card.env}
       SUPPORT_EMAIL: ${RALLLY_SMTP_FROM:-noreply@example.com}
       SMTP_HOST: ${RALLLY_SMTP_HOST:-}

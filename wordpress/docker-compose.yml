@@ -12,8 +12,8 @@ x-wordpress-env: &wordpress-env
   WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?set WORDPRESS_DB_PASSWORD in card.env}
   # WordPress keeps its own address; it is the published hostname, or your own domain.
   WORDPRESS_CONFIG_EXTRA: |
-    define('WP_HOME', '${WORDPRESS_URL:-https://wordpress.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}');
-    define('WP_SITEURL', '${WORDPRESS_URL:-https://wordpress.${ORG_LABEL:?set ORG_LABEL in card.env}.edgible.com}');
+    define('WP_HOME', '${WORDPRESS_URL:-https://wordpress.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}');
+    define('WP_SITEURL', '${WORDPRESS_URL:-https://wordpress.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}');
 
 services:
   wordpress:

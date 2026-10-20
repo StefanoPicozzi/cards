@@ -8,7 +8,7 @@ WordPress runs a large share of the web, and most of it sits with a host you pay
 
 One app, `wordpress`, on the place `wordpress`, on `none`: it is a public site. Its admin, `/wp-admin`, is on the same hostname, because WordPress sends every request to its one address; Edgible's auth is per hostname, so the admin cannot be put behind `org` on its own. WordPress's login protects it, and the admin password is generated, not chosen.
 
-WordPress keeps its address in its settings, so `WP_HOME` and `WP_SITEURL` are `https://wordpress.<ORG_LABEL>.edgible.com`, or `WORDPRESS_URL` on your own domain. A fresh WordPress hands its admin to whoever opens the install page first, so this card installs it from the command line before it is published, with the `wordpress-cli` service, which runs only when asked.
+WordPress keeps its address in its settings, so `WP_HOME` and `WP_SITEURL` are `https://wordpress.<ORG_LABEL>.<EDGIBLE_DOMAIN>`, or `WORDPRESS_URL` on your own domain. A fresh WordPress hands its admin to whoever opens the install page first, so this card installs it from the command line before it is published, with the `wordpress-cli` service, which runs only when asked.
 
 The images are `wordpress:7.1.3-php8.3-apache`, `mariadb:11.8.9`, and `wordpress:cli-2.12.0-php8.3`. To use it in a card, copy the three services, the `x-wordpress-env` block, the two volumes, and the `WORDPRESS_` lines.
 
@@ -71,7 +71,7 @@ set -a; . ./card.env; set +a
 COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
 
 $COMPOSE --profile cli run --rm -T wordpress-cli \
-  wp core install --url="${WORDPRESS_URL:-https://wordpress.$ORG_LABEL.edgible.com}" --title="My site" \
+  wp core install --url="${WORDPRESS_URL:-https://wordpress.$ORG_LABEL.${EDGIBLE_DOMAIN:-edgible.app}}" --title="My site" \
   --admin_user=admin --admin_password="$WORDPRESS_ADMIN_PASSWORD" --admin_email="$WORDPRESS_ADMIN_EMAIL" --skip-email
 ```
 

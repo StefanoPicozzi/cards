@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: openclaw
+  description: OpenClaw, the open-source AI agent, with its Control UI behind your organisation's sign-in
+  type: app
+
+applications:
+  - name: openclaw
+    what: OpenClaw Gateway and Control UI
+    from: ghcr.io/openclaw/openclaw:2026.10.5
+    port: 18789
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [org]
+    place: openclaw
+
+data:
+  volumes:
+    # The agent's config, memory, sessions and workspace: what makes it yours.
+    openclaw-data:
+      class: irreplaceable
+    # OpenClaw's auth profiles, for providers that sign in rather than take a key.
+    openclaw-secrets:
+      class: irreplaceable
+  fingerprint:
+    service: openclaw
+    command: >-
+      d=/home/node/.openclaw &&
+      echo "{\"sessions\": $(find $d/agents -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' '),
+      \"workspace_files\": $(find $d/workspace -type f 2>/dev/null | wc -l | tr -d ' ')}"
+
+places:
+  openclaw:
+    memory: 2.5 GB
+    disk: 3 GB
+    arch: [amd64, arm64]
+    gpu: none

@@ -26,7 +26,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints and `ORG_LABEL`. Check fills `OPENCLAW_GATEWAY_TOKEN`. For Gemini, put a key from https://aistudio.google.com/apikey in `GEMINI_API_KEY`, and keep a Flash model in `OPENCLAW_MODEL`: the free tier refuses Pro and preview models. For a model on this Mac, set `OPENCLAW_MODEL_PROVIDER=openai-compatible`, `OPENCLAW_MODEL_URL=http://host.docker.internal:11434/v1` and `OPENCLAW_MODEL` to the model's name, such as `qwen3.5:27b`. For a fallback when Gemini's free tier runs out, set `OPENCLAW_FALLBACK_MODEL=deepseek/deepseek-flash` and `DEEPSEEK_API_KEY`, or `ollama/qwen2.5:7b` with ollama-mac on the same Mac. Set `OPENCLAW_TZ` to your time zone.
+Set `DEVICE` to a name `edgible device list` prints and `ORG_LABEL`. Start makes the Gateway token on the machine; there is nothing to fill for it. For Gemini, put a key from https://aistudio.google.com/apikey in `GEMINI_API_KEY`, and keep a Flash model in `OPENCLAW_MODEL`: the free tier refuses Pro and preview models. For a model on this Mac, set `OPENCLAW_MODEL_PROVIDER=openai-compatible`, `OPENCLAW_MODEL_URL=http://host.docker.internal:11434/v1` and `OPENCLAW_MODEL` to the model's name, such as `qwen3.5:27b`. For a fallback when Gemini's free tier runs out, set `OPENCLAW_FALLBACK_MODEL=deepseek/deepseek-flash` and `DEEPSEEK_API_KEY`, or `ollama/qwen2.5:7b` with ollama-mac on the same Mac. Set `OPENCLAW_TZ` to your time zone.
 
 ```bash
 nano openclaw/card.env
@@ -83,7 +83,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' "https://<openclaw hostname>"
 ```
 
-That prints `302` and an `edgible.com/application-access/` address, so the org sign-in is in front. Then open the hostname on your phone or laptop and sign in. The Control UI asks for the Gateway token: open `https://<openclaw hostname>/#token=<OPENCLAW_GATEWAY_TOKEN>` once in that browser (the token is in `card.env`; `grep OPENCLAW_GATEWAY_TOKEN openclaw/card.env` shows that one line). Then it waits for pairing: on the machine, `docker compose --env-file openclaw/card.env -f openclaw/docker-compose.yml run --rm --no-deps openclaw-cli devices list` shows the request, and `devices approve <requestId>` lets that browser in. Chat works from then on.
+That prints `302` and an `edgible.com/application-access/` address, so the org sign-in is in front. Then open the hostname on your phone or laptop and sign in. The Control UI asks for the Gateway token: open `https://<openclaw hostname>/#token=<OPENCLAW_GATEWAY_TOKEN>` once in that browser (`docker compose --env-file openclaw/card.env -f openclaw/docker-compose.yml run --rm --no-deps openclaw-secrets show OPENCLAW_GATEWAY_TOKEN` prints the token, which the card made on the machine). Then it waits for pairing: on the machine, `docker compose --env-file openclaw/card.env -f openclaw/docker-compose.yml run --rm --no-deps openclaw-cli devices list` shows the request, and `devices approve <requestId>` lets that browser in. Chat works from then on.
 
 The rest of the setup is in the [OpenClaw docs docs](https://docs.openclaw.ai).
 

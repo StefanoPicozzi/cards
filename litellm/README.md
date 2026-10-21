@@ -2,22 +2,24 @@
 
 ## Why
 
-Every AI app wants its own provider key, and every key is a chore: find the provider's key page, keep credit on the account, wire the key into each app, add a second provider when the first runs out, and wonder which app spent what. This card is an AI gateway in front of all of them, from [LiteLLM](https://docs.litellm.ai/). You give it each provider's key once; your apps call it at one address, by purpose (`fast`, `smart`, `private`), each with a key of its own and a budget, and it falls back to another provider when one fails. Local models count too, so private questions need not leave your machine.
+Every AI app wants its own provider key, and every key is a chore: find the provider's key page, keep credit on the account, wire the key into each app, add a second provider when the first runs out, and wonder which app spent what. This card is an AI gateway in front of all of them, from [LiteLLM](https://docs.litellm.ai/). You give it each provider's key once; your apps call it at one address, by purpose (`fast`, `smart`, `best`, `private`, `private-smart`), each with a key of its own and a budget, and it falls back to another provider when one fails. Local models count too, so private questions need not leave your machine.
 
 ## What
 
 One app, `litellm`, on the place `litellm`, behind Edgible's `org` sign-in: LiteLLM's admin and its OpenAI-compatible API, one process on port `4000`. Postgres runs beside it as `litellm-db`, for each app's key, budget and spend.
 
-**Models by purpose.** [gateway.yaml](gateway.yaml) names four, each set in `card.env`:
+**Models by purpose.** [gateway.yaml](gateway.yaml) names six, each set in `card.env`. Fallbacks go sideways or down, never up to a dearer model, and a private model never falls back to one elsewhere:
 
 | Name | Default | For |
 | --- | --- | --- |
 | `fast` | `gemini/gemini-3.5-flash` | Everyday answers; falls back to `fast-fallback` |
 | `fast-fallback` | `deepseek/deepseek-chat` | When `fast` fails, such as a free tier's limit |
 | `smart` | `deepseek/deepseek-reasoner` | Harder questions; falls back to `fast` |
-| `private` | `ollama/qwen2.5:7b` at `LITELLM_PRIVATE_URL` | A model on your own machine, such as the ollama-mac card's |
+| `best` | `anthropic/claude-opus-5-5` | When it really matters, dearest by far, asked for on purpose; falls back to `smart` |
+| `private` | `ollama/qwen2.5:7b` at `LITELLM_PRIVATE_URL` | A model on your own machine, such as the ollama-mac card's; no fallback, so nothing leaves it |
+| `private-smart` | `ollama/qwen3.5:27b` at `LITELLM_PRIVATE_URL` | A larger model on your own machine, where there is memory for it; falls back to `private` |
 
-**Keys you bring** (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY`) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.
+**Keys you bring** (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY`, `ANTHROPIC_API_KEY`) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.
 
 **The gateway's own secrets are made on the machine** by `litellm-secrets`: the database password, the salt key that encrypts what the admin stores (it travels with the data on a move), and the master key, which signs you in to the admin as `admin`. See it with:
 
@@ -110,7 +112,7 @@ That prints `302` and an Edgible sign-in address. Open the hostname, sign in, op
 curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4000/v1/models
 ```
 
-That prints `401`. With an app's key it lists `fast`, `fast-fallback`, `smart` and `private`.
+That prints `401`. With an app's key it lists `fast`, `fast-fallback`, `smart`, `best`, `private` and `private-smart`.
 
 The rest is in the [LiteLLM docs](https://docs.litellm.ai/).
 

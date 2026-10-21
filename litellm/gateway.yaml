@@ -1,5 +1,5 @@
-# The litellm card's gateway: models by purpose, not by provider. Apps ask for fast, smart or
-# private, and never need to know which provider answered. Each model comes from a card.env
+# The litellm card's gateway: models by purpose, not by provider. Apps ask for fast, smart,
+# best, private or private-smart, and never need to know which provider answered. Each model comes from a card.env
 # setting (LITELLM_*_MODEL); LiteLLM finds a provider's key in that provider's usual variable,
 # such as GEMINI_API_KEY or DEEPSEEK_API_KEY, which the card passes on and never stores.
 
@@ -15,6 +15,11 @@ model_list:
   - model_name: smart
     litellm_params:
       model: os.environ/LITELLM_SMART_MODEL
+  # best: for when it really matters (Claude Opus by default), dearest by far. Ask for it on
+  # purpose; it falls back to smart, never the other way.
+  - model_name: best
+    litellm_params:
+      model: os.environ/LITELLM_BEST_MODEL
   # private: a model on your own machine (Ollama, such as the ollama-mac card): nothing leaves it.
   # Its price is set above zero so a budget still counts it.
   - model_name: private
@@ -23,12 +28,24 @@ model_list:
       api_base: os.environ/LITELLM_PRIVATE_URL
       input_cost_per_token: 0.0000001
       output_cost_per_token: 0.0000001
+  # private-smart: a larger model on your own machine, for real work that must stay private, on a
+  # machine with the memory for it. Falls back to private, never to a model elsewhere.
+  - model_name: private-smart
+    litellm_params:
+      model: os.environ/LITELLM_PRIVATE_SMART_MODEL
+      api_base: os.environ/LITELLM_PRIVATE_URL
+      input_cost_per_token: 0.0000001
+      output_cost_per_token: 0.0000001
 
 router_settings:
-  # When a model fails (a free tier's 429, a provider down), the next one answers.
+  # When a model fails (a free tier's 429, a provider down), the next one answers. Fallbacks go
+  # sideways or down, never up to a dearer model, and a private one never falls back to a model
+  # elsewhere.
   fallbacks:
     - fast: [fast-fallback]
     - smart: [fast]
+    - best: [smart]
+    - private-smart: [private]
 
 litellm_settings:
   drop_params: true

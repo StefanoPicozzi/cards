@@ -2,7 +2,7 @@
 #
 # An app that uses this gateway has its own key, made on the device by its card like any other
 # secret: a file LITELLM_KEY_<APP> in this card's secrets volume (in a pattern, the pattern's
-# card-secrets service makes it there). This registers each one as a LiteLLM key named after the
+# card-secrets service makes it there, or in /run/app-keys). This registers each one as a LiteLLM key named after the
 # app, with LITELLM_APP_BUDGET dollars per LITELLM_APP_BUDGET_PERIOD, so the admin shows who spent
 # what. A key already registered is left as it is. Keys for apps on other machines are made in the
 # admin instead.
@@ -38,7 +38,9 @@ else:
 
 budget = float(os.environ.get("LITELLM_APP_BUDGET") or 5)
 period = os.environ.get("LITELLM_APP_BUDGET_PERIOD") or "30d"
-for path in sorted(glob.glob("/run/card-secrets/LITELLM_KEY_*")):
+# The card's own secrets, and /run/app-keys: an app's secrets volume mounted read-only, as the
+# edgible-agent pattern does, so the app never sees the gateway's.
+for path in sorted(glob.glob("/run/card-secrets/LITELLM_KEY_*") + glob.glob("/run/app-keys/LITELLM_KEY_*")):
     app = os.path.basename(path)[len("LITELLM_KEY_"):].lower().replace("_", "-")
     key = open(path).read().strip()
     # Registered already, or not (404)? Any other answer means the gateway is still starting (its

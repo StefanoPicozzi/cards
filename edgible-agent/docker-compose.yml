@@ -22,6 +22,7 @@ x-openclaw-env: &openclaw-env
   DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
   CUSTOM_API_KEY: ${OPENCLAW_MODEL_KEY:-}
   OPENCLAW_DISABLE_BONJOUR: "1"
+  OPENCLAW_USERS: ${OPENCLAW_USERS:-}
   TERM: xterm-256color
   TZ: ${OPENCLAW_TZ:-UTC}
 
@@ -100,7 +101,9 @@ services:
       edgible-mcp:
         condition: service_healthy
     environment: *openclaw-env
-    entrypoint: ["tini", "-s", "--", "sh", "/run/card-secrets/.load", "node", "/app/docker-entrypoint.mjs"]
+    # With OPENCLAW_USERS, Edgible's sign-in is the Gateway's auth (trusted-proxy): the token
+    # then serves only OpenClaw's own command line, as its password, and must not be the token.
+    entrypoint: ["tini", "-s", "--", "sh", "/run/card-secrets/.load", "sh", "-c", 'if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "/app/docker-entrypoint.mjs"]
     command: ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789"]
     ports:
       # Loopback only: the Control UI is an admin console over an agent with a shell.
@@ -131,7 +134,7 @@ services:
     environment:
       <<: *openclaw-env
       BROWSER: echo
-    entrypoint: ["sh", "/run/card-secrets/.load", "node", "dist/index.js"]
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c", 'if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "dist/index.js"]
     volumes:
       - openclaw-data:/home/node/.openclaw
       - openclaw-secrets:/home/node/.config/openclaw

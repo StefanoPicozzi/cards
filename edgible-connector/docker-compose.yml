@@ -7,13 +7,15 @@ name: edgible-connector
 
 services:
   edgible-mcp:
-    image: ghcr.io/edgible-org/edgible-mcp:0.7.2
+    image: ghcr.io/edgible-org/edgible-mcp:0.7.3
     restart: unless-stopped
     environment:
       EDGIBLE_MCP_ALLOW_WRITE: ${EDGIBLE_MCP_ALLOW_WRITE:-0}
       EDGIBLE_MCP_DEVICES: ${EDGIBLE_MCP_DEVICES:-}
       # The page where a person stores a key they bring, from any device: mcp-signin shows it on its
       # sign-in address, behind Edgible's org sign-in (request_key gives the link).
+      # A shared AI gateway's API address (the litellm card's litellm-api), for gateway_key.
+      EDGIBLE_MCP_GATEWAY_URL: ${EDGIBLE_MCP_GATEWAY_URL:-}
       EDGIBLE_MCP_PAGES_URL: ${MCP_SIGNIN_LOGIN_URL:-https://mcp-signin-login.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}/pages
       EDGIBLE_MCP_CACHE_DIR: /root/.cache/edgible-mcp
       EDGIBLE_MCP_SIGN_IN: docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml exec edgible-mcp edgible auth login --no-browser

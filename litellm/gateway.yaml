@@ -4,7 +4,7 @@
 # such as GEMINI_API_KEY or DEEPSEEK_API_KEY, which the card passes on and never stores.
 
 model_list:
-  # fast: everyday answers. Gemini Flash by default (a free tier exists), then fast-fallback.
+  # fast: everyday answers. DeepSeek by default (reliable, cents a day), then fast-fallback (Gemini Flash).
   - model_name: fast
     litellm_params:
       model: os.environ/LITELLM_FAST_MODEL

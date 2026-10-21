@@ -12,8 +12,8 @@ One app, `litellm`, on the place `litellm`, behind Edgible's `org` sign-in: Lite
 
 | Name | Default | For |
 | --- | --- | --- |
-| `fast` | `gemini/gemini-3.5-flash` | Everyday answers; falls back to `fast-fallback` |
-| `fast-fallback` | `deepseek/deepseek-chat` | When `fast` fails, such as a free tier's limit |
+| `fast` | `deepseek/deepseek-chat` | Everyday answers, reliable and cents a day; falls back to `fast-fallback` |
+| `fast-fallback` | `gemini/gemini-3.5-flash` | When `fast` fails; Gemini's free tier runs out quickly, so it is the fallback |
 | `smart` | `deepseek/deepseek-reasoner` | Harder questions; falls back to `fast` |
 | `best` | `anthropic/claude-opus-5-5` | When it really matters, dearest by far, asked for on purpose; capped at `LITELLM_BEST_BUDGET` ($5 per 30 days) across all apps, then falls back to `smart` |
 | `private` | `ollama/qwen2.5:7b` at `LITELLM_PRIVATE_URL` | A model on your own machine, such as the ollama-mac card's; no fallback, so nothing leaves it |

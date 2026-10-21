@@ -48,11 +48,11 @@ secrets:
     for: the admin (user admin) and creating keys; apps get their own keys, never this one
   GEMINI_API_KEY:
     kind: external
-    from: https://aistudio.google.com/apikey (free tier), for the fast models
+    from: https://aistudio.google.com/apikey (free tier), for fast's fallback
     required: false
   DEEPSEEK_API_KEY:
     kind: external
-    from: https://platform.deepseek.com/api_keys, for fast's fallback and smart
+    from: https://platform.deepseek.com/api_keys, for fast and smart
     required: false
   ANTHROPIC_API_KEY:
     kind: external

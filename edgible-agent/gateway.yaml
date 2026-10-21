@@ -15,6 +15,11 @@ model_list:
   - model_name: smart
     litellm_params:
       model: os.environ/LITELLM_SMART_MODEL
+  # open: a strong open model through OpenRouter (GLM by default), where one key reaches hundreds
+  # of models: change LITELLM_OPEN_MODEL to try another. Falls back to fast.
+  - model_name: open
+    litellm_params:
+      model: os.environ/LITELLM_OPEN_MODEL
   # best: for when it really matters (Claude Opus by default), dearest by far. Ask for it on
   # purpose; it falls back to smart, never the other way.
   - model_name: best
@@ -48,6 +53,7 @@ router_settings:
   fallbacks:
     - fast: [fast-fallback]
     - smart: [fast]
+    - open: [fast]
     - best: [smart]
     - private-smart: [private]
 

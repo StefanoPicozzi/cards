@@ -56,7 +56,7 @@ services:
       # The model is the AI gateway's fast, with the agent's own key; fallbacks are the gateway's.
       OPENCLAW_MODEL_PROVIDER: openai-compatible
       OPENCLAW_MODEL: ${OPENCLAW_MODEL:-fast}
-      OPENCLAW_MODEL_CHOICES: ${OPENCLAW_MODEL_CHOICES:-fast,smart,best,private,private-smart}
+      OPENCLAW_MODEL_CHOICES: ${OPENCLAW_MODEL_CHOICES:-fast,smart,open,best,private,private-smart}
       # This pattern's own gateway, or a shared one: https://litellm-api.<org>.edgible.app/v1
       OPENCLAW_MODEL_URL: ${OPENCLAW_MODEL_URL:-http://litellm:4000/v1}
       EDGIBLE_MCP_URL: http://edgible-mcp:8000/mcp
@@ -182,10 +182,12 @@ services:
     environment:
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       LITELLM_FAST_MODEL: ${LITELLM_FAST_MODEL:-deepseek/deepseek-chat}
       LITELLM_FAST_FALLBACK_MODEL: ${LITELLM_FAST_FALLBACK_MODEL:-gemini/gemini-3.5-flash}
       LITELLM_SMART_MODEL: ${LITELLM_SMART_MODEL:-deepseek/deepseek-reasoner}
+      LITELLM_OPEN_MODEL: ${LITELLM_OPEN_MODEL:-openrouter/z-ai/glm-5.3}
       LITELLM_BEST_MODEL: ${LITELLM_BEST_MODEL:-anthropic/claude-opus-5-5}
       LITELLM_BEST_BUDGET: ${LITELLM_BEST_BUDGET:-5}
       LITELLM_BEST_BUDGET_PERIOD: ${LITELLM_BEST_BUDGET_PERIOD:-30d}

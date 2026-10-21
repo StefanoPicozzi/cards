@@ -1,52 +1,97 @@
-# Author-supplied Compose file for the litellm card.
-# Secrets and the host port come from card.env. Start with:
-#   docker compose --env-file card.env -f docker-compose.yml up -d
+# Compose file for the litellm card: an AI gateway. The host port, the model settings and the
+# provider keys you bring come from card.env; the gateway's own secrets are made on this machine
+# by litellm-secrets. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+# Apps call models by purpose (fast, smart, private) at http://litellm:4000 on a shared Compose
+# network, or at 127.0.0.1:<LITELLM_PORT>, each with its own key: see the README's What.
 
 name: litellm
 
 services:
-  ollama:
-    image: ollama/ollama:latest
-    container_name: litellm-ollama
-    restart: unless-stopped
-    volumes:
-      - ollama:/root/.ollama
-
-  db:
-    image: postgres:16
-    restart: unless-stopped
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the volume
+  # litellm-secrets, then exits. It never changes one that exists.
+  litellm-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
     environment:
-      POSTGRES_USER: litellm
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in card.env}
-      POSTGRES_DB: litellm
+      CARD_SECRETS: |
+        LITELLM_DB_PASSWORD=openssl rand -hex 16
+        LITELLM_SALT_KEY=printf 'sk-%s' "$(openssl rand -hex 32)"
+        LITELLM_MASTER_KEY=printf 'sk-%s' "$(openssl rand -hex 32)"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U litellm"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      - litellm-secrets:/run/card-secrets
 
   litellm:
-    image: docker.litellm.ai/berriai/litellm:main-stable
-    container_name: litellm
+    image: ghcr.io/berriai/litellm:v1.83.14-stable
     restart: unless-stopped
-    command: ["--config", "/app/config.yaml"]
-    volumes:
-      - ./config.yaml:/app/config.yaml
-    environment:
-      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:?set LITELLM_MASTER_KEY in card.env}
-      LITELLM_SALT_KEY: ${LITELLM_SALT_KEY:?set LITELLM_SALT_KEY in card.env}
-      DATABASE_URL: postgresql://litellm:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in card.env}@db:5432/litellm
-      STORE_MODEL_IN_DB: "True"
     ports:
       - "127.0.0.1:${LITELLM_PORT:?set LITELLM_PORT in card.env}:4000"
+    # LiteLLM reads these only from the environment, so it starts through the loader. Beside it,
+    # register-keys.py turns each LITELLM_KEY_<APP> file in the secrets volume (a key an app's own
+    # card made) into that app's key, with a budget: the gateway never makes or stores app keys
+    # anywhere else.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command:
+      - >-
+        export DATABASE_URL="postgresql://litellm:$$LITELLM_DB_PASSWORD@litellm-db:5432/litellm"
+        LITELLM_MASTER_KEY="$$LITELLM_MASTER_KEY" LITELLM_SALT_KEY="$$LITELLM_SALT_KEY"
+        && (python3 /app/register-keys.py &)
+        && exec docker/prod_entrypoint.sh --config /app/gateway.yaml --port 4000
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      LITELLM_FAST_MODEL: ${LITELLM_FAST_MODEL:-gemini/gemini-3.5-flash}
+      LITELLM_FAST_FALLBACK_MODEL: ${LITELLM_FAST_FALLBACK_MODEL:-deepseek/deepseek-chat}
+      LITELLM_SMART_MODEL: ${LITELLM_SMART_MODEL:-deepseek/deepseek-reasoner}
+      LITELLM_PRIVATE_MODEL: ${LITELLM_PRIVATE_MODEL:-ollama/qwen2.5:7b}
+      LITELLM_PRIVATE_URL: ${LITELLM_PRIVATE_URL:-http://host.docker.internal:11434}
+      LITELLM_APP_BUDGET: ${LITELLM_APP_BUDGET:-5}
+      LITELLM_APP_BUDGET_PERIOD: ${LITELLM_APP_BUDGET_PERIOD:-30d}
+      STORE_MODEL_IN_DB: "True"
+    configs:
+      - source: litellm-gateway
+        target: /app/gateway.yaml
+      - source: litellm-register-keys
+        target: /app/register-keys.py
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - litellm-secrets:/run/card-secrets:ro
     depends_on:
-      db:
+      litellm-db:
         condition: service_healthy
-      ollama:
-        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:4000/health/liveliness', timeout=4)\""]
+      interval: 10s
+      timeout: 6s
+      retries: 18
+      start_period: 40s
+
+  litellm-db:
+    image: postgres:17.11-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: litellm
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/LITELLM_DB_PASSWORD
+    volumes:
+      - litellm-db-data:/var/lib/postgresql/data
+      - litellm-secrets:/run/card-secrets:ro
+    depends_on:
+      litellm-secrets:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm -d litellm"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+configs:
+  litellm-gateway:
+    file: ./gateway.yaml
+  litellm-register-keys:
+    file: ./register-keys.py
 
 volumes:
-  ollama: {}
-  postgres_data: {}
+  litellm-db-data: {}
+  litellm-secrets: {}

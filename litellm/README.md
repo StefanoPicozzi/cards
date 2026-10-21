@@ -2,21 +2,42 @@
 
 ## Why
 
-Several apps calling a model usually share one provider key, and nothing on the machine records who spent it. This card keeps the model on a machine you own and puts a gateway in front of it. The admin asks for an org login. The API hostname is open, because a caller sends a LiteLLM virtual key as `Authorization: Bearer`.
+Every AI app wants its own provider key, and every key is a chore: find the provider's key page, keep credit on the account, wire the key into each app, add a second provider when the first runs out, and wonder which app spent what. This card is an AI gateway in front of all of them, from [LiteLLM](https://docs.litellm.ai/). You give it each provider's key once; your apps call it at one address, by purpose (`fast`, `smart`, `private`), each with a key of its own and a budget, and it falls back to another provider when one fails. Local models count too, so private questions need not leave your machine.
 
 ## What
 
-Both apps are the place `lab`, so they stay on one serving device. They share port `4000`. `litellm` is the admin UI. `litellm-api` is the OpenAI-compatible proxy on that same process. Ollama and Postgres run in the Compose file and are not published.
+One app, `litellm`, on the place `litellm`, behind Edgible's `org` sign-in: LiteLLM's admin and its OpenAI-compatible API, one process on port `4000`. Postgres runs beside it as `litellm-db`, for each app's key, budget and spend.
 
-The Compose file is [docker-compose.yml](docker-compose.yml). The model list is [config.yaml](config.yaml). It reads the host port and the secrets from [card.env](card.env). The gateway calls Ollama at `http://ollama:11434` on the Compose network. The model name callers use is `qwen2.5`. The card is [card.yml](card.yml).
+**Models by purpose.** [gateway.yaml](gateway.yaml) names four, each set in `card.env`:
+
+| Name | Default | For |
+| --- | --- | --- |
+| `fast` | `gemini/gemini-3.5-flash` | Everyday answers; falls back to `fast-fallback` |
+| `fast-fallback` | `deepseek/deepseek-chat` | When `fast` fails, such as a free tier's limit |
+| `smart` | `deepseek/deepseek-reasoner` | Harder questions; falls back to `fast` |
+| `private` | `ollama/qwen2.5:7b` at `LITELLM_PRIVATE_URL` | A model on your own machine, such as the ollama-mac card's |
+
+**Keys you bring** (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY`) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.
+
+**The gateway's own secrets are made on the machine** by `litellm-secrets`: the database password, the salt key that encrypts what the admin stores (it travels with the data on a move), and the master key, which signs you in to the admin as `admin`. See it with:
+
+```bash
+docker compose --env-file litellm/card.env -f litellm/docker-compose.yml run --rm --no-deps litellm-secrets show LITELLM_MASTER_KEY
+```
+
+**Each app has its own key.** An app beside the gateway, such as an agent in a pattern card, gets a key made on the device like any secret: a file `LITELLM_KEY_<APP>` in the volume `litellm-secrets`. At each start, [register-keys.py](register-keys.py) registers every such key that is new, named after the app, with `LITELLM_APP_BUDGET` dollars per `LITELLM_APP_BUDGET_PERIOD`. The admin then shows each app's spend. For an app on another machine, make its key in the admin. Never give an app the master key.
+
+To use it in a card, copy the three services, both volumes, [gateway.yaml](gateway.yaml) and [register-keys.py](register-keys.py) with their `configs:`, and the `secrets:` of [card.yml](card.yml); declare the app's key there too, made by the same `litellm-secrets` service, and point the app at `http://litellm:4000/v1` with that key.
+
+Each app's key, budget and spend live in `litellm-db-data`, and the gateway's secrets in `litellm-secrets`. Minimum recommended for the place `litellm`: 2.5 GB of memory and 2 GB of disk, on an arm64 or amd64 machine, with no GPU.
+
+The Compose file is [docker-compose.yml](docker-compose.yml), the settings [card.env](card.env), and the card [card.yml](card.yml).
 
 ## How
 
-Six steps. Edit [card.env](card.env) before you start. [docker-compose.yml](docker-compose.yml) reads that file.
+Five steps. Edit [card.env](card.env) before you start.
 
 ### 1. Fetch
-
-On the machine that will run the containers, fetch this card. Running this again replaces `card.env`, including the device name and any password you filled in.
 
 ```bash
 mkdir -p litellm
@@ -26,7 +47,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Open `litellm/card.env` and follow the comments in that file.
+Set `DEVICE` to a name `edgible device list` prints. Put a key in `GEMINI_API_KEY`, `DEEPSEEK_API_KEY` or both; a model with no key fails, and its fallback answers. For `private`, point `LITELLM_PRIVATE_URL` at an Ollama, such as the ollama-mac card's on the same Mac (the default). There are no passwords to fill: Start makes them on the machine.
 
 ```bash
 nano litellm/card.env
@@ -34,38 +55,23 @@ nano litellm/card.env
 
 ### 3. Check
 
-Check this machine before anything starts. The check reads `card.env` and looks for what the card would collide with: a host port, a container name, a Compose project, a leftover volume, a device name, or an app name. Each conflict prints its remedy. The report ends with those remedies as lines to paste into a shell: they fill empty secrets and change ports in `card.env`, keeping the old copy as `card.env.bak`. A line that stops or deletes something starts with `#`, so it runs only if you remove the `#`. Run the check again until it says `no conflicts`. It needs `python3` and Docker, and it uses `edgible` when that is installed.
-
 ```bash
 curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
 python3 check-env.py litellm
 ```
 
+It moves a taken port, as lines to paste. Run it again until it says `no conflicts`.
+
 ### 4. Start
 
 ```bash
 docker compose --env-file litellm/card.env -f litellm/docker-compose.yml up -d --wait
-```
-
-`--wait` returns when each service is running, and healthy when it has a healthcheck. A healthcheck comes from the Compose file or from the image. `ps` shows `(healthy)` in the status of each service that has one:
-
-```bash
 docker compose --env-file litellm/card.env -f litellm/docker-compose.yml ps
 ```
 
-If `--wait` stops with `unhealthy`, `logs <service>` with the same `--env-file` and `-f` usually says why.
+`--wait` returns when each service is running, and healthy when it has a healthcheck. `litellm-secrets` makes the secrets first and exits.
 
-### 5. Pull the model
-
-`qwen2.5:7b` is the chat model. The pull is large and stays on this machine.
-
-```bash
-docker exec litellm-ollama ollama pull qwen2.5:7b
-```
-
-### 6. Publish
-
-`jq` reads that device's id out of `edgible device list`.
+### 5. Publish
 
 ```bash
 set -euo pipefail
@@ -85,21 +91,12 @@ edgible app create existing \
   --protocol https \
   --auth-modes org \
   --device-id "$device_id"
-edgible app create existing \
-  --non-interactive \
-  --name litellm-api \
-  --port "$LITELLM_PORT" \
-  --protocol https \
-  --auth-modes none \
-  --device-id "$device_id"
 edgible app list
 ```
 
-`edgible app list` shows `litellm` with `org` and `litellm-api` with `none`.
+**Without Edgible:** only Publish is Edgible's. The gateway listens on `127.0.0.1` at the port in `card.env`, so any reverse proxy or tunnel on the machine can publish it instead, and sign-in is then that tool's to provide.
 
 ## Verify
-
-`edgible app list` prints each hostname. Each app answers the way its auth mode says: `none` with the app, `org` with a redirect to the Edgible sign-in, and `api-key` with `401` until a key is sent. This checks the card. The rest of each app's setup is in that app's docs.
 
 `litellm` uses `org`.
 
@@ -107,18 +104,15 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' "https://<litellm hostname>"
 ```
 
-That prints `302` and an `edgible.com/application-access/` address, so the org sign-in is in front. Open the hostname in a browser and sign in. The Admin UI username is `admin` and the password is `LITELLM_MASTER_KEY`. Create a team, then a virtual key for that team. The key is shown once. The rest of the setup is in the [LiteLLM docs](https://docs.litellm.ai).
-
-`litellm-api` uses `none`.
+That prints `302` and an Edgible sign-in address. Open the hostname, sign in, open `/ui`, and sign in to the admin as `admin` with the master key. On the machine, the gateway answers only with a key:
 
 ```bash
-curl -fsS "https://<litellm-api hostname>/v1/chat/completions" \
-  -H "Authorization: Bearer sk-<virtual-key>" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"qwen2.5","messages":[{"role":"user","content":"Say hello in five words."}]}'
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4000/v1/models
 ```
 
-A short reply means the proxy, the key, and the model work.
+That prints `401`. With an app's key it lists `fast`, `fast-fallback`, `smart` and `private`.
+
+The rest is in the [LiteLLM docs](https://docs.litellm.ai/).
 
 ## Tear down
 
@@ -126,16 +120,11 @@ Four steps, in this order. Step 1 runs wherever `edgible` is logged in. Steps 2 
 
 ### 1. Unpublish
 
-Delete the apps first, so no hostname points at a stopped container, and the names are free if you set the card up again.
-
 ```bash
 edgible app delete litellm --yes
-edgible app delete litellm-api --yes
 ```
 
 ### 2. Stop
-
-This stops and removes the containers. The volumes stay, so Start brings the card back with its data.
 
 ```bash
 docker compose --env-file litellm/card.env -f litellm/docker-compose.yml down
@@ -143,7 +132,7 @@ docker compose --env-file litellm/card.env -f litellm/docker-compose.yml down
 
 ### 3. Delete the data
 
-Skip this step to keep the data. It cannot be undone. The loop first copies each volume to a `.tgz` file in this directory. The containers are stopped, so each copy is whole.
+Skip this step to keep the data. The loop copies each volume to a `.tgz` file in this directory first. `litellm-secrets.tgz` holds the gateway's keys: keep it as safe as the data, which needs them.
 
 ```bash
 for volume in $(docker volume ls -q --filter label=com.docker.compose.project=litellm); do
@@ -152,16 +141,7 @@ done
 docker compose --env-file litellm/card.env -f litellm/docker-compose.yml down --volumes
 ```
 
-To bring a copy back, keep the `card.env` it was made with, because the databases in it expect those passwords. `create` makes the containers and the volumes without starting them. Unpack each copy into its volume, then Start.
-
-```bash
-docker compose --env-file litellm/card.env -f litellm/docker-compose.yml create
-docker run --rm -v "<volume>:/data" -v "$PWD:/backup" alpine tar -xzf "/backup/<volume>.tgz" -C /data
-```
-
 ### 4. Remove the card
-
-`card.env` holds the passwords, and `card.env.bak` holds the copy from before the check edited it. If you kept the volumes in step 3, keep `card.env` too. The databases in those volumes expect its passwords.
 
 ```bash
 rm -rf litellm

@@ -75,11 +75,11 @@ secrets:
     required: false
   GEMINI_API_KEY:
     kind: external
-    from: https://aistudio.google.com/apikey (free tier), for the gateway's fast models
+    from: https://aistudio.google.com/apikey (free tier), for the gateway's fast fallback
     required: false
   DEEPSEEK_API_KEY:
     kind: external
-    from: https://platform.deepseek.com/api_keys, for the gateway's fallback and smart
+    from: https://platform.deepseek.com/api_keys, for the gateway's fast and smart
     required: false
   ANTHROPIC_API_KEY:
     kind: external

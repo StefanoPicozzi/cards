@@ -79,12 +79,18 @@ services:
     environment:
       EDGIBLE_MCP_ALLOW_WRITE: ${EDGIBLE_MCP_ALLOW_WRITE:-0}
       EDGIBLE_MCP_DEVICES: ${EDGIBLE_MCP_DEVICES:-}
+      # agent_spend: the agent's own spending on its AI gateway, through its own key (scoped to the agent).
+      EDGIBLE_MCP_AGENT_GATEWAY_URL: ${OPENCLAW_MODEL_URL:-http://litellm:4000/v1}
+      EDGIBLE_MCP_AGENT_KEY: ${OPENCLAW_MODEL_KEY:-}
+      EDGIBLE_MCP_AGENT_KEY_FILE: /run/agent-keys/LITELLM_KEY_AGENT
       EDGIBLE_MCP_CACHE_DIR: /root/.cache/edgible-mcp
       EDGIBLE_MCP_SIGN_IN: docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml exec edgible-mcp edgible auth login --no-browser
     volumes:
       - edgible-mcp-cache:/root/.cache
       # The Edgible CLI's sign-in, which the agent's Edgible tools act as.
       - edgible-mcp-login:/login
+      # The agent's own gateway key (with OpenClaw's Gateway token), read-only, for agent_spend.
+      - openclaw-card-secrets:/run/agent-keys:ro
       # With writes: the record of what the tools did, and each deployed card's Compose file.
       - edgible-mcp-data:/data
     healthcheck:

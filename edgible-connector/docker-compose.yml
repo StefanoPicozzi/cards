@@ -7,7 +7,7 @@ name: edgible-connector
 
 services:
   edgible-mcp:
-    image: ghcr.io/edgible-org/edgible-mcp:0.7.0
+    image: ghcr.io/edgible-org/edgible-mcp:0.7.1
     restart: unless-stopped
     environment:
       EDGIBLE_MCP_ALLOW_WRITE: ${EDGIBLE_MCP_ALLOW_WRITE:-0}

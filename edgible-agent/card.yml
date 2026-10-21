@@ -81,6 +81,10 @@ secrets:
     kind: external
     from: https://platform.deepseek.com/api_keys, for the gateway's fast and smart
     required: false
+  OPENROUTER_API_KEY:
+    kind: external
+    from: https://openrouter.ai/settings/keys, for open (one key, many open models)
+    required: false
   ANTHROPIC_API_KEY:
     kind: external
     from: https://console.anthropic.com/settings/keys, for the gateway's best (Claude)

@@ -15,11 +15,12 @@ One app, `litellm`, on the place `litellm`, behind Edgible's `org` sign-in: Lite
 | `fast` | `deepseek/deepseek-chat` | Everyday answers, reliable and cents a day; falls back to `fast-fallback` |
 | `fast-fallback` | `gemini/gemini-3.5-flash` | When `fast` fails; Gemini's free tier runs out quickly, so it is the fallback |
 | `smart` | `deepseek/deepseek-reasoner` | Harder questions; falls back to `fast` |
+| `open` | `openrouter/z-ai/glm-5.3` | A strong open model through OpenRouter, whose one key reaches hundreds of models; falls back to `fast` |
 | `best` | `anthropic/claude-opus-5-5` | When it really matters, dearest by far, asked for on purpose; capped at `LITELLM_BEST_BUDGET` ($5 per 30 days) across all apps, then falls back to `smart` |
 | `private` | `ollama/qwen2.5:7b` at `LITELLM_PRIVATE_URL` | A model on your own machine, such as the ollama-mac card's; no fallback, so nothing leaves it |
 | `private-smart` | `ollama/qwen3.5:27b` at `LITELLM_PRIVATE_URL` | A larger model on your own machine, where there is memory for it; falls back to `private` |
 
-**Keys you bring** (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY`, `ANTHROPIC_API_KEY`) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.
+**Keys you bring** (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.
 
 **The gateway's own secrets are made on the machine** by `litellm-secrets`: the database password, the salt key that encrypts what the admin stores (it travels with the data on a move), and the master key, which signs you in to the admin as `admin`. See it with:
 

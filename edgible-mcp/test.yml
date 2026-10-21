@@ -7,7 +7,7 @@ machine: darwin/arm64, docker 29.4.3
 images:
   - ghcr.io/edgible-org/edgible-mcp:0.5.0@sha256:08ff5622c5778e6b5b24a536d8b6141ab81cb27504335ed741fe3ac3e9ffa69f
 image_facts:
-  ghcr.io/edgible-org/edgible-mcp:0.7.1: {user: "root", archs: ["amd64", "arm64"], healthcheck: true}
+  ghcr.io/edgible-org/edgible-mcp:0.7.2: {user: "root", archs: ["amd64", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass

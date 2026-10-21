@@ -8,7 +8,7 @@ metadata:
 applications:
   - name: edgible-mcp
     what: Edgible MCP tools over Streamable HTTP
-    from: ghcr.io/edgible-org/edgible-mcp:0.7.1
+    from: ghcr.io/edgible-org/edgible-mcp:0.7.2
     port: 8000
     protocol: https
     subtype: existing

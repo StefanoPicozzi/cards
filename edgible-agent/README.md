@@ -48,7 +48,7 @@ docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose
 docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Then sign the Edgible tools in, once: `docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml exec edgible-mcp edgible auth login --no-browser` prints a link and a code: open the link, check the code, approve. Change OpenClaw's settings later through `openclaw-cli`, always with `--no-deps`, as in the openclaw card.
+`--wait` returns when each service is running, and healthy when it has a healthcheck. Then sign the Edgible tools in, once. The easy way needs no shell: ask the agent something that needs Edgible, such as "What Edgible apps are running?", and it answers with a link and a code (edgible-mcp's `sign_in`); open the link on any device, check the code, and approve with your Edgible login, then ask again. Or on the machine: `docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml exec edgible-mcp edgible auth login --no-browser` prints the same link and code. Change OpenClaw's settings later through `openclaw-cli`, always with `--no-deps`, as in the openclaw card.
 
 ### 5. Publish
 

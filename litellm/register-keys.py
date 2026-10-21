@@ -16,6 +16,7 @@ import urllib.request
 
 BASE = "http://127.0.0.1:4000"
 MASTER = os.environ["LITELLM_MASTER_KEY"]
+ROUTES = ["/v1/chat/completions", "/chat/completions", "/v1/models", "/models", "/key/info"]
 
 
 def call(method, path, body=None):
@@ -64,8 +65,10 @@ for path in sorted(glob.glob("/run/card-secrets/LITELLM_KEY_*") + glob.glob("/ru
         print(f"register-keys: {app} already has its key", flush=True)
         continue
     try:
+        # An app's key may only use models and read its own record: never others' spend or the admin.
         call("POST", "/key/generate", {"key": key, "key_alias": app, "max_budget": budget,
-                                       "budget_duration": period, "metadata": {"made_by": "litellm card"}})
+                                       "budget_duration": period, "allowed_routes": ROUTES,
+                                       "metadata": {"made_by": "litellm card"}})
         print(f"register-keys: {app}: key registered, ${budget:g} per {period}", flush=True)
     except urllib.error.HTTPError as err:
         print(f"register-keys: {app}: not registered ({err.code}): {err.read()[:200]!r}", flush=True)

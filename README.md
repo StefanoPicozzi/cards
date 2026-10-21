@@ -61,6 +61,8 @@ The format, its conventions, and the tools that check and test a card are in [ed
 - **One app.** The app may sit on more than one hostname, such as Umami's dashboard and its tracking script, and it brings its own database or cache. It does not bring a second app.
 - **Names that say whose they are.** Every variable, service, and volume is prefixed with the app: `GITEA_DB_PASSWORD`, a service `gitea-db`, a volume `gitea-db-data`. No `container_name`. Two app cards then drop into one Compose file without a clash.
 - **Pinned images.** Each image is the exact version that passed `test.yml`. A newer version replaces it only once it passes too.
+- **Secrets made on the device.** Every password and key is declared in `card.yml` under `secrets:` ([the format](https://github.com/edgible-org/card-kit#secrets)). The ones the app or a person needs are made at first start by a `<card>-secrets` service, never written in `card.env` or the Compose file. Only keys a person brings, such as an AI model's, are `card.env` lines.
+- **Data described.** `data:` in `card.yml` says what each volume holds, so backups, restores and moves keep what matters ([the format](https://github.com/edgible-org/card-kit#data)). Cards still without it are being filled in.
 - **`test.yml`, always, with `result: pass`.** It is committed only when the result, a step, or the images change ([the rule](https://github.com/edgible-org/card-kit#test-results)).
 - **A short README.** Why is what the app is, with a link to its docs. What is its services, its hostnames, and what it needs to be combined into a pattern. How, Verify, and Tear down are as in any card.
 

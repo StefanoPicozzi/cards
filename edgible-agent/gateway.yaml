@@ -20,6 +20,10 @@ model_list:
   - model_name: best
     litellm_params:
       model: os.environ/LITELLM_BEST_MODEL
+      # Its own spending cap, whichever app asks: past it, best falls back to smart. Kept in memory,
+      # so a restart starts the count again; the provider's prepaid credits stay the hard cap.
+      max_budget: os.environ/LITELLM_BEST_BUDGET
+      budget_duration: os.environ/LITELLM_BEST_BUDGET_PERIOD
   # private: a model on your own machine (Ollama, such as the ollama-mac card): nothing leaves it.
   # Its price is set above zero so a budget still counts it.
   - model_name: private

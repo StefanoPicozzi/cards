@@ -8,7 +8,7 @@ metadata:
 applications:
   - name: mcp-signin
     what: MCP and OAuth for the connector, passed on to the MCP server behind
-    from: ghcr.io/edgible-org/mcp-signin:0.1.1
+    from: ghcr.io/edgible-org/mcp-signin:0.2.0
     port: 8020
     protocol: https
     subtype: existing
@@ -18,7 +18,7 @@ applications:
 
   - name: mcp-signin-login
     what: The sign-in page, same process as mcp-signin
-    from: ghcr.io/edgible-org/mcp-signin:0.1.1
+    from: ghcr.io/edgible-org/mcp-signin:0.2.0
     port: 8023
     protocol: https
     subtype: existing

@@ -77,6 +77,10 @@ secrets:
     kind: external
     from: https://platform.deepseek.com/api_keys, for the gateway's fallback and smart
     required: false
+  ANTHROPIC_API_KEY:
+    kind: external
+    from: https://console.anthropic.com/settings/keys, for the gateway's deluxe (Claude)
+    required: false
 
 places:
   agent:

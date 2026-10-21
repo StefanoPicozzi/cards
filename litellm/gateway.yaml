@@ -1,5 +1,5 @@
-# The litellm card's gateway: models by purpose, not by provider. Apps ask for fast, smart or
-# private, and never need to know which provider answered. Each model comes from a card.env
+# The litellm card's gateway: models by purpose, not by provider. Apps ask for fast, smart,
+# deluxe or private, and never need to know which provider answered. Each model comes from a card.env
 # setting (LITELLM_*_MODEL); LiteLLM finds a provider's key in that provider's usual variable,
 # such as GEMINI_API_KEY or DEEPSEEK_API_KEY, which the card passes on and never stores.
 
@@ -15,6 +15,11 @@ model_list:
   - model_name: smart
     litellm_params:
       model: os.environ/LITELLM_SMART_MODEL
+  # deluxe: the best model, for when it matters (Claude Opus by default), dearest by far. Ask for
+  # it on purpose; it falls back to smart.
+  - model_name: deluxe
+    litellm_params:
+      model: os.environ/LITELLM_DELUXE_MODEL
   # private: a model on your own machine (Ollama, such as the ollama-mac card): nothing leaves it.
   # Its price is set above zero so a budget still counts it.
   - model_name: private
@@ -29,6 +34,7 @@ router_settings:
   fallbacks:
     - fast: [fast-fallback]
     - smart: [fast]
+    - deluxe: [smart]
 
 litellm_settings:
   drop_params: true

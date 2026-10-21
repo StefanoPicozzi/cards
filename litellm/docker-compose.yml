@@ -40,9 +40,11 @@ services:
     environment:
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       LITELLM_FAST_MODEL: ${LITELLM_FAST_MODEL:-gemini/gemini-3.5-flash}
       LITELLM_FAST_FALLBACK_MODEL: ${LITELLM_FAST_FALLBACK_MODEL:-deepseek/deepseek-chat}
       LITELLM_SMART_MODEL: ${LITELLM_SMART_MODEL:-deepseek/deepseek-reasoner}
+      LITELLM_DELUXE_MODEL: ${LITELLM_DELUXE_MODEL:-anthropic/claude-opus-5-5}
       LITELLM_PRIVATE_MODEL: ${LITELLM_PRIVATE_MODEL:-ollama/qwen2.5:7b}
       LITELLM_PRIVATE_URL: ${LITELLM_PRIVATE_URL:-http://host.docker.internal:11434}
       LITELLM_APP_BUDGET: ${LITELLM_APP_BUDGET:-5}

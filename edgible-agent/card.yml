@@ -69,6 +69,10 @@ secrets:
     kind: human
     make: printf 'sk-%s' "$(openssl rand -hex 32)"
     for: the AI gateway's admin and its keys; the agent has its own key, never this one
+  OPENCLAW_MODEL_KEY:
+    kind: external
+    from: a shared AI gateway, by edgible-mcp's gateway_key (organisation secret <app>-gateway)
+    required: false
   GEMINI_API_KEY:
     kind: external
     from: https://aistudio.google.com/apikey (free tier), for the gateway's fast models

@@ -20,6 +20,9 @@ x-openclaw-env: &openclaw-env
   OPENCLAW_GATEWAY_PORT: "18789"
   OPENCLAW_DISABLE_BONJOUR: "1"
   OPENCLAW_USERS: ${OPENCLAW_USERS:-}
+  # A shared AI gateway's key for this agent, by reference (edgible-mcp's gateway_key); empty, the
+  # agent uses its own key on the gateway in this pattern.
+  OPENCLAW_MODEL_KEY: ${OPENCLAW_MODEL_KEY:-}
   TERM: xterm-256color
   TZ: ${OPENCLAW_TZ:-UTC}
 
@@ -53,10 +56,11 @@ services:
       # The model is the AI gateway's fast, with the agent's own key; fallbacks are the gateway's.
       OPENCLAW_MODEL_PROVIDER: openai-compatible
       OPENCLAW_MODEL: ${OPENCLAW_MODEL:-fast}
-      OPENCLAW_MODEL_URL: http://litellm:4000/v1
+      # This pattern's own gateway, or a shared one: https://litellm-api.<org>.edgible.app/v1
+      OPENCLAW_MODEL_URL: ${OPENCLAW_MODEL_URL:-http://litellm:4000/v1}
       EDGIBLE_MCP_URL: http://edgible-mcp:8000/mcp
       EDGIBLE_SKILL: "1"
-    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$$LITELLM_KEY_AGENT"; exec sh /setup.sh']
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$${OPENCLAW_MODEL_KEY:-$$LITELLM_KEY_AGENT}"; exec sh /setup.sh']
     depends_on:
       openclaw-secrets:
         condition: service_completed_successfully
@@ -98,12 +102,14 @@ services:
         condition: service_completed_successfully
       edgible-mcp:
         condition: service_healthy
+      # Not there when the agent uses a shared gateway (COMPOSE_PROFILES without gateway).
       litellm:
         condition: service_healthy
+        required: false
     environment: *openclaw-env
     # With OPENCLAW_USERS, Edgible's sign-in is the Gateway's auth (trusted-proxy): the token
     # then serves only OpenClaw's own command line, as its password, and must not be the token.
-    entrypoint: ["tini", "-s", "--", "sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$$LITELLM_KEY_AGENT"; if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "/app/docker-entrypoint.mjs"]
+    entrypoint: ["tini", "-s", "--", "sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$${OPENCLAW_MODEL_KEY:-$$LITELLM_KEY_AGENT}"; if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "/app/docker-entrypoint.mjs"]
     command: ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789"]
     ports:
       # Loopback only: the Control UI is an admin console over an agent with a shell.
@@ -134,16 +140,18 @@ services:
     environment:
       <<: *openclaw-env
       BROWSER: echo
-    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$$LITELLM_KEY_AGENT"; if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "dist/index.js"]
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$${OPENCLAW_MODEL_KEY:-$$LITELLM_KEY_AGENT}"; if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "dist/index.js"]
     volumes:
       - openclaw-data:/home/node/.openclaw
       - openclaw-secrets:/home/node/.config/openclaw
       - openclaw-card-secrets:/run/card-secrets:ro
 
   # The AI gateway, as in the litellm card (gateway.yaml and register-keys.py are copies of its own:
-  # copy them across when those change). Not published: only OpenClaw reaches it.
+  # copy them across when those change). Not published: only OpenClaw reaches it. In the profile
+  # gateway, which card.env turns on; off, the agent uses a shared gateway instead.
   litellm-secrets:
     image: ghcr.io/edgible-org/card-secrets:0.1.2
+    profiles: [gateway]
     restart: "no"
     environment:
       CARD_SECRETS: |
@@ -155,6 +163,7 @@ services:
 
   litellm:
     image: ghcr.io/berriai/litellm:v1.83.14-stable
+    profiles: [gateway]
     restart: unless-stopped
     entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
     command:
@@ -202,6 +211,7 @@ services:
 
   litellm-db:
     image: postgres:17.11-alpine
+    profiles: [gateway]
     restart: unless-stopped
     environment:
       POSTGRES_DB: litellm

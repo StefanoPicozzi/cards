@@ -55,6 +55,8 @@ services:
       OPENCLAW_MODEL_URL: ${OPENCLAW_MODEL_URL:-}
       OPENCLAW_FALLBACK_MODEL: ${OPENCLAW_FALLBACK_MODEL:-}
       OPENCLAW_FALLBACK_URL: ${OPENCLAW_FALLBACK_URL:-}
+      # 1: the edgible-cards skill, so the agent knows Edgible (the edgible-agent pattern also adds its tools)
+      EDGIBLE_SKILL: ${OPENCLAW_EDGIBLE_SKILL:-0}
     entrypoint: ["sh", "/run/card-secrets/.load", "sh", "/setup.sh"]
     depends_on:
       openclaw-secrets:

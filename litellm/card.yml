@@ -2,27 +2,62 @@ apiVersion: v1
 kind: Card
 metadata:
   name: litellm
-  description: Metered model API and its admin, one LiteLLM process
-  type: pattern
+  description: An AI gateway for your apps, one address for every model, with a key and a budget per app
+  type: app
 
 applications:
   - name: litellm
-    what: LiteLLM admin
-    from: docker.litellm.ai/berriai/litellm:main-stable
-    database: postgres:16
+    what: LiteLLM's admin and its OpenAI-compatible API, one process
+    from: ghcr.io/berriai/litellm:v1.83.14-stable
+    database: postgres:17.11-alpine
     port: 4000
     protocol: https
     subtype: existing
     published: true
     authModes: [org]
-    place: lab
+    place: litellm
 
-  - name: litellm-api
-    what: LiteLLM proxy, same process as litellm
-    from: docker.litellm.ai/berriai/litellm:main-stable
-    port: 4000
-    protocol: https
-    subtype: existing
-    published: true
-    authModes: [none]
-    place: lab
+data:
+  volumes:
+    # Each app's key, its budget and its spend, and the keys and models added in the admin.
+    litellm-db-data:
+      class: irreplaceable
+    # The card's secrets, made on the device: the salt key encrypts what the admin stores.
+    litellm-secrets:
+      class: irreplaceable
+  fingerprint:
+    service: litellm-db
+    command: >-
+      echo "{\"keys\": $(psql -U litellm -d litellm -tAc 'select count(*) from "LiteLLM_VerificationToken"' 2>/dev/null || echo 0)}"
+
+secrets:
+  LITELLM_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: litellm-db
+      command: psql -U litellm -d litellm -c "ALTER USER litellm PASSWORD '$LITELLM_DB_PASSWORD'"
+  LITELLM_SALT_KEY:
+    kind: internal
+    use: encryption
+    make: printf 'sk-%s' "$(openssl rand -hex 32)"
+  LITELLM_MASTER_KEY:
+    kind: human
+    make: printf 'sk-%s' "$(openssl rand -hex 32)"
+    for: the admin (user admin) and creating keys; apps get their own keys, never this one
+  GEMINI_API_KEY:
+    kind: external
+    from: https://aistudio.google.com/apikey (free tier), for the fast models
+    required: false
+  DEEPSEEK_API_KEY:
+    kind: external
+    from: https://platform.deepseek.com/api_keys, for fast's fallback and smart
+    required: false
+
+places:
+  litellm:
+    memory: 2.5 GB
+    disk: 2 GB
+    arch: [amd64, arm64]
+    gpu: none

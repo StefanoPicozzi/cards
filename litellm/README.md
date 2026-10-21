@@ -35,6 +35,17 @@ Each app's key, budget and spend live in `litellm-db-data`, and the gateway's se
 
 The Compose file is [docker-compose.yml](docker-compose.yml), the settings [card.env](card.env), and the card [card.yml](card.yml).
 
+## Share it
+
+One gateway can serve every app on every machine of yours, with one admin showing who spent what. Publish its API as a second app, `litellm-api`, on `none`: every call to it needs a key the gateway issued, and an unknown key gets `401`.
+
+```bash
+edgible app create existing --non-interactive --name litellm-api --port "$LITELLM_PORT" \
+  --protocol https --auth-modes none --device-id "$device_id"
+```
+
+Then give each app its own key, made in the admin (Keys, Create key, with a budget), or by edgible-mcp's `gateway_key`, which makes the key and stores it as an Edgible organisation secret, so a deploy passes it to the app by reference and nobody sees it. Point the app at `https://<litellm-api hostname>/v1`. The admin's sign-in page also answers on that address, guarded by the master key; keep that key on the machine.
+
 ## How
 
 Five steps. Edit [card.env](card.env) before you start.

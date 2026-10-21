@@ -26,7 +26,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE`, `ORG_LABEL` and `GEMINI_API_KEY` (a key from https://aistudio.google.com/apikey; keep a Flash model in `OPENCLAW_MODEL`). Start makes the Gateway token on the machine; there is nothing to fill for it. For when Gemini's free tier runs out, `OPENCLAW_FALLBACK_MODEL=deepseek/deepseek-flash` with `DEEPSEEK_API_KEY` (cents a day), or `ollama/qwen2.5:7b` on a Mac with ollama-mac (free, but weak with tools). Set `EDGIBLE_MCP_ALLOW_WRITE=1` to let the agent deploy, move and remove apps, and `EDGIBLE_MCP_DEVICES` to keep it to some devices, such as a test machine.
+Set `DEVICE`, `ORG_LABEL` and `GEMINI_API_KEY` (a key from https://aistudio.google.com/apikey; keep a Flash model in `OPENCLAW_MODEL`). Set `OPENCLAW_USERS` to the Edgible accounts that may use it, by email: then Edgible's sign-in is the only lock, with no token to paste and no browser to approve on the machine. Left empty, Start makes a Gateway token on the machine, which each browser pastes once, and each new browser waits for approval. For when Gemini's free tier runs out, `OPENCLAW_FALLBACK_MODEL=deepseek/deepseek-flash` with `DEEPSEEK_API_KEY` (cents a day), or `ollama/qwen2.5:7b` on a Mac with ollama-mac (free, but weak with tools). Set `EDGIBLE_MCP_ALLOW_WRITE=1` to let the agent deploy, move and remove apps, and `EDGIBLE_MCP_DEVICES` to keep it to some devices, such as a test machine.
 
 ```bash
 nano edgible-agent/card.env
@@ -83,7 +83,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' "https://<openclaw hostname>"
 ```
 
-That prints `302` and an `edgible.com/application-access/` address, so the org sign-in is in front. Then open the hostname on your phone and sign in; open `https://<openclaw hostname>/#token=<OPENCLAW_GATEWAY_TOKEN>` once in that browser (`docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml run --rm --no-deps openclaw-secrets show OPENCLAW_GATEWAY_TOKEN` prints the token, which the card made on the machine); approve the browser on the machine: `docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml run --rm --no-deps openclaw-cli devices list`, then `devices approve <requestId>`. Start a chat and ask "What Edgible apps are running?".
+That prints `302` and an `edgible.com/application-access/` address, so the org sign-in is in front. With `OPENCLAW_USERS` set, open the hostname on your phone and sign in with Edgible as one of those accounts: OpenClaw lets you in and approves that browser. Without it, open the hostname on your phone and sign in; open `https://<openclaw hostname>/#token=<OPENCLAW_GATEWAY_TOKEN>` once in that browser (`docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml run --rm --no-deps openclaw-secrets show OPENCLAW_GATEWAY_TOKEN` prints the token, which the card made on the machine); approve the browser on the machine: `docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml run --rm --no-deps openclaw-cli devices list`, then `devices approve <requestId>`. Start a chat and ask "What Edgible apps are running?".
 
 The rest of the setup is in the [OpenClaw docs docs](https://docs.openclaw.ai).
 

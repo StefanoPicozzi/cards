@@ -38,7 +38,7 @@ secrets:
   OPENCLAW_GATEWAY_TOKEN:
     kind: human
     make: openssl rand -hex 32
-    for: the Control UI, pasted once per browser after Edgible's sign-in
+    for: the Control UI without OPENCLAW_USERS, pasted once per browser; with it, OpenClaw's own command line only
   GEMINI_API_KEY:
     kind: external
     from: https://aistudio.google.com/apikey (free tier)

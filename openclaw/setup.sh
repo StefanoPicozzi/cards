@@ -53,6 +53,14 @@ case "${OPENCLAW_FALLBACK_MODEL:-}" in ollama/*)
   set_ui="$set_ui,{\"path\":\"models.providers.ollama.api\",\"value\":\"ollama\"},{\"path\":\"models.providers.ollama.apiKey\",\"value\":\"ollama-local\"}"
   set_ui="$set_ui,{\"path\":\"models.providers.ollama.models\",\"value\":[{\"id\":\"$tag\",\"name\":\"$tag\"}]}" ;;
 esac
+# OPENCLAW_USERS: Edgible's sign-in in front is the Gateway's auth (trusted-proxy). Edgible sets
+# X-Auth-Email and drops any a client sends; only these people get in, and their browsers are
+# approved as they arrive, with OpenClaw's default operator scopes (not admin). No token to paste.
+if [ -n "${OPENCLAW_USERS:-}" ]; then
+  users=$(printf '%s' "$OPENCLAW_USERS" | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep . | sed 's/.*/"&"/' | paste -sd, -)
+  set_ui="$set_ui,{\"path\":\"gateway.auth.mode\",\"value\":\"trusted-proxy\"}"
+  set_ui="$set_ui,{\"path\":\"gateway.auth.trustedProxy\",\"value\":{\"userHeader\":\"x-auth-email\",\"requiredHeaders\":[\"x-auth-type\"],\"allowUsers\":[$users],\"deviceAutoApprove\":{\"enabled\":true}}}"
+fi
 oc config set --batch-json "[$set_ui]"
 
 # The fallback goes through OpenClaw's own command, which only takes a model in its catalog: so

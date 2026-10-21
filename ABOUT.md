@@ -20,18 +20,26 @@ Exposing one port to the internet isn't the hard bit. The hard bit is the whole 
 
 Take the website card. It's the site, an editor for its pages, analytics, and an uptime monitor that you can put on a second machine, each with the right level of access.
 
-A card never contains anything personal. No device names, hostnames, organization ids, or passwords. You fill those in yourself, on your own machine.
+A card never contains anything personal. No device names, hostnames, organization ids, or passwords. You fill in the first three on your own machine, and the card makes its passwords there itself.
 
 ## Shaped for sharing
 
 Almost everything about a card's form comes from one idea: it's meant to be passed on. Each choice is there so a setup that worked on one person's machine works on the next person's too.
 
-- **Nothing personal in it**, so you can publish it without a second thought. Your devices, hostnames and passwords stay in `card.env` on your machine.
+- **Nothing personal in it**, so you can publish it without a second thought. Your devices and hostnames stay in `card.env` on your machine, and its passwords are made there.
 - **Places, not machines.** A card says "the forge" and "the runner", not "my Mac mini", so whoever runs it maps each place to a machine they have.
 - **The same shape every time**, so a stranger can follow it, and so can their AI assistant.
 - **Checks instead of trust.** `check-env` looks at a machine the author never saw, and Verify proves it worked there, so you don't have to take the author's word for it.
 - **Tested on a real machine**, so a card's badge tells you it still works today, not just when it was written.
 - **Plain files in git**, so a card can be read before it's run, forked, compared, reviewed in a pull request, and shared back as a variant.
+
+## What a card keeps and protects
+
+Running something yourself only makes sense if you know what's yours and that it's safe. So a card says so, in the open, and every card's page shows it.
+
+- **What it keeps.** Each volume the card makes is marked: yours alone (back it up), rebuilt by the app, or safe to lose. A backup takes what matters, and after a restore or a move a quick count of numbers and dates shows your data arrived, without anyone reading it.
+- **What it protects.** Every password and key the app uses is listed, with where it comes from. The ones only the app needs are made on your machine the first time it starts. Nobody types them, and they're never written into a file you share or sent anywhere: not to your AI assistant, not to Edgible. The one you need, such as the admin's password, is made there too, and you see it with one command on that machine. Keys you bring, such as an AI model's, stay in `card.env` on your machine.
+- **How well the app fits self-hosting.** A short list of facts about the app itself: does it keep its secrets in files, does it check its own health, does it start without root, does it run on both kinds of processor. Each card's tile shows how many it passes. They're facts, not opinions, and when an app falls short we'd rather ask its authors kindly than complain.
 
 ## Why "cards" and not a catalog
 

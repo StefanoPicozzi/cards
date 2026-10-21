@@ -6,7 +6,7 @@ name: mcp-signin
 
 services:
   mcp-signin:
-    image: ghcr.io/edgible-org/mcp-signin:0.1.1
+    image: ghcr.io/edgible-org/mcp-signin:0.2.0
     restart: unless-stopped
     ports:
       # Both on 127.0.0.1: Edgible's web server on this machine is the one proxy in front.

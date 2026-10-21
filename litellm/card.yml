@@ -8,7 +8,7 @@ metadata:
 applications:
   - name: litellm
     what: LiteLLM's admin and its OpenAI-compatible API, one process
-    from: ghcr.io/berriai/litellm:v1.83.14-stable
+    from: ghcr.io/berriai/litellm:v1.106.2
     database: postgres:17.11-alpine
     port: 4000
     protocol: https

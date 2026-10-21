@@ -1,15 +1,15 @@
-tested: 2026-10-21
+tested: 2026-10-22
 result: pass
-card-kit: "a733b7f"
+card-kit: "705f419"
 edgible-cli: 1.4.12
-files: sha256:baf8fc2578c1d7d1
+files: sha256:43863e421b7ae62f
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/berriai/litellm:v1.83.14-stable@sha256:c81eb79cd4333c6cfe374c0ec929110fd23f0ee5f7fd198855a6fbddc77b83ba
+  - ghcr.io/berriai/litellm:v1.106.2@sha256:7294b90f868c5c38c99b83021c7ba46f9b439e95f8e32964c925c7d2563a03f7
   - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
   - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
 image_facts:
-  ghcr.io/berriai/litellm:v1.83.14-stable: {user: "root", archs: ["amd64", "arm64"], healthcheck: false}
+  ghcr.io/berriai/litellm:v1.106.2: {user: "root", archs: ["amd64", "arm64"], healthcheck: false}
 steps:
   check-env: pass
   start: pass
@@ -23,8 +23,9 @@ steps:
 fingerprint: {"keys": 0}
 measured:
   litellm:
-    memory: 1.6 GB
-    images: 688 MB
-    data: 52 MB
-duration: 3m
-by: person
+    memory: 702 MB
+    images: 544 MB
+    data: 53 MB
+duration: 5m
+by: agent
+notes: litellm's port 4000 was taken on the test machine, so it was tested on 4001. litellm is taken in the test org, so it was published as test-litellm.

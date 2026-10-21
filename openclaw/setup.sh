@@ -63,6 +63,15 @@ if [ -n "${OPENCLAW_USERS:-}" ]; then
 fi
 oc config set --batch-json "[$set_ui]"
 
+# OPENCLAW_MODEL_CHOICES: the models an OpenAI-compatible address offers, such as an AI gateway's
+# fast,smart,best,private,private-smart, so OpenClaw's model picker lists them all, not only the default.
+if [ "$OPENCLAW_MODEL_PROVIDER" = openai-compatible ] && [ -n "${OPENCLAW_MODEL_CHOICES:-}" ]; then
+  provider=$(node -e 'const c=require(process.env.OPENCLAW_CONFIG_PATH); console.log(Object.keys((c.models||{}).providers||{}).find((k)=>k.startsWith("custom-"))||"")')
+  list=$(printf '%s' "$OPENCLAW_MODEL_CHOICES" | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep . \
+    | sed 's/.*/{"id":"&","name":"&","contextWindow":128000,"maxTokens":4096,"input":["text"]}/' | paste -sd, -)
+  [ -n "$provider" ] && oc config set --batch-json "[{\"path\":\"models.providers.$provider.models\",\"value\":[$list]}]"
+fi
+
 # The fallback goes through OpenClaw's own command, which only takes a model in its catalog: so
 # refresh that provider's list first. Other providers, such as DeepSeek, read their key from the
 # environment.

@@ -56,6 +56,7 @@ services:
       # The model is the AI gateway's fast, with the agent's own key; fallbacks are the gateway's.
       OPENCLAW_MODEL_PROVIDER: openai-compatible
       OPENCLAW_MODEL: ${OPENCLAW_MODEL:-fast}
+      OPENCLAW_MODEL_CHOICES: ${OPENCLAW_MODEL_CHOICES:-fast,smart,best,private,private-smart}
       # This pattern's own gateway, or a shared one: https://litellm-api.<org>.edgible.app/v1
       OPENCLAW_MODEL_URL: ${OPENCLAW_MODEL_URL:-http://litellm:4000/v1}
       EDGIBLE_MCP_URL: http://edgible-mcp:8000/mcp

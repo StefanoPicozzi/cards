@@ -74,7 +74,7 @@ services:
       - openclaw-card-secrets:/run/card-secrets:ro
 
   edgible-mcp:
-    image: ghcr.io/edgible-org/edgible-mcp:0.7.6
+    image: ghcr.io/edgible-org/edgible-mcp:0.7.8
     restart: unless-stopped
     environment:
       EDGIBLE_MCP_ALLOW_WRITE: ${EDGIBLE_MCP_ALLOW_WRITE:-0}

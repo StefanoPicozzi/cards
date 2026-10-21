@@ -1,12 +1,17 @@
-tested: 2026-10-20
+tested: 2026-10-21
 result: pass
-card-kit: "0cb7037"
+card-kit: "a733b7f"
 edgible-cli: 1.4.12
-files: sha256:d91537144ac60bb4
+files: sha256:830eb06d46d6c8f1
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/edgible-org/edgible-mcp:0.5.0@sha256:08ff5622c5778e6b5b24a536d8b6141ab81cb27504335ed741fe3ac3e9ffa69f
+  - ghcr.io/berriai/litellm:v1.83.14-stable@sha256:c81eb79cd4333c6cfe374c0ec929110fd23f0ee5f7fd198855a6fbddc77b83ba
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
+  - ghcr.io/edgible-org/edgible-mcp:0.7.2@sha256:144355bf8bfd5452a994c50b5ce2be940be82cef3e8b0395eb7888576fbe9f87
   - ghcr.io/openclaw/openclaw:2026.10.5@sha256:f40d1e66fd14d8c5b49c832f4100f83b53fdc01f5108f7db11de38fd0ee6dbe5
+  - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+image_facts:
+  ghcr.io/openclaw/openclaw:2026.10.5: {user: "node", archs: ["amd64", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass
@@ -18,12 +23,12 @@ steps:
     gateway: pass
   fingerprint: pass
   teardown: pass
-fingerprint: {"sessions": 1, "workspace_files": 26}
+fingerprint: {"sessions": 0, "workspace_files": 26}
 measured:
   agent:
-    memory: 1.5 GB
-    images: 1.5 GB
-    data: 152 MB
-duration: 3m
+    memory: 2.4 GB
+    images: 2.1 GB
+    data: 93 MB
+duration: 5m
 by: person
 notes: openclaw's port 18789 was taken on the test machine, so it was tested on 18790. openclaw is taken in the test org, so it was published as test-openclaw.

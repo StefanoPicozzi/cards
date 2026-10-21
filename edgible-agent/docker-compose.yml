@@ -1,6 +1,7 @@
-# Compose file for the edgible-agent pattern: the openclaw and edgible-mcp app cards in one
-# Compose project, so OpenClaw reaches Edgible's MCP tools on this project's network, and nothing
-# else does. OpenClaw's Gateway is on this machine's loopback only. Ports and the model come from card.env; the Gateway token is made
+# Compose file for the edgible-agent pattern: the openclaw, edgible-mcp and litellm app cards in
+# one Compose project, so OpenClaw reaches Edgible's MCP tools and the AI gateway on this project's
+# network, and nothing else does. OpenClaw asks the gateway for model fast with its own key; the
+# provider keys are the gateway's alone. OpenClaw's Gateway is on this machine's loopback only. Ports and the model come from card.env; the Gateway token is made
 # on this machine by openclaw-secrets. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # openclaw-setup runs OpenClaw's onboarding once, then the Gateway starts. openclaw-cli runs
@@ -17,10 +18,6 @@ x-openclaw-env: &openclaw-env
   OPENCLAW_CONFIG_DIR: /home/node/.openclaw
   OPENCLAW_WORKSPACE_DIR: /home/node/.openclaw/workspace
   OPENCLAW_GATEWAY_PORT: "18789"
-  # The Gateway token, and the model's key: OpenClaw reads them from here, never from its files.
-  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
-  DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
-  CUSTOM_API_KEY: ${OPENCLAW_MODEL_KEY:-}
   OPENCLAW_DISABLE_BONJOUR: "1"
   OPENCLAW_USERS: ${OPENCLAW_USERS:-}
   TERM: xterm-256color
@@ -32,15 +29,17 @@ x-openclaw-hardening: &openclaw-hardening
   init: true
 
 services:
-  # Makes the Gateway token (card.yml secrets:) if it does not exist yet, as a file in the volume
-  # openclaw-card-secrets, then exits. It never changes it after. Every OpenClaw service starts
-  # through the loader, which puts the token in its environment.
+  # Makes OpenClaw's secrets (card.yml secrets:) if they do not exist yet, as files in the volume
+  # openclaw-card-secrets, then exits: the Gateway token, and the agent's key for the AI gateway,
+  # which the gateway reads from this volume to register it with a budget. Every OpenClaw service
+  # starts through the loader, which puts them in its environment.
   openclaw-secrets:
     image: ghcr.io/edgible-org/card-secrets:0.1.2
     restart: "no"
     environment:
       CARD_SECRETS: |
         OPENCLAW_GATEWAY_TOKEN=openssl rand -hex 32
+        LITELLM_KEY_AGENT=printf 'sk-%s' "$(openssl rand -hex 24)"
     volumes:
       - openclaw-card-secrets:/run/card-secrets
 
@@ -51,14 +50,13 @@ services:
     environment:
       <<: *openclaw-env
       OPENCLAW_URL: ${OPENCLAW_URL:-https://openclaw.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
-      OPENCLAW_MODEL_PROVIDER: ${OPENCLAW_MODEL_PROVIDER:-gemini}
-      OPENCLAW_MODEL: ${OPENCLAW_MODEL:-google/gemini-3.5-flash}
-      OPENCLAW_MODEL_URL: ${OPENCLAW_MODEL_URL:-}
-      OPENCLAW_FALLBACK_MODEL: ${OPENCLAW_FALLBACK_MODEL:-}
-      OPENCLAW_FALLBACK_URL: ${OPENCLAW_FALLBACK_URL:-}
+      # The model is the AI gateway's fast, with the agent's own key; fallbacks are the gateway's.
+      OPENCLAW_MODEL_PROVIDER: openai-compatible
+      OPENCLAW_MODEL: ${OPENCLAW_MODEL:-fast}
+      OPENCLAW_MODEL_URL: http://litellm:4000/v1
       EDGIBLE_MCP_URL: http://edgible-mcp:8000/mcp
       EDGIBLE_SKILL: "1"
-    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "/setup.sh"]
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$$LITELLM_KEY_AGENT"; exec sh /setup.sh']
     depends_on:
       openclaw-secrets:
         condition: service_completed_successfully
@@ -100,10 +98,12 @@ services:
         condition: service_completed_successfully
       edgible-mcp:
         condition: service_healthy
+      litellm:
+        condition: service_healthy
     environment: *openclaw-env
     # With OPENCLAW_USERS, Edgible's sign-in is the Gateway's auth (trusted-proxy): the token
     # then serves only OpenClaw's own command line, as its password, and must not be the token.
-    entrypoint: ["tini", "-s", "--", "sh", "/run/card-secrets/.load", "sh", "-c", 'if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "/app/docker-entrypoint.mjs"]
+    entrypoint: ["tini", "-s", "--", "sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$$LITELLM_KEY_AGENT"; if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "/app/docker-entrypoint.mjs"]
     command: ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789"]
     ports:
       # Loopback only: the Control UI is an admin console over an agent with a shell.
@@ -134,15 +134,95 @@ services:
     environment:
       <<: *openclaw-env
       BROWSER: echo
-    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c", 'if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "dist/index.js"]
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c", 'export CUSTOM_API_KEY="$$LITELLM_KEY_AGENT"; if [ -n "$${OPENCLAW_USERS:-}" ]; then export OPENCLAW_GATEWAY_PASSWORD="$$OPENCLAW_GATEWAY_TOKEN"; unset OPENCLAW_GATEWAY_TOKEN; fi; exec "$$@"', "sh", "node", "dist/index.js"]
     volumes:
       - openclaw-data:/home/node/.openclaw
       - openclaw-secrets:/home/node/.config/openclaw
       - openclaw-card-secrets:/run/card-secrets:ro
 
+  # The AI gateway, as in the litellm card (gateway.yaml and register-keys.py are copies of its own:
+  # copy them across when those change). Not published: only OpenClaw reaches it.
+  litellm-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        LITELLM_DB_PASSWORD=openssl rand -hex 16
+        LITELLM_SALT_KEY=printf 'sk-%s' "$(openssl rand -hex 32)"
+        LITELLM_MASTER_KEY=printf 'sk-%s' "$(openssl rand -hex 32)"
+    volumes:
+      - litellm-secrets:/run/card-secrets
+
+  litellm:
+    image: ghcr.io/berriai/litellm:v1.83.14-stable
+    restart: unless-stopped
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command:
+      - >-
+        export DATABASE_URL="postgresql://litellm:$$LITELLM_DB_PASSWORD@litellm-db:5432/litellm"
+        LITELLM_MASTER_KEY="$$LITELLM_MASTER_KEY" LITELLM_SALT_KEY="$$LITELLM_SALT_KEY"
+        && (python3 /app/register-keys.py &)
+        && exec docker/prod_entrypoint.sh --config /app/gateway.yaml --port 4000
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      LITELLM_FAST_MODEL: ${LITELLM_FAST_MODEL:-gemini/gemini-3.5-flash}
+      LITELLM_FAST_FALLBACK_MODEL: ${LITELLM_FAST_FALLBACK_MODEL:-deepseek/deepseek-chat}
+      LITELLM_SMART_MODEL: ${LITELLM_SMART_MODEL:-deepseek/deepseek-reasoner}
+      LITELLM_PRIVATE_MODEL: ${LITELLM_PRIVATE_MODEL:-ollama/qwen2.5:7b}
+      LITELLM_PRIVATE_URL: ${LITELLM_PRIVATE_URL:-http://host.docker.internal:11434}
+      LITELLM_APP_BUDGET: ${LITELLM_APP_BUDGET:-5}
+      LITELLM_APP_BUDGET_PERIOD: ${LITELLM_APP_BUDGET_PERIOD:-30d}
+      STORE_MODEL_IN_DB: "True"
+    configs:
+      - source: litellm-gateway
+        target: /app/gateway.yaml
+      - source: litellm-register-keys
+        target: /app/register-keys.py
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - litellm-secrets:/run/card-secrets:ro
+      # The agent's key, to register; OpenClaw never sees the gateway's own secrets.
+      - openclaw-card-secrets:/run/app-keys:ro
+    depends_on:
+      litellm-db:
+        condition: service_healthy
+      openclaw-secrets:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:4000/health/liveliness', timeout=4)\""]
+      interval: 10s
+      timeout: 6s
+      retries: 18
+      start_period: 40s
+
+  litellm-db:
+    image: postgres:17.11-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: litellm
+      POSTGRES_USER: litellm
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/LITELLM_DB_PASSWORD
+    volumes:
+      - litellm-db-data:/var/lib/postgresql/data
+      - litellm-secrets:/run/card-secrets:ro
+    depends_on:
+      litellm-secrets:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litellm -d litellm"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
 configs:
   openclaw-setup:
     file: ./setup.sh
+  litellm-gateway:
+    file: ./gateway.yaml
+  litellm-register-keys:
+    file: ./register-keys.py
 
 volumes:
   openclaw-data: {}
@@ -151,3 +231,5 @@ volumes:
   edgible-mcp-login: {}
   edgible-mcp-data: {}
   openclaw-card-secrets: {}
+  litellm-db-data: {}
+  litellm-secrets: {}

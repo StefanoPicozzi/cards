@@ -7,7 +7,7 @@ metadata:
 
 applications:
   - name: openclaw
-    what: OpenClaw Gateway and Control UI, with Edgible's tools and skill
+    what: OpenClaw Gateway and Control UI, with Edgible's tools and skill, its models through an AI gateway
     from: ghcr.io/openclaw/openclaw:2026.10.5
     port: 18789
     protocol: https
@@ -23,8 +23,13 @@ data:
       class: irreplaceable
     openclaw-secrets:
       class: irreplaceable
-    # The card's secrets, made on the device: the Gateway token.
+    # OpenClaw's secrets, made on the device: the Gateway token and its key for the AI gateway.
     openclaw-card-secrets:
+      class: irreplaceable
+    # From the litellm card: the AI gateway's keys, budgets and spend, and its own secrets.
+    litellm-db-data:
+      class: irreplaceable
+    litellm-secrets:
       class: irreplaceable
     # From the edgible-mcp card: the catalog cache, the CLI's sign-in, the tools' record.
     edgible-mcp-cache:
@@ -45,22 +50,37 @@ secrets:
     kind: human
     make: openssl rand -hex 32
     for: the Control UI without OPENCLAW_USERS, pasted once per browser; with it, OpenClaw's own command line only
+  LITELLM_KEY_AGENT:
+    kind: internal
+    use: token
+    make: printf 'sk-%s' "$(openssl rand -hex 24)"
+  LITELLM_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: litellm-db
+      command: psql -U litellm -d litellm -c "ALTER USER litellm PASSWORD '$LITELLM_DB_PASSWORD'"
+  LITELLM_SALT_KEY:
+    kind: internal
+    use: encryption
+    make: printf 'sk-%s' "$(openssl rand -hex 32)"
+  LITELLM_MASTER_KEY:
+    kind: human
+    make: printf 'sk-%s' "$(openssl rand -hex 32)"
+    for: the AI gateway's admin and its keys; the agent has its own key, never this one
   GEMINI_API_KEY:
     kind: external
-    from: https://aistudio.google.com/apikey (free tier)
-    required: false
-  OPENCLAW_MODEL_KEY:
-    kind: external
-    from: the OpenAI-compatible model's provider, if it needs a key
+    from: https://aistudio.google.com/apikey (free tier), for the gateway's fast models
     required: false
   DEEPSEEK_API_KEY:
     kind: external
-    from: https://platform.deepseek.com/api_keys, for the fallback model
+    from: https://platform.deepseek.com/api_keys, for the gateway's fallback and smart
     required: false
 
 places:
   agent:
-    memory: 2.5 GB
-    disk: 3 GB
+    memory: 4 GB
+    disk: 3.5 GB
     arch: [amd64, arm64]
     gpu: none

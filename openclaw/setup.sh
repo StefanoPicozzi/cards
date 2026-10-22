@@ -9,13 +9,35 @@
 #                            ollama/<tag> at OPENCLAW_FALLBACK_URL, such as ollama-mac's
 #   EDGIBLE_MCP_URL          Edgible's MCP tools (edgible-mcp), added as the server "edgible"
 #   EDGIBLE_SKILL            1: the edgible-cards skill from card-kit, for judgment
-# Later starts change nothing: OpenClaw locks its config while the Gateway runs. Change settings
-# afterwards with openclaw-cli, which shares the Gateway's processes (see the card's README).
+# Later starts re-apply only who may reach the Gateway (its address, the proxy in front, and the
+# sign-in mode), so changing OPENCLAW_URL or OPENCLAW_USERS takes effect at the next start. Change
+# other settings afterwards with openclaw-cli, which shares the Gateway's processes (see the README).
 set -eu
 oc() { node /app/dist/index.js "$@"; }
 
+# Who may reach the Gateway, applied on every start. Edgible's web server on this machine reaches
+# the Gateway through Docker's port mapping, so requests arrive from the Compose network's gateway
+# address with forwarded headers. Trust that one address and nothing else: without it, OpenClaw
+# rejects the Control UI from the published hostname ("unattributable proxy-shaped traffic").
+access="{\"path\":\"gateway.controlUi.allowedOrigins\",\"value\":[\"$OPENCLAW_URL\"]}"
+gw=$(awk '$2 == "00000000" { print $3; exit }' /proc/net/route)
+proxy=$(printf '%d.%d.%d.%d' "0x$(echo "$gw" | cut -c7-8)" "0x$(echo "$gw" | cut -c5-6)" "0x$(echo "$gw" | cut -c3-4)" "0x$(echo "$gw" | cut -c1-2)")
+access="$access,{\"path\":\"gateway.trustedProxies\",\"value\":[\"$proxy\"]}"
+# OPENCLAW_USERS: Edgible's sign-in in front is the Gateway's auth (trusted-proxy). Edgible sets
+# X-Auth-Email and drops any a client sends; only these people get in, and their browsers are
+# approved as they arrive, with OpenClaw's default operator scopes (not admin). No token to paste.
+# Without it, the Gateway's token, as onboarding sets it.
+if [ -n "${OPENCLAW_USERS:-}" ]; then
+  users=$(printf '%s' "$OPENCLAW_USERS" | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep . | sed 's/.*/"&"/' | paste -sd, -)
+  access="$access,{\"path\":\"gateway.auth.mode\",\"value\":\"trusted-proxy\"}"
+  access="$access,{\"path\":\"gateway.auth.trustedProxy\",\"value\":{\"userHeader\":\"x-auth-email\",\"requiredHeaders\":[\"x-auth-type\"],\"allowUsers\":[$users],\"deviceAutoApprove\":{\"enabled\":true}}}"
+else
+  access="$access,{\"path\":\"gateway.auth.mode\",\"value\":\"token\"}"
+fi
+
 if [ -f "$OPENCLAW_CONFIG_PATH" ]; then
-  echo "openclaw-setup: already set up; change settings with openclaw-cli"
+  oc config set --batch-json "[$access]"
+  echo "openclaw-setup: already set up; re-applied who may reach it ($OPENCLAW_URL$([ -n "${OPENCLAW_USERS:-}" ] && echo ", Edgible sign-in"))"
   exit 0
 fi
 
@@ -34,14 +56,7 @@ oc onboard --non-interactive --accept-risk --skip-health --mode local $auth \
 
 # The model: Gemini's onboarding picks a model the free tier refuses, so pin OPENCLAW_MODEL.
 # The OpenAI-compatible route sets its model at onboarding, from the same setting.
-set_ui="{\"path\":\"gateway.controlUi.allowedOrigins\",\"value\":[\"$OPENCLAW_URL\"]}"
-# Edgible's web server on this machine reaches the Gateway through Docker's port mapping, so
-# requests arrive from the Compose network's gateway address with forwarded headers. Trust that
-# one address and nothing else: without it, OpenClaw rejects the Control UI from the published
-# hostname ("unattributable proxy-shaped traffic").
-gw=$(awk '$2 == "00000000" { print $3; exit }' /proc/net/route)
-proxy=$(printf '%d.%d.%d.%d' "0x$(echo "$gw" | cut -c7-8)" "0x$(echo "$gw" | cut -c5-6)" "0x$(echo "$gw" | cut -c3-4)" "0x$(echo "$gw" | cut -c1-2)")
-set_ui="$set_ui,{\"path\":\"gateway.trustedProxies\",\"value\":[\"$proxy\"]}"
+set_ui="$access"
 if [ "$OPENCLAW_MODEL_PROVIDER" = gemini ]; then
   set_ui="$set_ui,{\"path\":\"agents.defaults.model.primary\",\"value\":\"$OPENCLAW_MODEL\"}"
 fi
@@ -53,14 +68,6 @@ case "${OPENCLAW_FALLBACK_MODEL:-}" in ollama/*)
   set_ui="$set_ui,{\"path\":\"models.providers.ollama.api\",\"value\":\"ollama\"},{\"path\":\"models.providers.ollama.apiKey\",\"value\":\"ollama-local\"}"
   set_ui="$set_ui,{\"path\":\"models.providers.ollama.models\",\"value\":[{\"id\":\"$tag\",\"name\":\"$tag\"}]}" ;;
 esac
-# OPENCLAW_USERS: Edgible's sign-in in front is the Gateway's auth (trusted-proxy). Edgible sets
-# X-Auth-Email and drops any a client sends; only these people get in, and their browsers are
-# approved as they arrive, with OpenClaw's default operator scopes (not admin). No token to paste.
-if [ -n "${OPENCLAW_USERS:-}" ]; then
-  users=$(printf '%s' "$OPENCLAW_USERS" | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep . | sed 's/.*/"&"/' | paste -sd, -)
-  set_ui="$set_ui,{\"path\":\"gateway.auth.mode\",\"value\":\"trusted-proxy\"}"
-  set_ui="$set_ui,{\"path\":\"gateway.auth.trustedProxy\",\"value\":{\"userHeader\":\"x-auth-email\",\"requiredHeaders\":[\"x-auth-type\"],\"allowUsers\":[$users],\"deviceAutoApprove\":{\"enabled\":true}}}"
-fi
 oc config set --batch-json "[$set_ui]"
 
 # OPENCLAW_MODEL_CHOICES: the models an OpenAI-compatible address offers, such as an AI gateway's

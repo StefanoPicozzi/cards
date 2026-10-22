@@ -90,7 +90,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code}\n' "https://<mcp-signin hostname>"
 ```
 
-Then add it to Claude: Settings, Connectors, Add custom connector, named Edgible, with the URL `https://<mcp-signin hostname>/mcp` and the OAuth fields empty. Connect: Edgible's sign-in, then a page asking you to allow Claude. Allow, and ask Claude "What Edgible apps are running?". It works on Claude's web, desktop and phone apps.
+Then add it to Claude: Settings, Connectors, Add custom connector, named Edgible, with the URL `https://<mcp-signin hostname>/mcp` and the OAuth fields empty. That is the `mcp-signin` app's hostname, which Claude's servers call, never `mcp-signin-login`'s: that one is the page people sign in on, behind Edgible's sign-in, and given it, Claude says it couldn't check the server or couldn't register. Connect: Edgible's sign-in, then a page asking you to allow Claude. Allow, and ask Claude "What Edgible apps are running?". It works on Claude's web, desktop and phone apps.
 
 `mcp-signin-login` uses `org`.
 

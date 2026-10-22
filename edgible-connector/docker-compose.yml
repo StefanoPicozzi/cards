@@ -7,11 +7,13 @@ name: edgible-connector
 
 services:
   edgible-mcp:
-    image: ghcr.io/edgible-org/edgible-mcp:0.7.9
+    image: ghcr.io/edgible-org/edgible-mcp:0.7.10
     restart: unless-stopped
     environment:
       EDGIBLE_MCP_ALLOW_WRITE: ${EDGIBLE_MCP_ALLOW_WRITE:-0}
       EDGIBLE_MCP_DEVICES: ${EDGIBLE_MCP_DEVICES:-}
+      # Named in whats_running, so a person with two connectors can tell which one answered.
+      EDGIBLE_MCP_DEVICE: ${DEVICE:-}
       # The page where a person stores a key they bring, from any device: mcp-signin shows it on its
       # sign-in address, behind Edgible's org sign-in (request_key gives the link).
       # A shared AI gateway's API address (the litellm card's litellm-api), for gateway_key.

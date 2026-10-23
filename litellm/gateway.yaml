@@ -35,6 +35,7 @@ model_list:
     litellm_params:
       model: os.environ/LITELLM_PRIVATE_MODEL
       api_base: os.environ/LITELLM_PRIVATE_URL
+      api_key: os.environ/OLLAMA_API_KEY
       input_cost_per_token: 0.0000001
       output_cost_per_token: 0.0000001
   # private-smart: a larger model on your own machine, for real work that must stay private, on a
@@ -43,6 +44,7 @@ model_list:
     litellm_params:
       model: os.environ/LITELLM_PRIVATE_SMART_MODEL
       api_base: os.environ/LITELLM_PRIVATE_URL
+      api_key: os.environ/OLLAMA_API_KEY
       input_cost_per_token: 0.0000001
       output_cost_per_token: 0.0000001
 

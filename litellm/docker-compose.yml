@@ -52,6 +52,9 @@ services:
       LITELLM_PRIVATE_MODEL: ${LITELLM_PRIVATE_MODEL:-ollama/qwen2.5:7b}
       LITELLM_PRIVATE_SMART_MODEL: ${LITELLM_PRIVATE_SMART_MODEL:-ollama/qwen3.5:27b}
       LITELLM_PRIVATE_URL: ${LITELLM_PRIVATE_URL:-http://host.docker.internal:11434}
+      # An Ollama on another machine, published by Edgible, wants an API key. One on this machine
+      # ignores it, and LiteLLM would send an empty Bearer header with no value, so a placeholder.
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY:-ollama}
       LITELLM_APP_BUDGET: ${LITELLM_APP_BUDGET:-5}
       LITELLM_APP_BUDGET_PERIOD: ${LITELLM_APP_BUDGET_PERIOD:-30d}
       STORE_MODEL_IN_DB: "True"

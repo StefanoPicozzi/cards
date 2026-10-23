@@ -91,9 +91,9 @@ The rest of the setup is in the [Teamdesk docs](https://github.com/stefano-edgib
 
 The card runs a published image, so a change to the app means a new image. You build it on the machine that runs the card, and name it in `card.env`.
 
-The source of `teamdesk` is [github.com/stefano-edgible/claude-code-workshop-teamdesk](https://github.com/stefano-edgible/claude-code-workshop-teamdesk). Its image is built from `Dockerfile`.
+The source of `teamdesk` is [github.com/stefano-edgible/claude-code-workshop-teamdesk](https://github.com/stefano-edgible/claude-code-workshop-teamdesk). Its image is built from `Dockerfile`. Tag `v1.0.0` is the code the pinned image was built from.
 
-1. Fork the repository and clone it. The fork is yours to keep: a pull request to the repository is how a change reaches everyone.
+1. Fork the repository and clone it, then `git checkout v1.0.0`. The fork is yours to keep: a pull request to the repository is how a change reaches everyone.
 2. Change it, and try the change with `bun install && bun run dev`, which runs the app from source without a container. Its own README and the files it points to say how the code is laid out.
 3. Build the image on the machine that runs the card, from the clone:
 

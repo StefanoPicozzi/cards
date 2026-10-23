@@ -17,6 +17,7 @@ applications:
     place: teamdesk
     source:
       repo: https://github.com/stefano-edgible/claude-code-workshop-teamdesk
+      ref: v1.0.0
       dockerfile: Dockerfile
       dev: bun install && bun run dev
 

@@ -2,12 +2,13 @@
 # The host port, ORG_LABEL and the first admin come from card.env. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # The image's own health command is used as the healthcheck.
+# TEAMDESK_IMAGE in card.env replaces the pinned image with one built from the source.
 
 name: teamdesk
 
 services:
   teamdesk:
-    image: ghcr.io/stefano-edgible/teamdesk:1.0.0
+    image: ${TEAMDESK_IMAGE:-ghcr.io/stefano-edgible/teamdesk:1.0.0}
     restart: unless-stopped
     ports:
       - "127.0.0.1:${TEAMDESK_PORT:?set TEAMDESK_PORT in card.env}:3000"

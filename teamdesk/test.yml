@@ -1,0 +1,29 @@
+tested: 2026-10-23
+result: pass
+card-kit: "abf2394"
+edgible-cli: 1.4.26
+files: sha256:e59324c0f1939bff
+machine: linux/arm64, docker 29.1.3
+images:
+  - ghcr.io/stefano-edgible/teamdesk:1.0.0@sha256:eb89b59ccedd945b4327f727ca25a7be4582b4e322fbf43641777c2ce1b0f06f
+image_facts:
+  ghcr.io/stefano-edgible/teamdesk:1.0.0: {user: "bun", archs: ["amd64", "arm64"], healthcheck: true}
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    teamdesk: pass
+  checks:
+    team-works: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"members": 1, "rooms": 1}
+measured:
+  teamdesk:
+    memory: 74 MB
+    images: 155 MB
+    data: 172 KB
+duration: 2m
+by: agent
+notes: teamdesk is taken in the test org, so it was published as test-teamdesk.

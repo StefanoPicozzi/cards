@@ -1,0 +1,22 @@
+# Compose file for the teamdesk card.
+# The host port, ORG_LABEL and the first admin come from card.env. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+# The image's own health command is used as the healthcheck.
+
+name: teamdesk
+
+services:
+  teamdesk:
+    image: ghcr.io/stefano-edgible/teamdesk:1.0.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${TEAMDESK_PORT:?set TEAMDESK_PORT in card.env}:3000"
+    environment:
+      # Made the first admin while the team is empty; ignored afterwards.
+      TEAMDESK_ADMIN_EMAIL: ${TEAMDESK_ADMIN_EMAIL:?set TEAMDESK_ADMIN_EMAIL in card.env}
+      TEAMDESK_ADMIN_NAME: ${TEAMDESK_ADMIN_NAME:-Admin}
+    volumes:
+      - teamdesk-data:/data
+
+volumes:
+  teamdesk-data: {}

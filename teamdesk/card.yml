@@ -15,6 +15,10 @@ applications:
     published: true
     authModes: [org]
     place: teamdesk
+    source:
+      repo: https://github.com/stefano-edgible/claude-code-workshop-teamdesk
+      dockerfile: Dockerfile
+      dev: bun install && bun run dev
 
 data:
   volumes:

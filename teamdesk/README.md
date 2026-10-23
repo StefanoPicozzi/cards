@@ -89,14 +89,33 @@ The rest of the setup is in the [Teamdesk docs](https://github.com/stefano-edgib
 
 ## Customising
 
-The card runs a published image, so a new feature means a new image. The source is [stefano-edgible/claude-code-workshop-teamdesk](https://github.com/stefano-edgible/claude-code-workshop-teamdesk), and the image names it too (`docker inspect` shows `org.opencontainers.image.source`).
+The card runs a published image, so a change to the app means a new image. You build it on the machine that runs the card, and point the card at it.
 
-1. Fork the repository and clone it. `bun install`, then `bun run dev` serves it with demo data on port 3000.
-2. Make the change. A feature is usually a table in `packages/db/src/schema.ts`, a query module, a service in `packages/services`, a thin tRPC router and a route. The repository's `CLAUDE.md` lists the rules. After a schema change run `cd packages/db && bun run generate` and commit `migrations/`: the app applies pending migrations when it starts, so existing data is upgraded in place.
-3. Build and push your own image, for example `docker build -t ghcr.io/<you>/teamdesk:1.1.0 .`.
-4. Back the card up first (migrations cannot be undone), then change the `image:` line in `docker-compose.yml` and run `docker compose --env-file teamdesk/card.env -f teamdesk/docker-compose.yml up -d --wait`. The data stays in `teamdesk-data`.
+The source of `teamdesk` is [github.com/stefano-edgible/claude-code-workshop-teamdesk](https://github.com/stefano-edgible/claude-code-workshop-teamdesk). Its image is built from `Dockerfile`.
 
-Editing `docker-compose.yml` makes your copy of the card your own, so take later changes to the card by comparing the files. If the feature would help others, send a pull request to the repository instead and use the upstream image once it is released.
+1. Fork the repository and clone it. The fork is yours to keep: a pull request to the repository is how a change reaches everyone.
+2. Change it, and try the change with `bun install && bun run dev`, which runs the app from source without a container. Its own README and the files it points to say how the code is laid out.
+3. Build the image on the machine that runs the card, from the clone:
+
+   ```bash
+   docker build -t teamdesk:custom .
+   ```
+
+   `teamdesk:custom` exists only on that machine, which is all the card needs. To run it on another machine, or on a different CPU, push it to a registry you control instead, and build for each CPU the machine has (`docker buildx build --platform linux/amd64,linux/arm64 --push`).
+4. Back the card up, because a new version can change the data in a way that cannot be undone (see the card-kit README for `backup-card`).
+5. In `docker-compose.yml`, change the `image:` line of `teamdesk` to `teamdesk:custom` (or to your registry's name), then start it again:
+
+   ```bash
+   docker compose --env-file teamdesk/card.env -f teamdesk/docker-compose.yml up -d --wait
+   ```
+
+   The data stays in its volume. Run the Verify step again.
+
+To go back, put the old `image:` line back, restore the backup if the data changed, and start again.
+
+A feature is usually a table in `packages/db/src/schema.ts`, a query module, a service in `packages/services`, a thin tRPC router and a route. The repository's `CLAUDE.md` lists the rules. After a schema change run `cd packages/db && bun run generate` and commit `migrations/`: the app applies pending migrations when it starts, so existing data is upgraded in place, and cannot be downgraded.
+
+Editing the Compose file makes your copy of the card your own, so take later changes to the card by comparing the files rather than fetching over them.
 
 ## Tear down
 

@@ -6,7 +6,9 @@
 
 ## What
 
-One app, `ollama`, the Ollama API on `api-key`: without a key it answers `401`, and with one any client that speaks Ollama's API works, such as Open WebUI, Continue, or your own scripts, with the key sent as `Authorization: Bearer <key>`. Ollama has no login of its own, so the key is what keeps strangers off your GPU. It listens on 127.0.0.1 only; Edgible publishes it.
+One app, `ollama`, the Ollama API on `api-key`: without a key it answers `401`, and with one any client that speaks Ollama's API works, such as Open WebUI, Continue, or your own scripts, with the key sent as `Authorization: Bearer <key>`. Ollama has no login of its own, so the key is what keeps strangers off your GPU. It listens on every address of this Mac (`OLLAMA_BIND=0.0.0.0`), and Edgible publishes it.
+
+**Read this before you start.** Ollama refuses any request whose `Host` is not localhost when it listens on 127.0.0.1 only, and Edgible forwards the app's own hostname, so a loopback-only Ollama answers every published call with `403`, key or not. Listening on all addresses fixes that, and it means anything on this Mac's network can reach Ollama without a key. Use the card on a network you trust, and never forward the port on your router. Set `OLLAMA_BIND=127.0.0.1` to keep Ollama private to this Mac; then only clients on the Mac work, not the published app.
 
 The models live in the folder `OLLAMA_MODELS` names, by default `models/` in the card's directory. Plan for them: a small model takes 2 to 5 GB, a large one 20 to 40 GB, and a model needs about its own size in memory to run. Minimum recommended for the place `ollama`: an Apple Silicon Mac with 8 GB of memory and 2 GB of disk; it runs on the Mac's GPU.
 
@@ -83,7 +85,7 @@ edgible app list
 curl -sS -o /dev/null -w '%{http_code}\n' "https://<ollama hostname>"
 ```
 
-Make a key for each person or tool, which is shown once: `edgible app api-keys create --app ollama --name <who>`. Then `curl -H "Authorization: Bearer <key>" https://<ollama hostname>/api/tags` lists your models. `edgible app api-keys list --app ollama` and `delete` manage the keys. The card's test also asks a tiny model a question and checks, with `/api/ps`, that it ran 100% on the GPU.
+Make a key for each person or tool, which is shown once: `edgible app api-keys create --app ollama --name <who>`. Then `curl -H "Authorization: Bearer <key>" https://<ollama hostname>/api/tags` lists your models. `edgible app api-keys list --app ollama` and `delete` manage the keys. The card's tests also ask a tiny model a question and check, with `/api/ps`, that it ran 100% on the GPU, and make a key, call the published app with it from this Mac (`401` without the key, `200` with it), and delete the key.
 
 
 The rest of the setup is in the [Ollama docs](https://github.com/ollama/ollama/tree/main/docs).

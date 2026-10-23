@@ -12,6 +12,7 @@ VERSION=0.40.4
 SHA256=a4ceae4b2aaf18df37ebcbfb56ba3a37a87838631112d66c2be07268693c8d58
 
 : "${SERVICE:?set SERVICE in card.env}" "${OLLAMA_PORT:?set OLLAMA_PORT in card.env}"
+OLLAMA_BIND=${OLLAMA_BIND:-0.0.0.0}
 if [ "$(uname -s)" != Darwin ] || [ "$(uname -m)" != arm64 ]; then
   echo "ollama-mac runs on an Apple Silicon Mac; use the ollama card elsewhere" >&2
   exit 1
@@ -40,7 +41,8 @@ for old in "$dir"/.native/ollama-*; do
   [ "$old" = "$app" ] || rm -rf "$old"
 done
 
-# The service. Ollama listens on this Mac only; Edgible publishes the port.
+# The service. Ollama listens on OLLAMA_BIND (all addresses by default: card.env says why);
+# Edgible publishes the port and puts the API key in front of it.
 mkdir -p "$models" "$dir/logs" "$HOME/Library/LaunchAgents"
 plist="$HOME/Library/LaunchAgents/$SERVICE.plist"
 cat > "$plist" <<PLIST
@@ -52,7 +54,7 @@ cat > "$plist" <<PLIST
   <key>ProgramArguments</key><array><string>$app/ollama</string><string>serve</string></array>
   <key>EnvironmentVariables</key>
   <dict>
-    <key>OLLAMA_HOST</key><string>127.0.0.1:$OLLAMA_PORT</string>
+    <key>OLLAMA_HOST</key><string>$OLLAMA_BIND:$OLLAMA_PORT</string>
     <key>OLLAMA_MODELS</key><string>$models</string>
   </dict>
   <key>RunAtLoad</key><true/>
@@ -67,7 +69,7 @@ launchctl bootstrap "gui/$(id -u)" "$plist"
 
 for _ in $(seq 60); do
   if version=$(curl -fsS "http://127.0.0.1:$OLLAMA_PORT/api/version" 2>/dev/null); then
-    echo "Ollama $VERSION is running on 127.0.0.1:$OLLAMA_PORT ($version), models in $models"
+    echo "Ollama $VERSION is running on $OLLAMA_BIND:$OLLAMA_PORT ($version), models in $models"
     exit 0
   fi
   sleep 1

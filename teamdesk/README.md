@@ -89,7 +89,7 @@ The rest of the setup is in the [Teamdesk docs](https://github.com/stefano-edgib
 
 ## Customising
 
-The card runs a published image, so a change to the app means a new image. You build it on the machine that runs the card, and point the card at it.
+The card runs a published image, so a change to the app means a new image. You build it on the machine that runs the card, and name it in `card.env`.
 
 The source of `teamdesk` is [github.com/stefano-edgible/claude-code-workshop-teamdesk](https://github.com/stefano-edgible/claude-code-workshop-teamdesk). Its image is built from `Dockerfile`.
 
@@ -103,7 +103,7 @@ The source of `teamdesk` is [github.com/stefano-edgible/claude-code-workshop-tea
 
    `teamdesk:custom` exists only on that machine, which is all the card needs. To run it on another machine, or on a different CPU, push it to a registry you control instead, and build for each CPU the machine has (`docker buildx build --platform linux/amd64,linux/arm64 --push`).
 4. Back the card up, because a new version can change the data in a way that cannot be undone (see the card-kit README for `backup-card`).
-5. In `docker-compose.yml`, change the `image:` line of `teamdesk` to `teamdesk:custom` (or to your registry's name), then start it again:
+5. In `teamdesk/card.env`, set `TEAMDESK_IMAGE=teamdesk:custom` (or your registry's name), then start it again:
 
    ```bash
    docker compose --env-file teamdesk/card.env -f teamdesk/docker-compose.yml up -d --wait
@@ -111,11 +111,11 @@ The source of `teamdesk` is [github.com/stefano-edgible/claude-code-workshop-tea
 
    The data stays in its volume. Run the Verify step again.
 
-To go back, put the old `image:` line back, restore the backup if the data changed, and start again.
+To go back, remove the `TEAMDESK_IMAGE` line, restore the backup if the data changed, and start again.
 
 A feature is usually a table in `packages/db/src/schema.ts`, a query module, a service in `packages/services`, a thin tRPC router and a route. The repository's `CLAUDE.md` lists the rules. After a schema change run `cd packages/db && bun run generate` and commit `migrations/`: the app applies pending migrations when it starts, so existing data is upgraded in place, and cannot be downgraded.
 
-Editing the Compose file makes your copy of the card your own, so take later changes to the card by comparing the files rather than fetching over them.
+The Compose file stays as published, so a later upgrade of the card keeps your image: your `card.env` line is a setting to keep, not a file to overwrite.
 
 ## Tear down
 

@@ -8,7 +8,7 @@
 
 One app, `ollama`, the Ollama API on `api-key`: without a key it answers `401`, and with one any client that speaks Ollama's API works, such as Open WebUI, Continue, or your own scripts, with the key sent as `Authorization: Bearer <key>`. Ollama has no login of its own, so the key is what keeps strangers off your GPU. Edgible checks the key on this Mac, before a request reaches anything, and accepts it as `Authorization: Bearer <key>` or `X-API-Key: <key>`.
 
-**Why there is a proxy.** Ollama refuses any request whose `Host` is not localhost when it listens on 127.0.0.1 only, and Edgible forwards the app's own hostname, so a published, loopback-only Ollama answers every call with `403`, key or not. Listening on every address would fix that, and would let anything on this Mac's network use Ollama without a key. Instead, Ollama stays on 127.0.0.1 (`OLLAMA_PORT`), and a small [Caddy](https://caddyserver.com) proxy on 127.0.0.1 too (`OLLAMA_PROXY_PORT`) sets `Host` to localhost and passes on only what a client needs to use a model: chat, generate, embeddings, the model list and its details, and the OpenAI-style `/v1` routes. Pulling, creating, copying, pushing and deleting a model are refused with `403`, so a key can use your models and cannot change them: do those on the Mac, against `127.0.0.1:$OLLAMA_PORT`. Edgible publishes the proxy, `ollama`, and puts the key in front of it.
+**Why there is a proxy.** Ollama refuses any request whose `Host` is not localhost when it listens on 127.0.0.1 only, and Edgible forwards the app's own hostname, so a published, loopback-only Ollama answers every call with `403`, key or not. Listening on every address would fix that, and would let anything on this Mac's network use Ollama without a key. Instead, Ollama stays on 127.0.0.1 (`OLLAMA_LOCAL_PORT`), and a small [Caddy](https://caddyserver.com) proxy on 127.0.0.1 too (`OLLAMA_PORT`) sets `Host` to localhost and passes on only what a client needs to use a model: chat, generate, embeddings, the model list and its details, and the OpenAI-style `/v1` routes. Pulling, creating, copying, pushing and deleting a model are refused with `403`, so a key can use your models and cannot change them: do those on the Mac, against `127.0.0.1:$OLLAMA_LOCAL_PORT`. Edgible publishes the proxy, `ollama`, and puts the key in front of it.
 
 The models live in the folder `OLLAMA_MODELS` names, by default `models/` in the card's directory. Plan for them: a small model takes 2 to 5 GB, a large one 20 to 40 GB, and a model needs about its own size in memory to run. Minimum recommended for the place `ollama`: an Apple Silicon Mac with 8 GB of memory and 2 GB of disk; it runs on the Mac's GPU.
 
@@ -28,7 +28,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` and `ORG_LABEL`. Keep `OLLAMA_PORT` at `11434`, the port Ollama's clients expect, unless Check says it is taken, as it is when another Ollama already runs on this Mac. `OLLAMA_PROXY_PORT` is the port Edgible publishes; change it only if Check says it is taken. To keep the models an earlier Ollama install downloaded, set `OLLAMA_MODELS=~/.ollama/models`, and stop that Ollama first (quit the Ollama app, or `brew services stop ollama`), so two never use the folder at once.
+Set `DEVICE` and `ORG_LABEL`. Keep `OLLAMA_LOCAL_PORT` at `11434`, the port Ollama's clients expect, unless another Ollama already runs on this Mac: Install stops and names the program that holds a port, and then you set `OLLAMA_LOCAL_PORT` to a free one. `OLLAMA_PORT` is the port Edgible publishes; change it only if Check or Install says it is taken. To keep the models an earlier Ollama install downloaded, set `OLLAMA_MODELS=~/.ollama/models`, and stop that Ollama first (quit the Ollama app, or `brew services stop ollama`), so two never use the folder at once.
 
 ```bash
 nano ollama-mac/card.env
@@ -52,7 +52,7 @@ set +a
 sh ollama-mac/install.sh
 ```
 
-It prints the version, where the models are, and the proxy's port. Both services start again at each login, and run while your user is logged in: for a Mac that serves while nobody uses it, turn on automatic login. Then download a model, such as `curl http://127.0.0.1:$OLLAMA_PORT/api/pull -d '{"model": "llama3.2"}'`, or with the release's own command: `OLLAMA_HOST=127.0.0.1:$OLLAMA_PORT ollama-mac/.native/ollama-*/ollama pull llama3.2`.
+It prints the version, where the models are, and the proxy's port. Both services start again at each login, and run while your user is logged in: for a Mac that serves while nobody uses it, turn on automatic login. Then download a model, such as `curl http://127.0.0.1:$OLLAMA_LOCAL_PORT/api/pull -d '{"model": "llama3.2"}'`, or with the release's own command: `OLLAMA_HOST=127.0.0.1:$OLLAMA_LOCAL_PORT ollama-mac/.native/ollama-*/ollama pull llama3.2`.
 
 ### 5. Publish
 
@@ -70,7 +70,7 @@ device_id=$(edgible device list --json | jq -er --arg name "$DEVICE" '
 edgible app create existing \
   --non-interactive \
   --name ollama \
-  --port "$OLLAMA_PROXY_PORT" \
+  --port "$OLLAMA_PORT" \
   --protocol https \
   --auth-modes api-key \
   --device-id "$device_id"

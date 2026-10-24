@@ -15,10 +15,10 @@ SHA256=a4ceae4b2aaf18df37ebcbfb56ba3a37a87838631112d66c2be07268693c8d58
 CADDY_VERSION=2.11.7
 CADDY_SHA512=68f592df8f0ec058fbdb9b137b64e9a0aa792d28c06e1e3b9ec12d0e7fb371683a54e73ef6d8e6d0dd70dc6b941a5b5d5b73faedd3f89de119ad2eb78bdc668e
 
-: "${SERVICE:?set SERVICE in card.env}" "${OLLAMA_PORT:?set OLLAMA_PORT in card.env}" \
-  "${OLLAMA_PROXY_PORT:?set OLLAMA_PROXY_PORT in card.env}"
-if [ "$OLLAMA_PORT" = "$OLLAMA_PROXY_PORT" ]; then
-  echo "OLLAMA_PORT and OLLAMA_PROXY_PORT are both $OLLAMA_PORT; Ollama and its proxy need a port each" >&2
+: "${SERVICE:?set SERVICE in card.env}" "${OLLAMA_LOCAL_PORT:?set OLLAMA_LOCAL_PORT in card.env}" \
+  "${OLLAMA_PORT:?set OLLAMA_PORT in card.env}"
+if [ "$OLLAMA_LOCAL_PORT" = "$OLLAMA_PORT" ]; then
+  echo "OLLAMA_LOCAL_PORT and OLLAMA_PORT are both $OLLAMA_LOCAL_PORT; Ollama and its proxy need a port each" >&2
   exit 1
 fi
 if [ "$(uname -s)" != Darwin ] || [ "$(uname -m)" != arm64 ]; then
@@ -74,12 +74,12 @@ cat > "$dir/.native/Caddyfile" <<CADDYFILE
 	admin off
 	auto_https off
 }
-:$OLLAMA_PROXY_PORT {
+:$OLLAMA_PORT {
 	bind 127.0.0.1
 	@use path / /api/chat /api/generate /api/embed /api/embeddings /api/tags /api/show /api/ps /api/version /v1/*
 	handle @use {
-		reverse_proxy 127.0.0.1:$OLLAMA_PORT {
-			header_up Host localhost:$OLLAMA_PORT
+		reverse_proxy 127.0.0.1:$OLLAMA_LOCAL_PORT {
+			header_up Host localhost:$OLLAMA_LOCAL_PORT
 		}
 	}
 	handle {
@@ -91,6 +91,15 @@ CADDYFILE
 # The services.
 launchctl bootout "gui/$(id -u)/$SERVICE-proxy" 2>/dev/null || true
 launchctl bootout "gui/$(id -u)/$SERVICE" 2>/dev/null || true
+# With this card's own services stopped, both ports must be free: another Ollama, or anything else,
+# listening on one would answer the checks below in their place, and the card would look installed.
+sleep 1
+for port in "$OLLAMA_LOCAL_PORT" "$OLLAMA_PORT"; do
+  if lsof -nP -iTCP:"$port" -sTCP:LISTEN >/dev/null 2>&1; then
+    echo "port $port is in use by $(lsof -nP -iTCP:"$port" -sTCP:LISTEN | awk 'NR==2{print $1}'); set OLLAMA_LOCAL_PORT or OLLAMA_PORT in card.env to a free port" >&2
+    exit 1
+  fi
+done
 cat > "$HOME/Library/LaunchAgents/$SERVICE.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -100,7 +109,7 @@ cat > "$HOME/Library/LaunchAgents/$SERVICE.plist" <<PLIST
   <key>ProgramArguments</key><array><string>$app/ollama</string><string>serve</string></array>
   <key>EnvironmentVariables</key>
   <dict>
-    <key>OLLAMA_HOST</key><string>127.0.0.1:$OLLAMA_PORT</string>
+    <key>OLLAMA_HOST</key><string>127.0.0.1:$OLLAMA_LOCAL_PORT</string>
     <key>OLLAMA_MODELS</key><string>$models</string>
   </dict>
   <key>RunAtLoad</key><true/>
@@ -133,9 +142,9 @@ launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/$SERVICE.plist"
 launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/$SERVICE-proxy.plist"
 
 for _ in $(seq 60); do
-  if version=$(curl -fsS "http://127.0.0.1:$OLLAMA_PORT/api/version" 2>/dev/null) &&
-     curl -fsS "http://127.0.0.1:$OLLAMA_PROXY_PORT/api/version" >/dev/null 2>&1; then
-    echo "Ollama $VERSION is running on 127.0.0.1:$OLLAMA_PORT ($version), models in $models; the proxy is on 127.0.0.1:$OLLAMA_PROXY_PORT"
+  if version=$(curl -fsS "http://127.0.0.1:$OLLAMA_LOCAL_PORT/api/version" 2>/dev/null) &&
+     curl -fsS "http://127.0.0.1:$OLLAMA_PORT/api/version" >/dev/null 2>&1; then
+    echo "Ollama $VERSION is running on 127.0.0.1:$OLLAMA_LOCAL_PORT ($version), models in $models; the proxy is on 127.0.0.1:$OLLAMA_PORT"
     exit 0
   fi
   sleep 1

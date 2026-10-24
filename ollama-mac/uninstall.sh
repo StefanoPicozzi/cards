@@ -11,8 +11,9 @@ set -eu
 dir=$(cd "$(dirname "$0")" && pwd)
 
 for s in "$SERVICE-proxy" "$SERVICE"; do
+  plist="$HOME/Library/LaunchAgents/$s.plist"
   launchctl bootout "gui/$(id -u)/$s" 2>/dev/null || true
-  rm -f "$HOME/Library/LaunchAgents/$s.plist"
+  rm -f "$plist"
 done
 rm -rf "$dir/.native"
 echo "removed the $SERVICE services, Ollama and its proxy; the models are where they were"

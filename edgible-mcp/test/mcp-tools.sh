@@ -1,9 +1,10 @@
 # A check for test-card, run after Verify with card.env exported and HOSTNAME_<APP> set.
 # From the mcp-bridge app card's check. An MCP client's whole path through Edgible: with a
-# fresh Edgible API key it initializes over Streamable HTTP, lists the three tools, and
-# calls each one. whats_running must answer whether or not the server's Edgible sign-in has
-# been made: a test's fresh volume has none. A wrong key is refused. The key is deleted
-# afterwards, and never printed.
+# fresh Edgible API key it initializes over Streamable HTTP, lists the five read-only tools
+# (find, describe, sign_in, agent_spend, whats_running), and calls the three that need nothing
+# else. whats_running must answer whether or not the server's Edgible sign-in has been made: a
+# test's fresh volume has none. A wrong key is refused. The key is deleted afterwards, and
+# never printed.
 set -eu
 B="https://$HOSTNAME_EDGIBLE_MCP/mcp"
 app=${HOSTNAME_EDGIBLE_MCP%%.*}
@@ -44,7 +45,7 @@ rpc '{"jsonrpc":"2.0","method":"notifications/initialized"}' >/dev/null
 code=$(rpc '{"jsonrpc":"2.0","id":2,"method":"tools/list"}')
 [ "$code" = 200 ] || { echo "tools/list answered $code"; exit 1; }
 tools=$(answer | jq -r '[.result.tools[].name] | sort | join(",")')
-[ "$tools" = "describe,find,whats_running" ] || { echo "tools: $tools"; exit 1; }
+[ "$tools" = "agent_spend,describe,find,sign_in,whats_running" ] || { echo "tools: $tools"; exit 1; }
 
 # call ID TOOL ARGS: the tool's text, or exit 1 when it fails.
 call() {
@@ -61,4 +62,4 @@ case "$running" in
   "# Apps in "*) echo "whats_running: answers, signed in" ;;
   *) echo "whats_running: $(printf '%s' "$running" | head -c 300)"; exit 1 ;;
 esac
-echo "mcp-tools: $tools, each called with a key; a wrong key refused"
+echo "mcp-tools: $tools; find, describe and whats_running called with a key; a wrong key refused"

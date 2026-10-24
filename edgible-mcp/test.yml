@@ -1,13 +1,13 @@
-tested: 2026-10-20
+tested: 2026-10-25
 result: pass
-card-kit: "73ec62a"
+card-kit: "5d956ff"
 edgible-cli: 1.4.12
-files: sha256:3807419190f525d7
+files: sha256:cb20b783c3c0df9b
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/edgible-org/edgible-mcp:0.5.0@sha256:08ff5622c5778e6b5b24a536d8b6141ab81cb27504335ed741fe3ac3e9ffa69f
+  - ghcr.io/edgible-org/edgible-mcp:0.7.15@sha256:177a4731857210a294af6d61a26561c64ad1f41006c39a50d707ae39d0a3ffed
 image_facts:
-  ghcr.io/edgible-org/edgible-mcp:0.7.8: {user: "root", archs: ["amd64", "arm64"], healthcheck: true}
+  ghcr.io/edgible-org/edgible-mcp:0.7.15: {user: "root", archs: ["amd64", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass
@@ -19,9 +19,9 @@ steps:
   teardown: pass
 measured:
   edgible-mcp:
-    memory: 42 MB
+    memory: 94 MB
     images: 97 MB
-    data: 258 KB
+    data: 311 KB
 duration: 3m
-by: person
+by: agent
 notes: edgible-mcp's port 8000 was taken on the test machine, so it was tested on 8001.

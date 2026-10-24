@@ -7,7 +7,7 @@
 # front. Three extras, each only when its setting is given (the edgible-agent pattern sets them):
 #   OPENCLAW_FALLBACK_MODEL  a model to answer when the main one fails (a free tier's 429), by
 #                            its full name: deepseek/deepseek-flash (DEEPSEEK_API_KEY), or
-#                            ollama/<tag> at OPENCLAW_FALLBACK_URL, such as ollama-mac's
+#                            ollama/<tag> at OPENCLAW_FALLBACK_URL, such as ollama-osx's
 #   EDGIBLE_MCP_URL          Edgible's MCP tools (edgible-mcp), added as the server "edgible"
 #   EDGIBLE_SKILL            1: the edgible-cards skill from card-kit, for judgment
 # Later starts re-apply only who may reach the Gateway (its address, the proxy in front, and the

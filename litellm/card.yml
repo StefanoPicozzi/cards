@@ -64,7 +64,7 @@ secrets:
     required: false
   OLLAMA_API_KEY:
     kind: external
-    from: "`edgible app api-keys create --app ollama --name gateway`, for private and private-smart when Ollama runs on another machine (the ollama-mac card's app)"
+    from: "`edgible app api-keys create --app ollama --name gateway`, for private and private-smart when Ollama runs on another machine (the ollama-osx card's app)"
     required: false
 
 places:

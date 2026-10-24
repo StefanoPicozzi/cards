@@ -1,8 +1,8 @@
-tested: 2026-10-24
+tested: 2026-10-25
 result: pass
 card-kit: "0c8deda"
 edgible-cli: 1.4.12
-files: sha256:0893d9e913878443
+files: sha256:b0e57bc8334f9c3c
 machine: darwin/arm64, macos 26.6.2, native
 images:
   - https://github.com/ollama/ollama/releases/tag/v0.40.4
@@ -19,8 +19,9 @@ steps:
   teardown: pass
 measured:
   ollama:
-    memory: 660 MB
+    memory: 665 MB
     images: 598 MB
     data: 271 MB
 duration: 4m
 by: agent
+notes: ollama's port 21434 was taken on the test machine, so it was tested on 21435. ollama is taken in the test org, so it was published as test-ollama.

@@ -1,4 +1,4 @@
-# ollama-mac
+# ollama-osx
 
 ## Why
 
@@ -21,9 +21,9 @@ Five steps. Edit [card.env](card.env) before you start.
 ### 1. Fetch
 
 ```bash
-mkdir -p ollama-mac
+mkdir -p ollama-osx
 curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=2 -C ollama-mac cards-main/ollama-mac
+  | tar -xz --strip-components=2 -C ollama-osx cards-main/ollama-osx
 ```
 
 ### 2. Edit card.env
@@ -31,14 +31,14 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 Set `DEVICE` and `ORG_LABEL`. Keep `OLLAMA_LOCAL_PORT` at `11434`, the port Ollama's clients expect, unless another Ollama already runs on this Mac: Install stops and names the program that holds a port, and then you set `OLLAMA_LOCAL_PORT` to a free one. `OLLAMA_PORT` is the port Edgible publishes; change it only if Check or Install says it is taken. To keep the models an earlier Ollama install downloaded, set `OLLAMA_MODELS=~/.ollama/models`, and stop that Ollama first (quit the Ollama app, or `brew services stop ollama`), so two never use the folder at once.
 
 ```bash
-nano ollama-mac/card.env
+nano ollama-osx/card.env
 ```
 
 ### 3. Check
 
 ```bash
 curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
-python3 check-env.py ollama-mac
+python3 check-env.py ollama-osx
 ```
 
 It checks this machine, the port, and the service name, and prints any fix as lines to paste. Run it again until it says `no conflicts`.
@@ -47,19 +47,19 @@ It checks this machine, the port, and the service name, and prints any fix as li
 
 ```bash
 set -a
-. ollama-mac/card.env
+. ollama-osx/card.env
 set +a
-sh ollama-mac/install.sh
+sh ollama-osx/install.sh
 ```
 
-It prints the version, where the models are, and the proxy's port. Both services start again at each login, and run while your user is logged in: for a Mac that serves while nobody uses it, turn on automatic login. Then download a model, such as `curl http://127.0.0.1:$OLLAMA_LOCAL_PORT/api/pull -d '{"model": "llama3.2"}'`, or with the release's own command: `OLLAMA_HOST=127.0.0.1:$OLLAMA_LOCAL_PORT ollama-mac/.native/ollama-*/ollama pull llama3.2`.
+It prints the version, where the models are, and the proxy's port. Both services start again at each login, and run while your user is logged in: for a Mac that serves while nobody uses it, turn on automatic login. Then download a model, such as `curl http://127.0.0.1:$OLLAMA_LOCAL_PORT/api/pull -d '{"model": "llama3.2"}'`, or with the release's own command: `OLLAMA_HOST=127.0.0.1:$OLLAMA_LOCAL_PORT ollama-osx/.native/ollama-*/ollama pull llama3.2`.
 
 ### 5. Publish
 
 ```bash
 set -euo pipefail
 set -a
-. ollama-mac/card.env
+. ollama-osx/card.env
 set +a
 device_id=$(edgible device list --json | jq -er --arg name "$DEVICE" '
   map(select(.name == $name))
@@ -104,9 +104,9 @@ edgible app delete ollama --yes
 
 ```bash
 set -a
-. ollama-mac/card.env
+. ollama-osx/card.env
 set +a
-sh ollama-mac/uninstall.sh
+sh ollama-osx/uninstall.sh
 ```
 
 It stops both services and removes them, Ollama and the proxy. The models stay: `models/` in the card's directory goes in step 3, and a folder elsewhere (`OLLAMA_MODELS`) is never deleted, because it is not this card's.
@@ -114,5 +114,5 @@ It stops both services and removes them, Ollama and the proxy. The models stay: 
 ### 3. Remove the card
 
 ```bash
-rm -rf ollama-mac
+rm -rf ollama-osx
 ```

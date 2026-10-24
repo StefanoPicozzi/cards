@@ -3,8 +3,8 @@
 # The models stay: in this card's directory they go when you remove the card, and anywhere
 # else (OLLAMA_MODELS) they are not this card's to delete. Run it with card.env exported:
 #
-#   set -a; . ollama-mac/card.env; set +a
-#   sh ollama-mac/uninstall.sh
+#   set -a; . ollama-osx/card.env; set +a
+#   sh ollama-osx/uninstall.sh
 set -eu
 
 : "${SERVICE:?set SERVICE in card.env}"

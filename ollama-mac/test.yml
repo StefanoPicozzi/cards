@@ -1,8 +1,8 @@
-tested: 2026-10-14
+tested: 2026-10-24
 result: pass
-card-kit: "9de9057"
-edgible-cli: 1.4.6
-files: sha256:5b129581c32930ad
+card-kit: "0c8deda"
+edgible-cli: 1.4.12
+files: sha256:25e16e6b91c452b4
 machine: darwin/arm64, macos 26.6.2, native
 images:
   - https://github.com/ollama/ollama/releases/tag/v0.40.4
@@ -14,12 +14,12 @@ steps:
     ollama: pass
   checks:
     gpu: pass
+    keyed: pass
   teardown: pass
 measured:
   ollama:
-    memory: 616 MB
+    memory: 617 MB
     images: 548 MB
     data: 271 MB
-duration: 8m
+duration: 5m
 by: agent
-notes: ollama is taken in the test org, so it was published as test-ollama.

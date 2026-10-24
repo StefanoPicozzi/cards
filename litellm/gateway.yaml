@@ -29,7 +29,7 @@ model_list:
       # so a restart starts the count again; the provider's prepaid credits stay the hard cap.
       max_budget: os.environ/LITELLM_BEST_BUDGET
       budget_duration: os.environ/LITELLM_BEST_BUDGET_PERIOD
-  # private: a model on your own machine (Ollama, such as the ollama-mac card): nothing leaves it.
+  # private: a model on your own machine (Ollama, such as the ollama-osx card): nothing leaves it.
   # Its price is set above zero so a budget still counts it.
   - model_name: private
     litellm_params:

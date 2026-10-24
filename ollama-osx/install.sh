@@ -3,8 +3,8 @@
 # background services (launchd agents) that start at login: Ollama, listening on this Mac only, and a
 # small Caddy proxy in front of it that Edgible publishes. Run it with card.env exported:
 #
-#   set -a; . ollama-mac/card.env; set +a
-#   sh ollama-mac/install.sh
+#   set -a; . ollama-osx/card.env; set +a
+#   sh ollama-osx/install.sh
 #
 # Running it again restarts the services; with a new version below, it upgrades.
 set -eu
@@ -22,7 +22,7 @@ if [ "$OLLAMA_LOCAL_PORT" = "$OLLAMA_PORT" ]; then
   exit 1
 fi
 if [ "$(uname -s)" != Darwin ] || [ "$(uname -m)" != arm64 ]; then
-  echo "ollama-mac runs on an Apple Silicon Mac; use the ollama card elsewhere" >&2
+  echo "ollama-osx runs on an Apple Silicon Mac; use the ollama card elsewhere" >&2
   exit 1
 fi
 dir=$(cd "$(dirname "$0")" && pwd)

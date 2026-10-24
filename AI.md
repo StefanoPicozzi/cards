@@ -8,7 +8,7 @@ With an AI agent, such as Claude Code, you don't need to know which app you want
 
 - **An AI agent that runs commands on your machine.** We test with Claude Code. The skill is in the open Agent Skills format, so other agents that read it should be able to use it too, but we haven't measured how well yet.
 - **Edgible on that machine:** the `edgible` CLI, logged in, with the machine added as a serving device. [Start here](https://guides.edgible.com/guides/start-here/index.html) if you haven't yet.
-- **Docker**, for most cards. A native card, such as [ollama-mac](ollama-mac), runs without it.
+- **Docker**, for most cards. A native card, such as [ollama-osx](ollama-osx), runs without it.
 
 ## Install the skill
 
@@ -29,7 +29,7 @@ No special phrasing. Talk to it the way you'd talk to a friend who knows self-ho
 - "Pocket is shutting down. I want to keep my saved articles and still read them on my phone." It offers two or three bookmark apps, recommends one, and says how the phone app signs in.
 - "We pay $14 a month for website analytics. Could we run our own?" It points to the umami card, and is honest about whether the saving is worth the upkeep.
 - "Get Uptime Kuma running so I hear when my site goes down." It uses the tested card and puts its choices to you before starting anything.
-- "I want my Ollama models on my Mac's GPU, usable from anywhere." It sets up ollama-mac, behind an API key.
+- "I want my Ollama models on my Mac's GPU, usable from anywhere." It sets up ollama-osx, behind an API key.
 - "What's running, and is it all healthy?" A short table: each card, its hostnames, and whether each is up.
 - "Gitea won't load on my phone today. What's wrong?" It works from the app outwards, and tells you what it found.
 - "Back up Vaultwarden before I upgrade it." It backs up, upgrades, and checks it still works.

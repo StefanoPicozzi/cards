@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Card
 metadata:
-  name: ollama-mac
+  name: ollama-osx
   description: Ollama on an Apple Silicon Mac, natively on its GPU, as an API behind a key
   type: app
 

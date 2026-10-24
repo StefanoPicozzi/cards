@@ -17,10 +17,10 @@ One app, `litellm`, on the place `litellm`, behind Edgible's `org` sign-in: Lite
 | `smart` | `deepseek/deepseek-reasoner` | Harder questions; falls back to `fast` |
 | `open` | `openrouter/z-ai/glm-5.3` | A strong open model through OpenRouter, whose one key reaches hundreds of models; falls back to `fast` |
 | `best` | `anthropic/claude-opus-5-5` | When it really matters, dearest by far, asked for on purpose; capped at `LITELLM_BEST_BUDGET` ($5 per 30 days) across all apps, then falls back to `smart` |
-| `private` | `ollama/qwen2.5:7b` at `LITELLM_PRIVATE_URL` | A model on your own machine, such as the ollama-mac card's; no fallback, so nothing leaves it |
+| `private` | `ollama/qwen2.5:7b` at `LITELLM_PRIVATE_URL` | A model on your own machine, such as the ollama-osx card's; no fallback, so nothing leaves it |
 | `private-smart` | `ollama/qwen3.5:27b` at `LITELLM_PRIVATE_URL` | A larger model on your own machine, where there is memory for it; falls back to `private` |
 
-**An Ollama on another machine.** `private` and `private-smart` can use an Ollama that Edgible publishes from a different device, such as the ollama-mac card's app on a Mac with a GPU. Set `LITELLM_PRIVATE_URL` to that app's address and `OLLAMA_API_KEY` to a key made for the gateway (`edgible app api-keys create --app ollama --name gateway`). The gateway sends it as `Authorization: Bearer <key>`. An Ollama on this machine needs no key.
+**An Ollama on another machine.** `private` and `private-smart` can use an Ollama that Edgible publishes from a different device, such as the ollama-osx card's app on a Mac with a GPU. Set `LITELLM_PRIVATE_URL` to that app's address and `OLLAMA_API_KEY` to a key made for the gateway (`edgible app api-keys create --app ollama --name gateway`). The gateway sends it as `Authorization: Bearer <key>`. An Ollama on this machine needs no key.
 
 **Keys you bring** (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, and `OLLAMA_API_KEY` for an Ollama on another machine) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.
 
@@ -63,7 +63,7 @@ curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
 
 ### 2. Edit card.env
 
-Set `DEVICE` to a name `edgible device list` prints. Put a key in `GEMINI_API_KEY`, `DEEPSEEK_API_KEY` or both; a model with no key fails, and its fallback answers. For `private`, point `LITELLM_PRIVATE_URL` at an Ollama, such as the ollama-mac card's on the same Mac (the default). There are no passwords to fill: Start makes them on the machine.
+Set `DEVICE` to a name `edgible device list` prints. Put a key in `GEMINI_API_KEY`, `DEEPSEEK_API_KEY` or both; a model with no key fails, and its fallback answers. For `private`, point `LITELLM_PRIVATE_URL` at an Ollama, such as the ollama-osx card's on the same Mac (the default). There are no passwords to fill: Start makes them on the machine.
 
 ```bash
 nano litellm/card.env

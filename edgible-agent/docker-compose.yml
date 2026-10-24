@@ -122,7 +122,7 @@ services:
       # Loopback only: the Control UI is an admin console over an agent with a shell.
       - "127.0.0.1:${OPENCLAW_PORT:?set OPENCLAW_PORT in card.env}:18789"
     extra_hosts:
-      # A model on this machine, such as ollama-mac: http://host.docker.internal:11434/v1
+      # A model on this machine, such as ollama-osx: http://host.docker.internal:11434/v1
       - "host.docker.internal:host-gateway"
     volumes:
       # The agent's config, memory, sessions and workspace.

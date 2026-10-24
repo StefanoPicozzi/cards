@@ -2,7 +2,7 @@ tested: 2026-10-24
 result: pass
 card-kit: "0c8deda"
 edgible-cli: 1.4.12
-files: sha256:25e16e6b91c452b4
+files: sha256:0893d9e913878443
 machine: darwin/arm64, macos 26.6.2, native
 images:
   - https://github.com/ollama/ollama/releases/tag/v0.40.4
@@ -15,11 +15,12 @@ steps:
   checks:
     gpu: pass
     keyed: pass
+    loopback: pass
   teardown: pass
 measured:
   ollama:
-    memory: 617 MB
-    images: 548 MB
+    memory: 660 MB
+    images: 598 MB
     data: 271 MB
-duration: 5m
+duration: 4m
 by: agent

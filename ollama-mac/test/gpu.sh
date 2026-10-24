@@ -2,7 +2,7 @@
 # Ollama answers a prompt, and runs the model on the Mac's GPU, which is what this card is for.
 # A tiny model (about 270 MB), pulled into the card's own models folder.
 set -eu
-api="http://127.0.0.1:$OLLAMA_PORT/api"
+api="http://127.0.0.1:$OLLAMA_LOCAL_PORT/api"
 model=smollm2:135m
 curl -fsS "$api/pull" -d "{\"model\":\"$model\",\"stream\":false}" >/dev/null
 answer=$(curl -fsS "$api/generate" -d "{\"model\":\"$model\",\"prompt\":\"Say hi.\",\"stream\":false,\"options\":{\"num_predict\":8}}")

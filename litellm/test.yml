@@ -1,8 +1,8 @@
-tested: 2026-10-22
+tested: 2026-10-24
 result: pass
-card-kit: "705f419"
+card-kit: "0c8deda"
 edgible-cli: 1.4.12
-files: sha256:43863e421b7ae62f
+files: sha256:9520fe7d0d4c9a8f
 machine: darwin/arm64, docker 29.4.3
 images:
   - ghcr.io/berriai/litellm:v1.106.2@sha256:7294b90f868c5c38c99b83021c7ba46f9b439e95f8e32964c925c7d2563a03f7
@@ -18,14 +18,15 @@ steps:
     litellm: pass
   checks:
     gateway: pass
+    private-key: pass
   fingerprint: pass
   teardown: pass
 fingerprint: {"keys": 0}
 measured:
   litellm:
-    memory: 702 MB
+    memory: 751 MB
     images: 544 MB
-    data: 53 MB
-duration: 5m
+    data: 54 MB
+duration: 3m
 by: agent
-notes: litellm's port 4000 was taken on the test machine, so it was tested on 4001. litellm is taken in the test org, so it was published as test-litellm.
+notes: litellm is taken in the test org, so it was published as test-litellm.

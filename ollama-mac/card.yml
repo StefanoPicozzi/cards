@@ -7,9 +7,9 @@ metadata:
 
 applications:
   - name: ollama
-    what: Ollama API, running models on the Mac's GPU
+    what: Ollama API on the Mac's GPU, through a small Caddy proxy that lets a key use models but not manage them
     from: https://github.com/ollama/ollama/releases/tag/v0.40.4
-    port: 11434
+    port: 21434
     protocol: https
     subtype: existing
     published: true

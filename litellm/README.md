@@ -20,7 +20,9 @@ One app, `litellm`, on the place `litellm`, behind Edgible's `org` sign-in: Lite
 | `private` | `ollama/qwen2.5:7b` at `LITELLM_PRIVATE_URL` | A model on your own machine, such as the ollama-mac card's; no fallback, so nothing leaves it |
 | `private-smart` | `ollama/qwen3.5:27b` at `LITELLM_PRIVATE_URL` | A larger model on your own machine, where there is memory for it; falls back to `private` |
 
-**Keys you bring** (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.
+**An Ollama on another machine.** `private` and `private-smart` can use an Ollama that Edgible publishes from a different device, such as the ollama-mac card's app on a Mac with a GPU. Set `LITELLM_PRIVATE_URL` to that app's address and `OLLAMA_API_KEY` to a key made for the gateway (`edgible app api-keys create --app ollama --name gateway`). The gateway sends it as `Authorization: Bearer <key>`. An Ollama on this machine needs no key.
+
+**Keys you bring** (`GEMINI_API_KEY`, `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, and `OLLAMA_API_KEY` for an Ollama on another machine) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.
 
 **The gateway's own secrets are made on the machine** by `litellm-secrets`: the database password, the salt key that encrypts what the admin stores (it travels with the data on a move), and the master key, which signs you in to the admin as `admin`. See it with:
 

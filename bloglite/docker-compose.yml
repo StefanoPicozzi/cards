@@ -1,22 +1,39 @@
 # Compose file for the bloglite card.
-# The host port, ORG_LABEL and the secrets come from card.env. Start with:
+# The host port and ORG_LABEL come from card.env. The owner's password is made on this machine
+# by bloglite-secrets, at first start, and never leaves it. Start with:
 #   docker compose --env-file card.env -f docker-compose.yml up -d --wait
 # The image's own health command is used as the healthcheck.
 
 name: bloglite
 
 services:
+  # Makes the owner's password (card.yml secrets:) if it does not exist yet, as a file in the
+  # volume bloglite-secrets, then exits. It never changes it after.
+  bloglite-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        BLOGLITE_ADMIN_PASSWORD=openssl rand -base64 24
+    volumes:
+      - bloglite-secrets:/run/card-secrets
+
   bloglite:
-    image: zot.huijzer.xyz/bloglite:3.0.0
+    image: zot.huijzer.xyz/bloglite:3.1.0
     restart: unless-stopped
     ports:
       - "127.0.0.1:${BLOGLITE_PORT:?set BLOGLITE_PORT in card.env}:3000"
     environment:
       BLOGLITE_USERNAME: ${BLOGLITE_ADMIN_USER:?set BLOGLITE_ADMIN_USER in card.env}
-      BLOGLITE_PASSWORD: ${BLOGLITE_ADMIN_PASSWORD:?set BLOGLITE_ADMIN_PASSWORD in card.env}
+      # The image has no shell, so it reads the password from the file itself (since 3.1.0).
+      BLOGLITE_PASSWORD_FILE: /run/card-secrets/BLOGLITE_ADMIN_PASSWORD
       BLOGLITE_DOMAIN: ${BLOGLITE_DOMAIN:-bloglite.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
     volumes:
       - bloglite-data:/data
+      - bloglite-secrets:/run/card-secrets:ro
+    depends_on:
+      bloglite-secrets:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "/bloglite", "check-health"]
       interval: 10s
@@ -36,3 +53,4 @@ services:
 
 volumes:
   bloglite-data: {}
+  bloglite-secrets: {}

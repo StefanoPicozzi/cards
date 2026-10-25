@@ -8,7 +8,7 @@ metadata:
 applications:
   - name: bloglite
     what: bloglite, the public blog and the owner's login and editor
-    from: zot.huijzer.xyz/bloglite:3.0.0
+    from: zot.huijzer.xyz/bloglite:3.1.0
     port: 3000
     protocol: https
     subtype: existing
@@ -20,11 +20,19 @@ data:
   volumes:
     bloglite-data:
       class: irreplaceable
+    bloglite-secrets:
+      class: irreplaceable        # the card's secrets, made on the device: back up with the data
   fingerprint:
     service: bloglite-tools
     command: >-
       page=$(wget -qO- http://bloglite:3000/) &&
       echo "{\"posts\": $(echo "$page" | grep -o 'href="/posts/[0-9]*' | sort -u | wc -l)}"
+
+secrets:
+  BLOGLITE_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -base64 24
+    for: the owner's sign-in at /login
 
 places:
   bloglite:

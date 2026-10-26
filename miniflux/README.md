@@ -53,7 +53,7 @@ docker compose --env-file miniflux/card.env -f miniflux/docker-compose.yml up -d
 docker compose --env-file miniflux/card.env -f miniflux/docker-compose.yml ps
 ```
 
-The first start downloads the app's images from the registries named in the Compose file: about 128 MB once unpacked, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Miniflux runs its database migrations and makes the admin `admin` on its first start, with the password the card made (`docker compose --env-file miniflux/card.env -f miniflux/docker-compose.yml run --rm --no-deps miniflux-secrets show MINIFLUX_ADMIN_PASSWORD` prints it), so there is no setup page to publish.
+The first start downloads the app's images from the registries named in the Compose file: about 128 MB, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Miniflux runs its database migrations and makes the admin `admin` on its first start, with the password the card made (`docker compose --env-file miniflux/card.env -f miniflux/docker-compose.yml run --rm --no-deps miniflux-secrets show MINIFLUX_ADMIN_PASSWORD` prints it), so there is no setup page to publish.
 
 ### 5. Publish
 

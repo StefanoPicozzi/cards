@@ -53,7 +53,7 @@ docker compose --env-file immich/card.env -f immich/docker-compose.yml up -d --w
 docker compose --env-file immich/card.env -f immich/docker-compose.yml ps
 ```
 
-The first start downloads the app's images from the registries named in the Compose file: about 854 MB once unpacked, a few minutes on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then make the admin, before Publish, so the sign-up page is never public:
+The first start downloads the app's images from the registries named in the Compose file: about 854 MB, a few minutes on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then make the admin, before Publish, so the sign-up page is never public:
 
 ```bash
 sh immich/prepare.sh

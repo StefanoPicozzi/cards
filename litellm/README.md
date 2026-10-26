@@ -86,7 +86,7 @@ docker compose --env-file litellm/card.env -f litellm/docker-compose.yml up -d -
 docker compose --env-file litellm/card.env -f litellm/docker-compose.yml ps
 ```
 
-The first start downloads the app's images from the registries named in the Compose file: about 544 MB once unpacked, a few minutes on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. `litellm-secrets` makes the secrets first and exits.
+The first start downloads the app's images from the registries named in the Compose file: about 544 MB, a few minutes on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. `litellm-secrets` makes the secrets first and exits.
 
 ### 5. Publish
 

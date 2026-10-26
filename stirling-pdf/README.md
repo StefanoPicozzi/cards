@@ -51,7 +51,7 @@ docker compose --env-file stirling-pdf/card.env -f stirling-pdf/docker-compose.y
 docker compose --env-file stirling-pdf/card.env -f stirling-pdf/docker-compose.yml ps
 ```
 
-The first start downloads the app's images from the registries named in the Compose file: about 1.1 GB once unpacked, a few minutes on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when the service is healthy, and `ps` shows `(healthy)`.
+The first start downloads the app's images from the registries named in the Compose file: about 1.1 GB, a few minutes on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when the service is healthy, and `ps` shows `(healthy)`.
 
 ### 5. Publish
 

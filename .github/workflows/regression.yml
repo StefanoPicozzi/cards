@@ -249,6 +249,14 @@ jobs:
               gh issue close "$number" --repo "$GITHUB_REPOSITORY" --comment "Passes again: $run"
             done
           done
+          # A retest someone asked for (see retest.yml) closes once its card passed in this run.
+          today=$(date -u +%F)
+          for card in $(jq -r --arg d "$today" 'to_entries[] | select(.value.result == "pass" and .value.tested == $d) | .key' status/status.json); do
+            title="Retest: $card"
+            for number in $(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"$title\" in:title" --json number,title --jq ".[] | select(.title == \"$title\") | .number"); do
+              gh issue close "$number" --repo "$GITHUB_REPOSITORY" --comment "Passes: $run"
+            done
+          done
 
       - name: Fail when a card failed
         run: |

@@ -1,0 +1,38 @@
+name: Retest a card
+description: Ask for a card to be tested again on Edgible's fleet, for example after your own check found a problem
+title: "Retest: "
+labels: ["retest"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This tests the card as it is on `main`, on Edgible's test machines. Nothing you paste here is run. To test a change of your own, open a pull request instead. Leave out device names, hostnames and anything secret.
+  - type: input
+    id: card
+    attributes:
+      label: Card
+      description: The card's directory name, such as `wordpress`.
+    validations:
+      required: true
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Why
+      options:
+        - My own test-card run failed
+        - The image scan shows fixable findings
+        - The last test is old
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: What you saw
+      description: The last lines of `test-card` (from `result:`), or the output of `scan-card`.
+      render: text
+  - type: input
+    id: edgible
+    attributes:
+      label: Your Edgible version
+      description: "`edgible --version`"

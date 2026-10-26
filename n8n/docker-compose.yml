@@ -43,9 +43,9 @@ services:
       N8N_RUNNERS_BROKER_LISTEN_ADDRESS: 0.0.0.0
       N8N_PROXY_HOPS: "1"
       N8N_PROTOCOL: https
-      N8N_HOST: n8n.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}
-      N8N_EDITOR_BASE_URL: https://n8n.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}/
-      WEBHOOK_URL: https://n8n-hooks.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}/
+      N8N_HOST: ${N8N_HOSTNAME:-n8n.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
+      N8N_EDITOR_BASE_URL: ${N8N_URL:-https://n8n.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}/
+      WEBHOOK_URL: ${N8N_WEBHOOK_URL:-https://n8n-hooks.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}/
     ports:
       - "127.0.0.1:${N8N_PORT:?set N8N_PORT in card.env}:5678"
     links:

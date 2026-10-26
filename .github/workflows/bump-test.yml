@@ -1,0 +1,154 @@
+name: bump-test
+
+# Renovate opens a PR when an image a card pins has a newer version. That changes the card's
+# Compose file, so its test.yml is stale and `cards` (check-cards --fresh) fails. This runs
+# test-card for each card the PR touches, on a fleet machine, exactly as the nightly regression
+# does. On a pass it commits the new test.yml to the PR branch and re-runs `cards`; on a fail
+# it comments the result and leaves the PR red.
+#
+# The fleet machines can publish apps, so this runs only for Renovate's own branches in this
+# repo: never a fork, never anyone else. A bump of an image shared by several cards tests each
+# of them (card-secrets is in many), one job per group of cards that publish the same app name.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths: ["*/docker-compose.yml"]
+
+permissions:
+  contents: write         # commit test.yml to the bump branch
+  pull-requests: write    # comment when a card fails
+  actions: write          # re-run `cards` on the new commit
+
+# A new push to the branch waits for a running test instead of cancelling it half way.
+concurrency:
+  group: bump-test-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+env:
+  CARD_KIT_REF: main
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  plan:
+    if: >-
+      github.actor == 'renovate[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      jobs: ${{ steps.plan.outputs.jobs }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: cards
+          fetch-depth: 0
+
+      - name: Fetch card-kit
+        run: git clone -q --depth 1 --branch "$CARD_KIT_REF" https://github.com/edgible-org/card-kit.git card-kit
+
+      - name: List the fleet machines online
+        env:
+          GH_TOKEN: ${{ secrets.FLEET_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$GH_TOKEN" ]; then echo "no FLEET_TOKEN secret: planning without knowing the machines"; exit 0; fi
+          gh api "repos/$GITHUB_REPOSITORY/actions/runners" --paginate \
+            --jq '.runners[] | select(.status == "online") | [.labels[].name]' | jq -s . > machines.json
+
+      - name: Plan the cards this PR touches
+        id: plan
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          cd cards
+          cards=$(git diff --name-only "$BASE" HEAD | sed -nE 's|^([a-z0-9-]+)/docker-compose\.yml$|\1|p' | sort -u | tr '\n' ' ')
+          echo "cards touched: $cards"
+          mkdir ../status
+          args=(--status ../status --plan ../plan.json)
+          [ -f ../machines.json ] && args+=(--machines ../machines.json)
+          if [ -z "$cards" ]; then echo '{"include":[]}' > ../plan.json
+          else
+            read -ra names <<< "$cards"
+            python3 ../card-kit/test-cards.py "${args[@]}" --only "${names[@]}"
+          fi
+          echo "matrix=$(cat ../plan.json)" >> "$GITHUB_OUTPUT"
+          echo "jobs=$(jq '.include | length' ../plan.json)" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: plan
+    if: needs.plan.outputs.jobs != '0'
+    name: ${{ matrix.cards }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ${{ matrix.labels }}
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: cards
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Fetch card-kit
+        run: |
+          set -euo pipefail
+          rm -rf card-kit result
+          git clone -q --depth 1 --branch "$CARD_KIT_REF" https://github.com/edgible-org/card-kit.git card-kit
+          echo "cards $(git -C cards rev-parse --short HEAD), card-kit $(git -C card-kit rev-parse --short HEAD), edgible $(edgible --version)"
+
+      - name: Test ${{ matrix.cards }}
+        id: test
+        env:
+          CARDS: ${{ matrix.cards }}
+          FALLBACK_DEVICE: ${{ vars.TEST_DEVICE }}
+        run: |
+          set -euo pipefail
+          DEVICE=${TEST_DEVICE:-$FALLBACK_DEVICE}
+          [ -n "$DEVICE" ] || { echo "set TEST_DEVICE in the runner's .env, or the repository variable TEST_DEVICE" >&2; exit 2; }
+          read -ra names <<< "$CARDS"
+          cd cards
+          python3 ../card-kit/test-cards.py --device "$DEVICE" --status ../result --by ci --only "${names[@]}" \
+            && echo "passed=true" >> "$GITHUB_OUTPUT" || echo "passed=false" >> "$GITHUB_OUTPUT"
+
+      - name: Commit the new test.yml
+        if: steps.test.outputs.passed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          CARDS: ${{ matrix.cards }}
+        run: |
+          set -euo pipefail
+          cd cards
+          if git diff --quiet -- '*/test.yml'; then echo "test.yml unchanged"; else
+            git add -- '*/test.yml'
+            git -c user.name="cards bump-test" -c user.email="actions@github.com" \
+              commit -q -m "test.yml for the image bump: $CARDS"
+            # Other jobs of this PR may push first.
+            for try in 1 2 3; do
+              git pull -q --rebase origin "$BRANCH"
+              git push -q origin "HEAD:$BRANCH" && break
+              sleep $((try * 5))
+            done
+          fi
+          # A push made with the workflow token starts no workflow, so run `cards` on the branch.
+          gh workflow run cards.yml --ref "$BRANCH" || true
+
+      - name: Say it failed
+        if: steps.test.outputs.passed == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          CARDS: ${{ matrix.cards }}
+        run: |
+          gh pr comment "$PR" --body "test-card failed for: $CARDS. The run, with the failing step: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          exit 1
+
+      - name: Clean up
+        if: always()
+        run: rm -rf result

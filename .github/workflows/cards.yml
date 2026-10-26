@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:   # bump-test runs it on a bump branch after it commits test.yml
 
 permissions:
   contents: read

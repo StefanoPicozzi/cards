@@ -35,14 +35,15 @@ jobs:
           mkdir -p ~/trivy-cache
           docker volume create --driver local -o type=none -o o=bind -o device="$HOME/trivy-cache" trivy-cache >/dev/null
           gh label create security-scan --color B60205 --description "Fixable vulnerability in a card's pinned images" 2>/dev/null || true
-          python3 -I .github/scripts/image_scan.py --out "$RUNNER_TEMP/scan.json" --issues | tee "$RUNNER_TEMP/summary.txt"
+          python3 -I .github/scripts/image_scan.py --out "$RUNNER_TEMP/scan.json" --badges "$RUNNER_TEMP/badges" --issues | tee "$RUNNER_TEMP/summary.txt"
           { echo '```'; cat "$RUNNER_TEMP/summary.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
-      - name: Publish scan.json to scan-status
+          sudo chown -R "$USER" ~/trivy-cache   # Trivy ran as root; the cache step needs to read it
+      - name: Publish scan.json and the badges to scan-status
         run: |
           cd "$RUNNER_TEMP"
           rm -rf status && mkdir status && cd status
           git init -q -b scan-status
-          cp ../scan.json .
-          git add scan.json
+          cp ../scan.json ../badges/*.json .
+          git add .
           git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "image scan $(date -u +%F)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/$GITHUB_REPOSITORY.git" HEAD:scan-status

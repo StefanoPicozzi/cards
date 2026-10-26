@@ -5,7 +5,10 @@ Reads every <card>/docker-compose.yml, resolves ${VAR:-default} to the default, 
 unique image once with Trivy (a container, so the runner needs only Docker), and writes
 scan.json: per image, the cards that use it and its fixable findings. Nothing is deployed.
 
-  image_scan.py [--out scan.json] [--only CARD ...] [--issues]
+  image_scan.py [--out scan.json] [--only CARD ...] [--issues] [--badges DIR]
+
+--badges DIR writes <card>.json per card, in the shields.io endpoint format the README's
+badges read: "clean", "N fixable", or "not scanned" when an image could not be checked.
 
 --issues opens or updates one issue per card with findings, and closes it when the card is
 clean (needs `gh` and a token that may write issues).
@@ -82,11 +85,31 @@ def sync_issues(report: dict) -> None:
                             "The latest scan found nothing fixable."], check=True)
 
 
+def write_badges(report: dict, root: Path, out: Path) -> None:
+    out.mkdir(parents=True, exist_ok=True)
+    for card_yml in sorted(root.glob("*/card.yml")):
+        card = card_yml.parent.name
+        items = [i for i in report.values() if card in i["cards"]]
+        found = [f for i in items for f in i.get("findings", [])]
+        if found:
+            critical = any(f["severity"] == "CRITICAL" for f in found)
+            message, color = f"{len(found)} fixable", "red" if critical else "orange"
+        elif any("error" in i for i in items):
+            message, color = "not scanned", "lightgrey"
+        elif items:
+            message, color = "clean", "brightgreen"
+        else:
+            message, color = "no images", "lightgrey"
+        (out / f"{card}.json").write_text(json.dumps(
+            {"schemaVersion": 1, "label": "images", "message": message, "color": color}) + "\n")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="scan.json")
     ap.add_argument("--only", nargs="*", default=[])
     ap.add_argument("--issues", action="store_true")
+    ap.add_argument("--badges", type=Path)
     args = ap.parse_args()
 
     images = images_by_card(Path.cwd(), args.only)
@@ -103,6 +126,8 @@ def main() -> int:
         print(f"  {ref} ({', '.join(item['cards'])}): {len(item['findings'])} findings")
     for ref, item in broken.items():
         print(f"  not scanned {ref}: {item['error']}")
+    if args.badges:
+        write_badges(report, Path.cwd(), args.badges)
     if args.issues:
         sync_issues(report)
     return 0

@@ -1,0 +1,60 @@
+name: retest
+
+# Someone asks for a card to be tested again (the "Retest a card" issue form, or an issue titled
+# "Retest: <card>", which the skill files after a person's own check). This starts the regression
+# for that one card on the fleet. Nothing in the issue is run: only the card's name is read, and
+# it must be a directory of this repo. To keep the fleet's time for real cases, a card tested
+# today is not retested, and at most MAX_PER_DAY retests start in 24 hours; the rest wait for a
+# maintainer. The regression closes the issue when the card passes (see regression.yml).
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+  actions: write   # start the regression
+
+env:
+  MAX_PER_DAY: 8
+
+jobs:
+  retest:
+    if: startsWith(github.event.issue.title, 'Retest:') || contains(github.event.issue.labels.*.name, 'retest')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the regression for the card
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          set -euo pipefail
+          reply() { gh issue comment "$NUMBER" --body "$1"; }
+          gh label create retest --color 1D76DB --description "Test a card again on the fleet" 2>/dev/null || true
+          # The form puts the card under "### Card"; the skill's issues do the same; else the title.
+          card=$(printf '%s\n' "$BODY" | awk '/^### Card/{f=1;next} f&&NF{print;exit}' | tr -d '` \r')
+          [ -n "$card" ] || card=$(printf '%s' "$TITLE" | sed -E 's/^Retest:[[:space:]]*//' | tr -d '` \r')
+          if ! [[ "$card" =~ ^[a-z0-9][a-z0-9-]*$ ]] || [ ! -f "$card/card.yml" ]; then
+            reply "I could not find a card called \`${card:0:60}\` in this repo. Edit the issue to give the directory name of a card, such as \`wordpress\`."
+            exit 0
+          fi
+          gh issue edit "$NUMBER" --title "Retest: $card" --add-label retest 2>/dev/null || gh issue edit "$NUMBER" --title "Retest: $card"
+          git fetch -q --depth 1 origin test-status
+          today=$(date -u +%F)
+          if [ "$(git show FETCH_HEAD:status.json | jq -r --arg c "$card" '.[$c].tested // ""')" = "$today" ]; then
+            reply "\`$card\` was already tested today, with result \`$(git show FETCH_HEAD:status.json | jq -r --arg c "$card" '.[$c].result')\`. See the badge in the README. If that is not what you saw, say what differs and a maintainer will look."
+            exit 0
+          fi
+          since=$(date -u -d '24 hours ago' +%FT%TZ)
+          started=$(gh run list --workflow regression.yml --event workflow_dispatch --created ">$since" --json databaseId --jq length)
+          if [ "$started" -ge "$MAX_PER_DAY" ]; then
+            reply "The test machines have taken their $MAX_PER_DAY retests for today. A maintainer will start this one."
+            exit 0
+          fi
+          gh workflow run regression.yml -f only="$card"
+          reply "Started the regression for \`$card\` on Edgible's test machines. It queues behind any run in progress. This issue closes by itself when the card passes; if it fails, a \`Regression: $card fails\` issue opens with the failing step."

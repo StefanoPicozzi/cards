@@ -44,11 +44,12 @@ It moves a taken port, as lines to paste. Run it again until it says `no conflic
 ### 4. Start
 
 ```bash
+docker compose --env-file rallly/card.env -f rallly/docker-compose.yml pull
 docker compose --env-file rallly/card.env -f rallly/docker-compose.yml up -d --wait
 docker compose --env-file rallly/card.env -f rallly/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Rallly has no setup page and no default account, so nothing needs preparing before Publish.
+The first start downloads the app's images from the registries named in the Compose file: about 420 MB once unpacked, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Rallly has no setup page and no default account, so nothing needs preparing before Publish.
 
 ### 5. Publish
 

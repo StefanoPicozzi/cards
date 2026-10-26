@@ -42,10 +42,11 @@ python3 check-env.py n8n
 ### 4. Start
 
 ```bash
+docker compose --env-file n8n/card.env -f n8n/docker-compose.yml pull
 docker compose --env-file n8n/card.env -f n8n/docker-compose.yml up -d --wait
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. A healthcheck comes from the Compose file or from the image. `ps` shows `(healthy)` in the status of each service that has one:
+The first start downloads the app's images from the registries named in the Compose file, which takes longer for a larger app. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. A healthcheck comes from the Compose file or from the image. `ps` shows `(healthy)` in the status of each service that has one:
 
 ```bash
 docker compose --env-file n8n/card.env -f n8n/docker-compose.yml ps

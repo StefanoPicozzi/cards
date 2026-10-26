@@ -44,11 +44,12 @@ It fills each empty secret and moves a taken port, as lines to paste. Run it aga
 ### 4. Start
 
 ```bash
+docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml pull
 docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml up -d --wait
 docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Then sign the Edgible tools in, once. The easy way needs no shell: ask the agent something that needs Edgible, such as "What Edgible apps are running?", and it answers with a link and a code (edgible-mcp's `sign_in`); open the link on any device, check the code, and approve with your Edgible login, then ask again. Or on the machine: `docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml exec edgible-mcp edgible auth login --no-browser` prints the same link and code. Change OpenClaw's settings later through `openclaw-cli`, always with `--no-deps`, as in the openclaw card.
+The first start downloads the app's images from the registries named in the Compose file: about 2.1 GB once unpacked, ten minutes or more on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then sign the Edgible tools in, once. The easy way needs no shell: ask the agent something that needs Edgible, such as "What Edgible apps are running?", and it answers with a link and a code (edgible-mcp's `sign_in`); open the link on any device, check the code, and approve with your Edgible login, then ask again. Or on the machine: `docker compose --env-file edgible-agent/card.env -f edgible-agent/docker-compose.yml exec edgible-mcp edgible auth login --no-browser` prints the same link and code. Change OpenClaw's settings later through `openclaw-cli`, always with `--no-deps`, as in the openclaw card.
 
 ### 5. Publish
 

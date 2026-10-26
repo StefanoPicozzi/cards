@@ -44,11 +44,12 @@ It fills each empty secret and moves a taken port, as lines to paste. Run it aga
 ### 4. Start
 
 ```bash
+docker compose --env-file canary/card.env -f canary/docker-compose.yml pull
 docker compose --env-file canary/card.env -f canary/docker-compose.yml up -d --wait
 docker compose --env-file canary/card.env -f canary/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. 
+The first start downloads the app's images from the registries named in the Compose file: about 5 MB once unpacked, under a minute on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. 
 
 ### 5. Publish
 

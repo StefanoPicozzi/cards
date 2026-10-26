@@ -54,11 +54,12 @@ It fills each empty secret and moves a taken port, as lines to paste. Run it aga
 On the machine for place `forge`:
 
 ```bash
+docker compose --env-file ci/card.env -f ci/docker-compose.yml pull
 docker compose --env-file ci/card.env -f ci/docker-compose.yml up -d --wait
 docker compose --env-file ci/card.env -f ci/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Then make the admin on place `forge`, before Publish:
+The first start downloads the app's images from the registries named in the Compose file: about 203 MB once unpacked, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then make the admin on place `forge`, before Publish:
 
 ```bash
 sh ci/prepare.sh
@@ -121,6 +122,7 @@ edgible app list
 On the machine for place `runner`. Its services connect out to what Publish published, so they start now.
 
 ```bash
+docker compose --env-file ci/card.env -f ci/runner-compose.yml pull
 docker compose --env-file ci/card.env -f ci/runner-compose.yml up -d --wait
 docker compose --env-file ci/card.env -f ci/runner-compose.yml ps
 ```

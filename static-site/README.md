@@ -44,11 +44,12 @@ It fills each empty secret and moves a taken port, as lines to paste. Run it aga
 ### 4. Start
 
 ```bash
+docker compose --env-file static-site/card.env -f static-site/docker-compose.yml pull
 docker compose --env-file static-site/card.env -f static-site/docker-compose.yml up -d --wait
 docker compose --env-file static-site/card.env -f static-site/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Here that means the first copy of the site is in place and Caddy serves it, so it fails when the source cannot be downloaded or has no `index.html` at its top. Then `docker compose --env-file static-site/card.env -f static-site/docker-compose.yml logs static-site-sync` says why.
+The first start downloads the app's images from the registries named in the Compose file: about 35 MB once unpacked, under a minute on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Here that means the first copy of the site is in place and Caddy serves it, so it fails when the source cannot be downloaded or has no `index.html` at its top. Then `docker compose --env-file static-site/card.env -f static-site/docker-compose.yml logs static-site-sync` says why.
 
 ### 5. Publish
 

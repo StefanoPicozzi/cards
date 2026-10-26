@@ -48,11 +48,12 @@ It moves a taken port, as lines to paste. Run it again until it says `no conflic
 ### 4. Start
 
 ```bash
+docker compose --env-file wordpress/card.env -f wordpress/docker-compose.yml pull
 docker compose --env-file wordpress/card.env -f wordpress/docker-compose.yml up -d --wait
 docker compose --env-file wordpress/card.env -f wordpress/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Then install WordPress, before Publish, so its install page is never public:
+The first start downloads the app's images from the registries named in the Compose file: about 372 MB once unpacked, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then install WordPress, before Publish, so its install page is never public:
 
 ```bash
 sh wordpress/prepare.sh

@@ -48,11 +48,12 @@ It moves a taken port, as lines to paste. Run it again until it says `no conflic
 ### 4. Start
 
 ```bash
+docker compose --env-file immich/card.env -f immich/docker-compose.yml pull
 docker compose --env-file immich/card.env -f immich/docker-compose.yml up -d --wait
 docker compose --env-file immich/card.env -f immich/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Then make the admin, before Publish, so the sign-up page is never public:
+The first start downloads the app's images from the registries named in the Compose file: about 854 MB once unpacked, a few minutes on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then make the admin, before Publish, so the sign-up page is never public:
 
 ```bash
 sh immich/prepare.sh
@@ -78,7 +79,7 @@ curl -fsS -X POST "http://127.0.0.1:$IMMICH_PORT/api/auth/admin-sign-up" \
   -d "{\"email\":\"$IMMICH_ADMIN_EMAIL\",\"password\":\"$IMMICH_ADMIN_PASSWORD\",\"name\":\"Admin\"}"
 ```
 
-It answers with the new admin's details. The first start downloads about 1.5 GB of images.
+It answers with the new admin's details.
 
 ### 5. Publish
 

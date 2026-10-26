@@ -48,11 +48,12 @@ It moves a taken port, as lines to paste. Run it again until it says `no conflic
 ### 4. Start
 
 ```bash
+docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml pull
 docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml up -d --wait
 docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Then finish Jellyfin's setup wizard, before Publish, so it is never public. Until the wizard is finished, anyone who reaches Jellyfin can make the admin:
+The first start downloads the app's images from the registries named in the Compose file: about 424 MB once unpacked, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then finish Jellyfin's setup wizard, before Publish, so it is never public. Until the wizard is finished, anyone who reaches Jellyfin can make the admin:
 
 ```bash
 sh jellyfin/prepare.sh
@@ -85,7 +86,7 @@ curl -fsS -X POST "$B/Startup/RemoteAccess" -H "$H" \
 curl -fsS -X POST "$B/Startup/Complete"
 ```
 
-It prints nothing when it works. The first start downloads about 400 MB.
+It prints nothing when it works.
 
 ### 5. Publish
 

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "enabledManagers": [
+    "docker-compose"
+  ],
+  "labels": [
+    "image-bump"
+  ],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "schedule": [
+    "before 6am"
+  ],
+  "packageRules": [
+    {
+      "description": "A major version can need a data migration, so it waits for a yes on the dependency dashboard",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "dependencyDashboardApproval": true
+    }
+  ],
+  "ignoreDeps": [
+    "website-site",
+    "website-strapi"
+  ]
+}

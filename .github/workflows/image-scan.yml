@@ -1,0 +1,48 @@
+name: image-scan
+
+# Nightly: scan every image the cards pin for fixable HIGH and CRITICAL vulnerabilities, with
+# Trivy in a container. Nothing is deployed, so it covers every card in minutes. The result
+# goes to the scan-status branch (scan.json), and each card with findings gets one issue,
+# closed again when a later scan is clean. A finding is a prompt to bump the pin and run
+# test-card; it is not proof the card is exposed.
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # push scan.json to the scan-status branch
+  issues: write     # one issue per card with findings
+
+concurrency: image-scan
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Keep Trivy's database between runs
+        uses: actions/cache@v4
+        with:
+          path: ~/trivy-cache
+          key: trivy-db-${{ github.run_id }}
+          restore-keys: trivy-db-
+      - name: Scan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p ~/trivy-cache
+          docker volume create --driver local -o type=none -o o=bind -o device="$HOME/trivy-cache" trivy-cache >/dev/null
+          gh label create security-scan --color B60205 --description "Fixable vulnerability in a card's pinned images" 2>/dev/null || true
+          python3 -I .github/scripts/image_scan.py --out "$RUNNER_TEMP/scan.json" --issues | tee "$RUNNER_TEMP/summary.txt"
+          { echo '```'; cat "$RUNNER_TEMP/summary.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish scan.json to scan-status
+        run: |
+          cd "$RUNNER_TEMP"
+          rm -rf status && mkdir status && cd status
+          git init -q -b scan-status
+          cp ../scan.json .
+          git add scan.json
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "image scan $(date -u +%F)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/$GITHUB_REPOSITORY.git" HEAD:scan-status

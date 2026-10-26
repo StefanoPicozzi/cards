@@ -49,7 +49,7 @@ docker compose --env-file linkding/card.env -f linkding/docker-compose.yml up -d
 docker compose --env-file linkding/card.env -f linkding/docker-compose.yml ps
 ```
 
-The first start downloads the app's images from the registries named in the Compose file: about 147 MB once unpacked, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. The admin is made on first start, from `card.env`, so there is no setup page for a stranger to find once it is published.
+The first start downloads the app's images from the registries named in the Compose file: about 147 MB, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. The admin is made on first start, from `card.env`, so there is no setup page for a stranger to find once it is published.
 
 ### 5. Publish
 

@@ -49,7 +49,7 @@ docker compose --env-file ech0/card.env -f ech0/docker-compose.yml up -d --wait
 docker compose --env-file ech0/card.env -f ech0/docker-compose.yml ps
 ```
 
-The first start downloads the app's images from the registries named in the Compose file: about 41 MB once unpacked, under a minute on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. 
+The first start downloads the app's images from the registries named in the Compose file: about 41 MB, under a minute on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. 
 
 ```bash
 sh ech0/prepare.sh

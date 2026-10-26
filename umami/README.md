@@ -59,7 +59,7 @@ docker compose --env-file umami/card.env -f umami/docker-compose.yml up -d --wai
 docker compose --env-file umami/card.env -f umami/docker-compose.yml ps
 ```
 
-The first start downloads the app's images from the registries named in the Compose file: about 439 MB once unpacked, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. `umami-secrets` makes the secrets first and exits. Umami starts with the account `admin` and the password `umami`, and the `analytics` hostname will make its login page public. Change that password now, before Publish:
+The first start downloads the app's images from the registries named in the Compose file: about 439 MB, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. `umami-secrets` makes the secrets first and exits. Umami starts with the account `admin` and the password `umami`, and the `analytics` hostname will make its login page public. Change that password now, before Publish:
 
 ```bash
 sh umami/prepare.sh

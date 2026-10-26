@@ -49,7 +49,7 @@ docker compose --env-file edgible-connector/card.env -f edgible-connector/docker
 docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml ps
 ```
 
-The first start downloads the app's images from the registries named in the Compose file: about 162 MB once unpacked, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then sign the server in to Edgible, once: `docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml exec edgible-mcp edgible auth login --no-browser` prints a link and a code. Open the link, check the code, and approve. Until then, the tools that read your organisation say they are not signed in.
+The first start downloads the app's images from the registries named in the Compose file: about 162 MB, a minute or two on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then sign the server in to Edgible, once: `docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml exec edgible-mcp edgible auth login --no-browser` prints a link and a code. Open the link, check the code, and approve. Until then, the tools that read your organisation say they are not signed in.
 
 ### 5. Publish
 

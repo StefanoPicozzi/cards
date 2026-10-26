@@ -1,13 +1,13 @@
 tested: 2026-10-26
 result: pass
-card-kit: "4ef8fec"
+card-kit: "c2a2a10"
 edgible-cli: 1.4.12
-files: sha256:983bf0ec1d38504d
+files: sha256:5ca952c19e8a46f0
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/edgible-org/edgible-mcp:0.7.17@sha256:9bcb90585df267b49d9687b697a196f329888198b3763adf239fbdae5e10f202
+  - ghcr.io/edgible-org/edgible-mcp:0.7.20@sha256:493ef92162a0ced7701759ef3da2f242f9065f433ee290bcdc9adc74a8e50810
 image_facts:
-  ghcr.io/edgible-org/edgible-mcp:0.7.17: {user: "root", archs: ["amd64", "arm64"], healthcheck: true}
+  ghcr.io/edgible-org/edgible-mcp:0.7.20: {user: "root", archs: ["amd64", "arm64"], healthcheck: true}
 steps:
   check-env: pass
   start: pass
@@ -19,7 +19,7 @@ steps:
   teardown: pass
 measured:
   edgible-mcp:
-    memory: 96 MB
+    memory: 95 MB
     images: 97 MB
     data: 328 KB
 duration: 3m

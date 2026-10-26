@@ -50,11 +50,12 @@ It fills each empty secret and moves a taken port, as lines to paste. Run it aga
 ### 4. Start
 
 ```bash
+docker compose --env-file edgible-mcp/card.env -f edgible-mcp/docker-compose.yml pull
 docker compose --env-file edgible-mcp/card.env -f edgible-mcp/docker-compose.yml up -d --wait
 docker compose --env-file edgible-mcp/card.env -f edgible-mcp/docker-compose.yml ps
 ```
 
-`--wait` returns when each service is running, and healthy when it has a healthcheck. Then sign the server in to Edgible, so `whats_running` can see your apps. It prints a link and a code: open the link, approve the code, and sign in with the Edgible account the server should read as. The sign-in is written to the volume `edgible-mcp-login`, and nothing prints it.
+The first start downloads the app's images from the registries named in the Compose file: about 97 MB once unpacked, under a minute on a typical home connection. `pull` does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. `--wait` returns when each service is running, and healthy when it has a healthcheck. Then sign the server in to Edgible, so `whats_running` can see your apps. It prints a link and a code: open the link, approve the code, and sign in with the Edgible account the server should read as. The sign-in is written to the volume `edgible-mcp-login`, and nothing prints it.
 
 ```bash
 docker compose --env-file edgible-mcp/card.env -f edgible-mcp/docker-compose.yml exec edgible-mcp edgible auth login --no-browser

@@ -10,6 +10,8 @@ If a card helps you, **star this repo**: it is how other people find the cards, 
 
 Why cards exist, and what they promise, is in [ABOUT.md](ABOUT.md). How the whole system works, including every automated job and where its results go, is in [HOW-IT-WORKS.md](HOW-IT-WORKS.md). Each morning's summary of those jobs, and anything that needs a person, is in the pinned [Daily report](https://github.com/edgible-org/cards/issues?q=is%3Aissue+label%3Areport) issue.
 
+Cards run on Edgible by default, and they are plain Docker Compose, so you can run one on your own server too: see [Run a card without Edgible](RUN-WITHOUT-EDGIBLE.md).
+
 Each top-level directory with a `card.yml` in it is one card, and its README is how to run it. There are two types:
 
 - **App cards** run one self-hosted app, such as Gitea or Umami, ready on its own or as a building block. Every app card is tested end to end on a real Edgible serving device, and tested again when it changes and when Edgible releases a new version.

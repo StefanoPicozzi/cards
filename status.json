@@ -71,13 +71,6 @@
     "edgible-cli": "1.4.6",
     "files": "sha256:27a3ef324e20a08a"
   },
-  "ollama-mac": {
-    "result": "pass",
-    "tested": "2026-10-14",
-    "edgible-cli": "1.4.6",
-    "files": "sha256:5b129581c32930ad",
-    "device": "macbookair"
-  },
   "owncloud": {
     "result": "pass",
     "tested": "2026-10-14",
@@ -114,9 +107,10 @@
   },
   "uptime-kuma": {
     "result": "pass",
-    "tested": "2026-10-12",
-    "edgible-cli": "1.4.6",
-    "files": "sha256:a91b802be389bcbb"
+    "tested": "2026-10-26",
+    "edgible-cli": "1.4.12",
+    "files": "sha256:a91b802be389bcbb",
+    "device": "osxdevice"
   },
   "vaultwarden": {
     "result": "pass",

@@ -10,7 +10,7 @@ services:
   # Makes the admin's password (card.yml secrets:) if it does not exist yet, as a file in the
   # volume linkding-secrets, then exits. It never changes it after.
   linkding-secrets:
-    image: ghcr.io/edgible-org/card-secrets:0.1.1
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
     restart: "no"
     environment:
       CARD_SECRETS: |

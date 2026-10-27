@@ -9,7 +9,7 @@ services:
   # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
   # volume umami-secrets, then exits. It never changes one that exists.
   umami-secrets:
-    image: ghcr.io/edgible-org/card-secrets:0.1.1
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
     restart: "no"
     environment:
       CARD_SECRETS: |

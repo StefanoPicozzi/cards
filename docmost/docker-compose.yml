@@ -1,0 +1,87 @@
+# Compose file for the docmost card.
+# The host port, ORG_LABEL and the admin's email come from card.env. The database password, the
+# app secret and the admin's password are made on this machine by docmost-secrets, at first start,
+# and never leave it. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+
+name: docmost
+
+services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume docmost-secrets, then exits. It never changes one that exists.
+  docmost-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        DOCMOST_DB_PASSWORD=openssl rand -hex 16
+        DOCMOST_APP_SECRET=openssl rand -hex 32
+        DOCMOST_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - docmost-secrets:/run/card-secrets
+
+  docmost:
+    image: ${DOCMOST_IMAGE:-docmost/docmost:0.97.0}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${DOCMOST_PORT:?set DOCMOST_PORT in card.env}:3000"
+    # Docmost reads these only from the environment, so it starts through the loader, which sets
+    # them from the secret files and then runs the image's own start command.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command:
+      - >-
+        export DATABASE_URL="postgresql://docmost:$$DOCMOST_DB_PASSWORD@docmost-db:5432/docmost?schema=public"
+        APP_SECRET="$$DOCMOST_APP_SECRET" && exec pnpm start
+    volumes:
+      - docmost-secrets:/run/card-secrets:ro
+      - docmost-data:/app/data/storage
+    environment:
+      APP_URL: ${DOCMOST_URL:-https://docmost.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
+      REDIS_URL: redis://docmost-redis:6379
+    depends_on:
+      docmost-db:
+        condition: service_healthy
+      docmost-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  docmost-db:
+    image: postgres:17.11-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: docmost
+      POSTGRES_USER: docmost
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/DOCMOST_DB_PASSWORD
+    volumes:
+      - docmost-db-data:/var/lib/postgresql/data
+      - docmost-secrets:/run/card-secrets:ro
+    depends_on:
+      docmost-secrets:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docmost -d docmost"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  docmost-redis:
+    image: redis:8.2-alpine
+    restart: unless-stopped
+    volumes:
+      - docmost-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  docmost-db-data: {}
+  docmost-data: {}
+  docmost-redis-data: {}
+  docmost-secrets: {}

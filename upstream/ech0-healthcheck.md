@@ -1,6 +1,7 @@
 ---
 app: ech0
 project: https://github.com/lin-snow/Ech0
+cards: [ech0]
 status: draft
 found: 2026-10-27
 sent:

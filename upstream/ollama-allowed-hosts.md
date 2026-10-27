@@ -1,6 +1,7 @@
 ---
 app: ollama
 project: https://github.com/ollama/ollama
+cards: [ollama-osx]
 status: draft
 found: 2026-10-27
 sent:

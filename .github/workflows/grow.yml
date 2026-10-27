@@ -59,18 +59,24 @@ jobs:
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.event == 'schedule' ||
       (github.event.workflow_run.event == 'workflow_run' && github.event.workflow_run.conclusion != 'skipped')
-    # The Mac, for now: this step pushes to card-kit with the machine's own GitHub sign-in,
-    # which the hub does not have.
-    runs-on: [self-hosted, edgible-test]
+    # GitHub's own runner: this step pushes to card-kit with the repository secret CARD_KIT_TOKEN
+    # (a fine-grained token for edgible-org/card-kit: Contents and Pull requests, read and write),
+    # not a machine's keychain sign-in, which a service on a Mac cannot reach. Without the
+    # secret the step says so and ends, and the night goes on.
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Add merged agent cards to the needs map
         # A merged agent-made card goes into its category's cards: in card-kit's needs map,
         # through a card-kit pull request, so the category stops counting as a gap. This uses
-        # the runner's own GitHub sign-in (gh), because this workflow's token reaches only
-        # this repo. It runs code from main only, never from a pull request.
+        # CARD_KIT_TOKEN, because this workflow's token reaches only this repo. It runs code
+        # from main only, never from a pull request.
+        env:
+          GH_TOKEN: ${{ secrets.CARD_KIT_TOKEN }}
         run: |
           set -euo pipefail
+          if [ -z "$GH_TOKEN" ]; then echo "no CARD_KIT_TOKEN secret: the needs map is not updated tonight"; exit 0; fi
+          gh auth setup-git
           merged=$(GH_TOKEN=${{ github.token }} gh pr list --repo "$GITHUB_REPOSITORY" --label agent-card --state merged --limit 200 \
                    --json title,body --jq '.[] | [(.title | sub("^New app card: "; "")), ((.body | capture("Category: (?<c>[^\n]+)").c) // "")] | @tsv')
           [ -n "$merged" ] || { echo "no merged agent-made cards"; exit 0; }

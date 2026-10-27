@@ -1,11 +1,11 @@
-tested: 2026-10-21
+tested: 2026-10-27
 result: pass
-card-kit: "a41cf0f"
+card-kit: "ea4b037"
 edgible-cli: 1.4.12
-files: sha256:c4ebff8674aca359
+files: sha256:8463ae572705139c
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/edgible-org/card-secrets:0.1.1@sha256:51a6ca5d5f3994c8e2e7a504be14c59cbc3eca81733801fd605934f239c2d00e
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
   - ghcr.io/umami-software/umami:3.4.0@sha256:85909afc45bdcda1917394594a087421fdbb05610fded0fa9f6fb861abb2f367
   - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
 image_facts:
@@ -22,9 +22,9 @@ steps:
   teardown: pass
 measured:
   umami:
-    memory: 256 MB
+    memory: 259 MB
     images: 439 MB
     data: 50 MB
 duration: 4m
-by: person
+by: ci
 notes: umami is taken in the test org, so it was published as test-umami.

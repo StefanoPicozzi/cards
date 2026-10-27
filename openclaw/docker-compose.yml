@@ -44,7 +44,7 @@ services:
       - openclaw-card-secrets:/run/card-secrets
 
   openclaw-setup:
-    image: ghcr.io/openclaw/openclaw:2026.10.5
+    image: ghcr.io/openclaw/openclaw:2026.10.7
     <<: *openclaw-hardening
     restart: "no"
     environment:
@@ -71,7 +71,7 @@ services:
       - openclaw-card-secrets:/run/card-secrets:ro
 
   openclaw:
-    image: ghcr.io/openclaw/openclaw:2026.10.5
+    image: ghcr.io/openclaw/openclaw:2026.10.7
     <<: *openclaw-hardening
     restart: unless-stopped
     depends_on:
@@ -101,7 +101,7 @@ services:
       start_period: 30s
 
   openclaw-cli:
-    image: ghcr.io/openclaw/openclaw:2026.10.5
+    image: ghcr.io/openclaw/openclaw:2026.10.7
     <<: *openclaw-hardening
     profiles: [cli]
     # Shares the Gateway's network and processes: OpenClaw only lets the Gateway's own

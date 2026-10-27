@@ -101,6 +101,7 @@ jobs:
           rm -rf card-kit result
           git clone -q --depth 1 --branch "$CARD_KIT_REF" https://github.com/edgible-org/card-kit.git card-kit
           echo "cards $(git -C cards rev-parse --short HEAD), card-kit $(git -C card-kit rev-parse --short HEAD), edgible $(edgible --version)"
+          echo "docker: config ${DOCKER_CONFIG:-unset (~/.docker)}, context $(docker context show 2>&1), credsStore $(jq -r '.credsStore // "none"' "${DOCKER_CONFIG:-$HOME/.docker}/config.json" 2>&1)"
 
       - name: Test ${{ matrix.cards }}
         id: test

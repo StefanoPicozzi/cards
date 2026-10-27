@@ -4,6 +4,8 @@ metadata:
   name: bloglite
   description: bloglite, a micro-blog with Markdown, syntax highlighting and phone publishing, public with the owner's own login
   type: app
+  added: 2026-10-18
+  homepage: https://github.com/rikhuijzer/bloglite
 
 applications:
   - name: bloglite

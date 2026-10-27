@@ -4,6 +4,7 @@ metadata:
   name: edgible-connector
   description: Edgible in Claude's web, desktop and phone apps, signed in with Edgible
   type: pattern
+  added: 2026-10-20
 
 applications:
   - name: mcp-signin

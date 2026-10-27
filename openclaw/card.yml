@@ -4,6 +4,8 @@ metadata:
   name: openclaw
   description: OpenClaw, the open-source AI agent, with its Control UI behind your organisation's sign-in
   type: app
+  added: 2026-10-20
+  homepage: https://openclaw.ai
 
 applications:
   - name: openclaw

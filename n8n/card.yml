@@ -4,6 +4,7 @@ metadata:
   name: n8n
   description: Locked editor and open webhook hostname, one n8n process
   type: pattern
+  added: 2026-10-05
 
 applications:
   - name: n8n

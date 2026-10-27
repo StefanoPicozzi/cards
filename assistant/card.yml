@@ -4,6 +4,7 @@ metadata:
   name: assistant
   description: Chat that answers from your own documents, and the model that runs it
   type: pattern
+  added: 2026-10-09
 
 applications:
   - name: assistant

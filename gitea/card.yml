@@ -4,6 +4,8 @@ metadata:
   name: gitea
   description: Gitea, your own Git forge, with Git over HTTPS and SSH
   type: app
+  added: 2026-10-09
+  homepage: https://about.gitea.com
 
 applications:
   - name: gitea

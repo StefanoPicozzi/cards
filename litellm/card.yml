@@ -4,6 +4,8 @@ metadata:
   name: litellm
   description: An AI gateway for your apps, one address for every model, with a key and a budget per app
   type: app
+  added: 2026-10-09
+  homepage: https://docs.litellm.ai/
 
 applications:
   - name: litellm

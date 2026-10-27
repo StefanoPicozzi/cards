@@ -4,6 +4,8 @@ metadata:
   name: immich
   description: Immich, your photo and video library, for its phone apps and the web
   type: app
+  added: 2026-10-09
+  homepage: https://immich.app
 
 applications:
   - name: immich

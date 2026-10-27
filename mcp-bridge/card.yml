@@ -4,6 +4,8 @@ metadata:
   name: mcp-bridge
   description: Any stdio MCP server, published over Streamable HTTP for your AI assistants
   type: app
+  added: 2026-10-11
+  homepage: https://github.com/supercorp-ai/supergateway
 
 applications:
   - name: mcp-bridge

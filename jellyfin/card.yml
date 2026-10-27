@@ -4,6 +4,8 @@ metadata:
   name: jellyfin
   description: Jellyfin, your films, shows and music, streamed to its apps and the web
   type: app
+  added: 2026-10-09
+  homepage: https://jellyfin.org
 
 applications:
   - name: jellyfin

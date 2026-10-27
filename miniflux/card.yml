@@ -4,6 +4,8 @@ metadata:
   name: miniflux
   description: Miniflux, the minimalist feed reader, behind your org login
   type: app
+  added: 2026-10-10
+  homepage: https://miniflux.app
 
 applications:
   - name: miniflux

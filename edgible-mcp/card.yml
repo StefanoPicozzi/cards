@@ -4,6 +4,7 @@ metadata:
   name: edgible-mcp
   description: Edgible tools for Claude and other assistants, read-only unless you allow writes
   type: app
+  added: 2026-10-15
 
 applications:
   - name: edgible-mcp

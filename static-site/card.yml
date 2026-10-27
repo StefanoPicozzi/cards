@@ -4,6 +4,8 @@ metadata:
   name: static-site
   description: A static website from a tarball URL, served by Caddy and kept up to date
   type: app
+  added: 2026-10-13
+  homepage: https://caddyserver.com
 
 applications:
   - name: static-site

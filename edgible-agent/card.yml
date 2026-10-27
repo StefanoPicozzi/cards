@@ -4,6 +4,7 @@ metadata:
   name: edgible-agent
   description: Your own AI agent that looks after your Edgible apps, from your phone
   type: pattern
+  added: 2026-10-20
 
 applications:
   - name: openclaw

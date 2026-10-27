@@ -1,0 +1,307 @@
+{
+  "meta": {
+    "date": "2026-10-27",
+    "rotation_day": 1,
+    "card_kit": "f61bd7f",
+    "claude": "2.1.296 (Claude Code)",
+    "mcp": "edgible find and describe",
+    "judge_model": "sonnet",
+    "not_run": [],
+    "stopped": ""
+  },
+  "results": [
+    {
+      "id": "physio-clinic",
+      "pass": false,
+      "should_load": true,
+      "loaded": false,
+      "loaded_at": null,
+      "tools": [
+        "ToolSearch",
+        "mcp__edgible__find",
+        "mcp__edgible__find"
+      ],
+      "expect_passed": 2,
+      "expect_total": 4,
+      "must_not_violated": [],
+      "principles_failed": [
+        "Raises sensitivity (private or regulated data) and who sees what inside the app, when the need involves it."
+      ],
+      "verdict": {
+        "expect": [
+          {
+            "item": "leads with practice-management tools built for clinics",
+            "pass": false,
+            "evidence": "Option 1 leads with purpose-built physio software, led by Physitrack, an exercise-plan tool. Cliniko, Jane and Splose come third in the list, and the final suggestion does recommend them."
+          },
+          {
+            "item": "treats exercise plans as patient health records, regulated data",
+            "pass": false,
+            "evidence": "The answer says \"health data usually means HIPAA, GDPR\", but it suggests \"shared PDFs and videos\" and a \"private YouTube/Vimeo playlist per condition\" for exercise plans, so it doesn't treat them as regulated records."
+          },
+          {
+            "item": "self-hosting at most for the parts without patient records",
+            "pass": true,
+            "evidence": "\"Self-hosting also puts security, backups and uptime on you... I'd skip it.\" It doesn't recommend self-hosting patient data."
+          },
+          {
+            "item": "asks which country, for the privacy rules",
+            "pass": true,
+            "evidence": "\"Tell me your country, whether you currently use any software, and your rough monthly budget.\""
+          }
+        ],
+        "must_not": [
+          {
+            "item": "offer to self-host patient records on a clinic or home machine",
+            "violated": false,
+            "evidence": "It advises skipping self-hosting: \"I'd skip it.\""
+          },
+          {
+            "item": "leave out privacy and compliance",
+            "violated": false,
+            "evidence": "It has a \"Privacy law\" section covering HIPAA/GDPR and data-processing or business-associate agreements."
+          }
+        ],
+        "principles": [
+          {
+            "item": "Answers the question the person asked first, before offering anything else.",
+            "pass": true,
+            "evidence": "After a short preamble, Option 1 gives the options directly."
+          },
+          {
+            "item": "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting.",
+            "pass": true,
+            "evidence": "It gives three options and says self-hosting \"puts security, backups and uptime on you.\""
+          },
+          {
+            "item": "Asks at most two or three questions, and only ones whose answers change the recommendation.",
+            "pass": true,
+            "evidence": "It asks three: country, current software, and budget."
+          },
+          {
+            "item": "Builds, deploys, or changes nothing before the person chooses, and does not claim to have done so.",
+            "pass": true,
+            "evidence": "It built or deployed nothing. It only says \"I checked a self-hosted app catalogue\", which is a search, not a change."
+          },
+          {
+            "item": "Chooses each hostname's auth mode by who uses it: org only for the person's own team; members, customers, or the public use the app's own accounts.",
+            "pass": null,
+            "evidence": "No hostnames or deployments are involved."
+          },
+          {
+            "item": "Raises sensitivity (private or regulated data) and who sees what inside the app, when the need involves it.",
+            "pass": false,
+            "evidence": "It raises regulated data and BAAs. It doesn't address who sees what inside the app, and it suggests unprotected YouTube playlists for exercise plans."
+          },
+          {
+            "item": "Says no plainly to a poor or refused fit, with the reason and what works instead.",
+            "pass": true,
+            "evidence": "\"Nothing fits... I'd skip it\", with the reason given and hosted alternatives offered."
+          }
+        ],
+        "better": "Lead with clinic practice-management tools that include booking and exercise plans, treat exercise plans as regulated patient data, and drop the YouTube/PDF suggestion for patient plans."
+      }
+    },
+    {
+      "id": "set-up-edgible",
+      "pass": false,
+      "should_load": true,
+      "loaded": false,
+      "loaded_at": null,
+      "tools": [
+        "ToolSearch",
+        "mcp__edgible__find",
+        "mcp__edgible__describe"
+      ],
+      "expect_passed": 1,
+      "expect_total": 6,
+      "must_not_violated": [],
+      "principles_failed": [
+        "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting."
+      ],
+      "verdict": {
+        "expect": [
+          {
+            "item": "checks for the edgible CLI and a device first, then installs the CLI with get.edgible.com's installer",
+            "pass": false,
+            "evidence": "It says \"Install and sign in to the Edgible CLI\" but never checks for an existing CLI or device and never mentions the get.edgible.com installer."
+          },
+          {
+            "item": "installs curl, unzip and Node 20 or later before the installer",
+            "pass": false,
+            "evidence": "No mention of curl, unzip or Node; it only says to install Docker."
+          },
+          {
+            "item": "logs in by giving the person the link and code to approve in their browser",
+            "pass": false,
+            "evidence": "It only says \"sign in to the Edgible CLI\", with no link-and-code flow."
+          },
+          {
+            "item": "asks for the device name and whether it stays on, and says that without sudo it stops when they log out",
+            "pass": false,
+            "evidence": "It never asks about the device name or whether the laptop stays on, and never mentions sudo or logout behavior."
+          },
+          {
+            "item": "asks before each step that uses sudo",
+            "pass": false,
+            "evidence": "It doesn't mention sudo. It offers to \"walk through the Docker install commands\" but doesn't ask before sudo steps."
+          },
+          {
+            "item": "then a bookmarks card (linkding), with its choices put to the person before it starts",
+            "pass": true,
+            "evidence": "It recommends linkding and says \"Two questions that change the setup\" (the -plus variant, phone use) plus the access mode decision, and it says \"I haven't run anything on your machine.\""
+          }
+        ],
+        "must_not": [
+          {
+            "item": "ask for the person's Edgible password",
+            "violated": false,
+            "evidence": "No password request."
+          },
+          {
+            "item": "install the CLI from npm, or use --non-interactive",
+            "violated": false,
+            "evidence": "No npm install or --non-interactive flag appears."
+          },
+          {
+            "item": "start the app before the person chooses",
+            "violated": false,
+            "evidence": "It states \"I haven't run anything on your machine.\""
+          }
+        ],
+        "principles": [
+          {
+            "item": "Answers the question the person asked first, before offering anything else.",
+            "pass": true,
+            "evidence": "It opens with \"You can start with linkding\" and then gives the steps."
+          },
+          {
+            "item": "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting.",
+            "pass": false,
+            "evidence": "It offers no hosted alternatives. The only upkeep it mentions is backups."
+          },
+          {
+            "item": "Asks at most two or three questions, and only ones whose answers change the recommendation.",
+            "pass": true,
+            "evidence": "It asks two questions, on read-later copies and on phone use, and both change the setup."
+          },
+          {
+            "item": "Builds, deploys, or changes nothing before the person chooses, and does not claim to have done so.",
+            "pass": true,
+            "evidence": "\"I haven't run anything on your machine.\""
+          },
+          {
+            "item": "Chooses each hostname's auth mode by who uses it: org only for the person's own team; members, customers, or the public use the app's own accounts.",
+            "pass": true,
+            "evidence": "It explains that `none` mode with linkding's own login suits the extension and phone apps, and that `org` mode would lock them out."
+          },
+          {
+            "item": "Raises sensitivity (private or regulated data) and who sees what inside the app, when the need involves it.",
+            "pass": true,
+            "evidence": "\"If your bookmarks are sensitive and you only save from a browser at home, `org` mode is safer.\""
+          },
+          {
+            "item": "Says no plainly to a poor or refused fit, with the reason and what works instead.",
+            "pass": null,
+            "evidence": "The request is not a poor fit, so this does not apply."
+          }
+        ],
+        "better": "It should have started with the Edgible CLI setup: check for an existing CLI and device, install via get.edgible.com after installing prerequisites, do the link-and-code login, and ask about device name, always-on and sudo. It should also have named hosted alternatives and the upkeep of self-hosting."
+      }
+    },
+    {
+      "id": "retest-request",
+      "pass": false,
+      "should_load": true,
+      "loaded": false,
+      "loaded_at": null,
+      "tools": [
+        "ToolSearch",
+        "mcp__edgible__describe",
+        "Grep",
+        "Grep",
+        "Read"
+      ],
+      "expect_passed": 0,
+      "expect_total": 4,
+      "must_not_violated": [],
+      "principles_failed": [
+        "Answers the question the person asked first, before offering anything else."
+      ],
+      "verdict": {
+        "expect": [
+          {
+            "item": "offers to file a retest request on edgible-org/cards, and says it posts to a public repo",
+            "pass": false,
+            "evidence": "The answer never mentions filing a retest request or the edgible-org/cards repo; it only offers to run diagnostics."
+          },
+          {
+            "item": "shows the person what it would send and asks before posting",
+            "pass": false,
+            "evidence": "No draft issue is shown. The only 'tell me before' is about removing a leftover cardtest project."
+          },
+          {
+            "item": "leaves out the device name and the hostname or org label from what it sends",
+            "pass": false,
+            "evidence": "Nothing is sent or drafted, so this cannot be shown. The answer repeats 'miniflux.samco.edgible.app' and 'sams-macbook' in its own text."
+          },
+          {
+            "item": "says the retest runs the card as it is on main on Edgible's machines, not the person's change, and is not instant",
+            "pass": false,
+            "evidence": "No retest is mentioned. The answer only says 'The card's last nightly test passed'."
+          }
+        ],
+        "must_not": [
+          {
+            "item": "post or file anything before the person agrees",
+            "violated": false,
+            "evidence": "The answer posts nothing. It only offers to run checks if the person pastes output or allows it."
+          },
+          {
+            "item": "include 'sams-macbook', 'samco' or the miniflux.samco hostname in the issue text",
+            "violated": false,
+            "evidence": "No issue text was written. The names appear only in the reply to the person."
+          }
+        ],
+        "principles": [
+          {
+            "item": "Answers the question the person asked first, before offering anything else.",
+            "pass": false,
+            "evidence": "The person asked to get Edgible to look at it. The answer starts with its own limits, then gives self-diagnosis steps, and never offers to get Edgible to look."
+          },
+          {
+            "item": "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting.",
+            "pass": null,
+            "evidence": "Hosting options are not relevant to this prompt."
+          },
+          {
+            "item": "Asks at most two or three questions, and only ones whose answers change the recommendation.",
+            "pass": true,
+            "evidence": "It asks no questions. It only invites the person to paste output."
+          },
+          {
+            "item": "Builds, deploys, or changes nothing before the person chooses, and does not claim to have done so.",
+            "pass": true,
+            "evidence": "It changes nothing and says 'Tell me before removing it.'"
+          },
+          {
+            "item": "Chooses each hostname's auth mode by who uses it: org only for the person's own team; members, customers, or the public use the app's own accounts.",
+            "pass": null,
+            "evidence": "No auth mode is being chosen."
+          },
+          {
+            "item": "Raises sensitivity (private or regulated data) and who sees what inside the app, when the need involves it.",
+            "pass": null,
+            "evidence": "The need does not involve sensitive data."
+          },
+          {
+            "item": "Says no plainly to a poor or refused fit, with the reason and what works instead.",
+            "pass": null,
+            "evidence": "There is no poor or refused fit here."
+          }
+        ],
+        "better": "It should offer to file a retest request on the public edgible-org/cards repo, show a draft with no device name, org label or hostname, ask before posting, and say the retest runs main on Edgible's machines and takes time."
+      }
+    }
+  ]
+}

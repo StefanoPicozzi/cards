@@ -1,11 +1,11 @@
-tested: 2026-10-21
+tested: 2026-10-27
 result: pass
-card-kit: "a41cf0f"
+card-kit: "ea4b037"
 edgible-cli: 1.4.12
-files: sha256:5d1c65920a4a3ae5
+files: sha256:e69db8a4dba066ed
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/edgible-org/card-secrets:0.1.1@sha256:51a6ca5d5f3994c8e2e7a504be14c59cbc3eca81733801fd605934f239c2d00e
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
   - ghcr.io/sissbruecker/linkding:1.47.0@sha256:e35cb50e0581178f245125ffaa909c565416c94c9f22ace305a7d234a4345522
 image_facts:
   ghcr.io/sissbruecker/linkding:1.47.0: {user: "root", archs: ["amd64", "arm", "arm64"], healthcheck: true}
@@ -20,8 +20,8 @@ steps:
   teardown: pass
 measured:
   linkding:
-    memory: 195 MB
+    memory: 188 MB
     images: 147 MB
     data: 438 KB
 duration: 3m
-by: person
+by: ci

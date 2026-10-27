@@ -4,6 +4,8 @@ metadata:
   name: canary
   description: A smoke test for Edgible, one tiny container that answers on every auth mode
   type: app
+  added: 2026-10-15
+  homepage: https://github.com/traefik/whoami
 
 applications:
   - name: canary

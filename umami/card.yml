@@ -4,6 +4,8 @@ metadata:
   name: umami
   description: Umami analytics, the dashboard behind org and the tracking script open
   type: app
+  added: 2026-10-09
+  homepage: https://umami.is
 
 applications:
   - name: umami

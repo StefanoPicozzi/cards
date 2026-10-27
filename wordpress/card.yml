@@ -4,6 +4,8 @@ metadata:
   name: wordpress
   description: WordPress with MariaDB, installed before it goes public
   type: app
+  added: 2026-10-09
+  homepage: https://wordpress.org
 
 applications:
   - name: wordpress

@@ -4,6 +4,8 @@ metadata:
   name: linkding
   description: linkding, a minimal bookmark manager, for your browsers and its extension
   type: app
+  added: 2026-10-10
+  homepage: https://github.com/sissbruecker/linkding
 
 applications:
   - name: linkding

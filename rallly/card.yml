@@ -4,6 +4,8 @@ metadata:
   name: rallly
   description: Rallly date polls, open to anyone with the link and sign-in limited to the emails you list
   type: app
+  added: 2026-10-14
+  homepage: https://rallly.co
 
 applications:
   - name: rallly

@@ -4,6 +4,8 @@ metadata:
   name: vaultwarden
   description: Vaultwarden, a Bitwarden-compatible password server, for your own apps and browsers
   type: app
+  added: 2026-10-09
+  homepage: https://github.com/dani-garcia/vaultwarden
 
 applications:
   - name: vaultwarden

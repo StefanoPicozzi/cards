@@ -4,6 +4,8 @@ metadata:
   name: uptime-kuma
   description: Uptime Kuma, the uptime monitor, behind your org login
   type: app
+  added: 2026-10-09
+  homepage: https://github.com/louislam/uptime-kuma
 
 applications:
   - name: uptime-kuma

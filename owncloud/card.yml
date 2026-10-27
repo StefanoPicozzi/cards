@@ -4,6 +4,8 @@ metadata:
   name: owncloud
   description: ownCloud Infinite Scale, your files and shares, for its desktop and phone apps and the web
   type: app
+  added: 2026-10-13
+  homepage: https://owncloud.dev/ocis/
 
 applications:
   - name: owncloud

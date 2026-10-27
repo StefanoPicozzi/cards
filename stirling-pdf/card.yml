@@ -4,6 +4,8 @@ metadata:
   name: stirling-pdf
   description: Stirling-PDF, the PDF toolbox, behind your org login
   type: app
+  added: 2026-10-09
+  homepage: https://github.com/Stirling-Tools/Stirling-PDF
 
 applications:
   - name: stirling-pdf

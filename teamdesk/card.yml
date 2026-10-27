@@ -4,6 +4,7 @@ metadata:
   name: teamdesk
   description: Teamdesk, room bookings, tasks and announcements for a small team, behind the organisation's Edgible sign-in
   type: app
+  added: 2026-10-23
 
 applications:
   - name: teamdesk

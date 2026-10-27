@@ -4,6 +4,8 @@ metadata:
   name: ollama-osx
   description: Ollama on an Apple Silicon Mac, natively on its GPU, as an API behind a key
   type: app
+  added: 2026-10-25
+  homepage: https://ollama.com
 
 applications:
   - name: ollama

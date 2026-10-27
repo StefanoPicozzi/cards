@@ -4,6 +4,8 @@ metadata:
   name: minecraft
   description: A Minecraft server for friends on PC over TCP and on phones over UDP, one world
   type: app
+  added: 2026-10-09
+  homepage: https://papermc.io
 
 applications:
   - name: mc-java

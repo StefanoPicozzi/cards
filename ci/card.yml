@@ -4,6 +4,7 @@ metadata:
   name: ci
   description: Your own Git forge with CI, and the runner on a machine of its own
   type: pattern
+  added: 2026-10-10
 
 applications:
   - name: gitea

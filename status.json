@@ -7,8 +7,8 @@
     "device": "osxdevice"
   },
   "canary": {
-    "result": "fail",
-    "tested": "2026-10-15",
+    "result": "pass",
+    "tested": "2026-10-27",
     "edgible-cli": "1.4.12",
     "files": "sha256:3712b7817e12d025",
     "device": "osxdevice"
@@ -138,8 +138,8 @@
     "device": "osxdevice"
   },
   "static-site": {
-    "result": "fail",
-    "tested": "2026-10-15",
+    "result": "pass",
+    "tested": "2026-10-27",
     "edgible-cli": "1.4.12",
     "files": "sha256:3da8e0e52a0df4e9",
     "device": "osxdevice"

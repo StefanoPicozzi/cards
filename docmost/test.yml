@@ -1,0 +1,31 @@
+tested: 2026-10-28
+result: pass
+card-kit: "f61bd7f"
+edgible-cli: 1.4.12
+files: sha256:ea5bb164d467d04d
+machine: darwin/arm64, docker 29.4.3
+images:
+  - docmost/docmost:0.97.0@sha256:40c454d74ffdd9ecb15833e4d96f3a630d59aad862a1869381ae6ee086454419
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
+  - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+  - redis:8.2-alpine@sha256:35bf3d49a07b693d8defb4e4fc9ef8c663f71c2993f181eba99c7b72966c1f9b
+image_facts:
+  docmost/docmost:0.97.0: {user: "node", archs: ["amd64", "arm64"], healthcheck: false}
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    docmost: pass
+  checks:
+    admin-signs-in: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"users": 1, "pages": 0}
+measured:
+  docmost:
+    memory: 695 MB
+    images: 368 MB
+    data: 52 MB
+duration: 5m
+by: agent

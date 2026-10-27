@@ -110,7 +110,7 @@
     "device": "osxdevice"
   },
   "ollama-osx": {
-    "result": "fail",
+    "result": "pass",
     "tested": "2026-10-27",
     "edgible-cli": "1.4.12",
     "files": "sha256:b0e57bc8334f9c3c",

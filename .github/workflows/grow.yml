@@ -81,7 +81,7 @@ jobs:
                    --json title,body --jq '.[] | [(.title | sub("^New app card: "; "")), ((.body | capture("Category: (?<c>[^\n]+)").c) // "")] | @tsv')
           [ -n "$merged" ] || { echo "no merged agent-made cards"; exit 0; }
           rm -rf kit-map && git clone -q --depth 1 https://github.com/edgible-org/card-kit.git kit-map
-          if gh pr list --repo edgible-org/card-kit --state open --search "head:needs-map/agent-cards" --json number --jq length | grep -qv '^0$'; then
+          if gh pr list --repo edgible-org/card-kit --state open --search "head:grow/needs-map-agent-cards" --json number --jq length | grep -qv '^0$'; then
             echo "a needs-map pull request is already open"; exit 0
           fi
           printf '%s\n' "$merged" | python3 -c '
@@ -109,7 +109,7 @@ jobs:
           '
           [ -s kit-map/ADDED ] || exit 0
           cd kit-map
-          branch="needs-map/agent-cards-$(date -u +%F)"
+          branch="grow/needs-map-agent-cards-$(date -u +%F)"
           git checkout -q -b "$branch"
           git add skills/edgible-cards/needs-map.yaml
           git -c user.name="cards grow" -c user.email="actions@github.com" commit -q -m "Needs map: add merged agent-made cards" -m "$(cat ADDED)"

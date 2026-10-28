@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "date": "2026-10-28",
+    "rotation_day": 2,
+    "card_kit": "fa59bf9",
+    "claude": "2.1.296 (Claude Code)",
+    "mcp": "edgible find and describe",
+    "judge_model": "sonnet",
+    "not_run": [],
+    "stopped": ""
+  },
+  "results": [
+    {
+      "id": "sensitive-photos",
+      "pass": false,
+      "should_load": true,
+      "loaded": false,
+      "loaded_at": null,
+      "tools": [
+        "ToolSearch",
+        "mcp__edgible__find"
+      ],
+      "expect_passed": 3,
+      "expect_total": 3,
+      "must_not_violated": [],
+      "principles_failed": [
+        "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting."
+      ],
+      "verdict": {
+        "expect": [
+          {
+            "item": "offers the exposure choices first - not published, org for the web, or none with a strong login",
+            "pass": true,
+            "evidence": "Lists \"Not published,\" \"Org-restricted,\" and \"Published with Immich's own login\" ordered from most private to most convenient."
+          },
+          {
+            "item": "disk encryption and an encrypted off-site backup",
+            "pass": true,
+            "evidence": "\"Encrypt the disk. Full-disk encryption...\" and \"Keep an encrypted off-site backup.\""
+          },
+          {
+            "item": "asks where the photos must be reachable from",
+            "pass": true,
+            "evidence": "\"If you tell me ... whether you need them away from home...\""
+          }
+        ],
+        "must_not": [
+          {
+            "item": "deploy the immich card on none without raising the choice",
+            "violated": false,
+            "evidence": "Nothing deployed; it offers to pull up the card after the choice."
+          },
+          {
+            "item": "suggest a cloud server without asking, since the person wants the photos off the cloud",
+            "violated": false,
+            "evidence": "Recommends the home machine and hardware the user controls; no cloud server suggested."
+          }
+        ],
+        "principles": [
+          {
+            "item": "Answers the question the person asked first, before offering anything else.",
+            "pass": true,
+            "evidence": "Opens with \"Yes. The usual answer is to self-host your photo library...\""
+          },
+          {
+            "item": "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting.",
+            "pass": false,
+            "evidence": "Only self-hosted Immich is offered. Upkeep is mentioned only as \"prompt updates\" for the published option, and no hosted or end-to-end-encrypted alternatives are given."
+          },
+          {
+            "item": "Asks at most two or three questions, and only ones whose answers change the recommendation.",
+            "pass": true,
+            "evidence": "Asks three: how sensitive the photos are, whether they're needed away from home, and library size."
+          },
+          {
+            "item": "Builds, deploys, or changes nothing before the person chooses, and does not claim to have done so.",
+            "pass": true,
+            "evidence": "It only advises and offers to pull up the card."
+          },
+          {
+            "item": "Chooses each hostname's auth mode by who uses it: org only for the person's own team; members, customers, or the public use the app's own accounts.",
+            "pass": true,
+            "evidence": "Explains that the phone apps can't pass an Edgible sign-in, so remote access needs Immich's own login."
+          },
+          {
+            "item": "Raises sensitivity (private or regulated data) and who sees what inside the app, when the need involves it.",
+            "pass": true,
+            "evidence": "\"Check the sharing defaults (albums and partner sharing)...\" and the note about patients, clients, or children."
+          },
+          {
+            "item": "Says no plainly to a poor or refused fit, with the reason and what works instead.",
+            "pass": null,
+            "evidence": "There is no poor or refused fit in this request."
+          }
+        ],
+        "better": "Briefly compare self-hosting with a zero-knowledge encrypted hosted option and state the ongoing upkeep of self-hosting (updates, backups, hardware) before steering to Immich."
+      }
+    },
+    {
+      "id": "negative-react-error",
+      "pass": true,
+      "should_load": false,
+      "loaded": false,
+      "loaded_at": null,
+      "tools": [
+        "Glob",
+        "Glob"
+      ],
+      "expect_passed": 1,
+      "expect_total": 1,
+      "must_not_violated": [],
+      "principles_failed": [],
+      "verdict": {
+        "expect": [
+          {
+            "item": "the skill does not load",
+            "pass": true,
+            "evidence": "The answer is a plain React debugging response and never mentions or applies any self-hosting or Edgible skill. It looks for the file, then gives generic causes."
+          }
+        ],
+        "must_not": [
+          {
+            "item": "mention self-hosting or Edgible",
+            "violated": false,
+            "evidence": "There is no mention of self-hosting or Edgible anywhere in the answer."
+          }
+        ],
+        "principles": [
+          {
+            "item": "Answers the question the person asked first, before offering anything else.",
+            "pass": true,
+            "evidence": "It says the file wasn't found, then gives the likely causes and fixes, such as `useState([])` and `products = []`."
+          },
+          {
+            "item": "Gives honest options side by side, including hosted ones where they fit, and states the upkeep of self-hosting.",
+            "pass": null,
+            "evidence": "Hosting is not relevant to this prompt."
+          },
+          {
+            "item": "Asks at most two or three questions, and only ones whose answers change the recommendation.",
+            "pass": true,
+            "evidence": "It asks for one of two things, the project path or the pasted file contents, and both would let it make the exact fix."
+          },
+          {
+            "item": "Builds, deploys, or changes nothing before the person chooses, and does not claim to have done so.",
+            "pass": true,
+            "evidence": "\"so I haven't changed anything.\""
+          },
+          {
+            "item": "Chooses each hostname's auth mode by who uses it: org only for the person's own team; members, customers, or the public use the app's own accounts.",
+            "pass": null,
+            "evidence": "Hostnames and auth modes are not relevant here."
+          },
+          {
+            "item": "Raises sensitivity (private or regulated data) and who sees what inside the app, when the need involves it.",
+            "pass": null,
+            "evidence": "The need does not involve sensitive data."
+          },
+          {
+            "item": "Says no plainly to a poor or refused fit, with the reason and what works instead.",
+            "pass": null,
+            "evidence": "There is no poor fit to refuse."
+          }
+        ],
+        "better": "Lead with the most likely fix, then show a short before and after code sample. The answer opens with the missing file, which pushes the useful content down."
+      }
+    }
+  ]
+}

@@ -1,12 +1,14 @@
-# edgible-cards skill evals: 2026-10-21 to 2026-10-27
+# edgible-cards skill evals: 2026-10-22 to 2026-10-28
 
-**0 of 3** held-out prompts pass, each at its latest run in the last 7 days (1 nightly runs). Skill from card-kit `f61bd7f`.
+**1 of 5** held-out prompts pass, each at its latest run in the last 7 days (2 nightly runs). Skill from card-kit `f61bd7f`, `fa59bf9`.
 
 | Prompt | Run | Result | Skill loaded | expect | must_not broken |
 | --- | --- | --- | --- | --- | --- |
 | physio-clinic | 2026-10-27 | FAIL | no (WRONG) | 2/4 | 0 |
 | retest-request | 2026-10-27 | FAIL | no (WRONG) | 0/4 | 0 |
+| sensitive-photos | 2026-10-28 | FAIL | no (WRONG) | 3/3 | 0 |
 | set-up-edgible | 2026-10-27 | FAIL | no (WRONG) | 1/6 | 0 |
+| negative-react-error | 2026-10-28 | pass | no (right) | 1/1 | 0 |
 
 ## Failing prompts
 
@@ -20,6 +22,8 @@
 - Missed: leaves out the device name and the hostname or org label from what it sends. Nothing is sent or drafted, so this cannot be shown. The answer repeats 'miniflux.samco.edgible.app' and 'sams-macbook' in its own text.
 - Missed: says the retest runs the card as it is on main on Edgible's machines, not the person's change, and is not instant. No retest is mentioned. The answer only says 'The card's last nightly test passed'.
 
+**sensitive-photos** (2026-10-28)
+
 **set-up-edgible** (2026-10-27)
 - Missed: checks for the edgible CLI and a device first, then installs the CLI with get.edgible.com's installer. It says "Install and sign in to the Edgible CLI" but never checks for an existing CLI or device and never mentions the get.edgible.com installer.
 - Missed: installs curl, unzip and Node 20 or later before the installer. No mention of curl, unzip or Node; it only says to install Docker.
@@ -29,6 +33,8 @@
 
 ## What would make answers better
 
+- negative-react-error: Lead with the most likely fix, then show a short before and after code sample. The answer opens with the missing file, which pushes the useful content down.
 - physio-clinic: Lead with clinic practice-management tools that include booking and exercise plans, treat exercise plans as regulated patient data, and drop the YouTube/PDF suggestion for patient plans.
 - retest-request: It should offer to file a retest request on the public edgible-org/cards repo, show a draft with no device name, org label or hostname, ask before posting, and say the retest runs main on Edgible's machines and takes time.
+- sensitive-photos: Briefly compare self-hosting with a zero-knowledge encrypted hosted option and state the ongoing upkeep of self-hosting (updates, backups, hardware) before steering to Immich.
 - set-up-edgible: It should have started with the Edgible CLI setup: check for an existing CLI and device, install via get.edgible.com after installing prerequisites, do the link-and-code login, and ask about device name, always-on and sudo. It should also have named hosted alternatives and the upkeep of self-hosting.

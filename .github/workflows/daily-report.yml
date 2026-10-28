@@ -78,6 +78,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           NOTIFY: ${{ vars.REPORT_NOTIFY }}
+          SITE_URL: ${{ vars.SITE_URL }}
         run: |
           set -euo pipefail
           title="Daily report"
@@ -91,7 +92,7 @@ jobs:
             gh issue pin "$number" --repo "$GITHUB_REPOSITORY" || true
           fi
           gh issue edit "$number" --repo "$GITHUB_REPOSITORY" --body-file report.md
-          { [ -n "$NOTIFY" ] && echo "@$NOTIFY"; echo; cat report.md; } > comment.md
+          { [ -n "$NOTIFY" ] && echo "@$NOTIFY"; echo; echo "Overnight summary, for a phone: ${SITE_URL:-https://cards.edgible.org}/ops/"; echo; cat report.md; } > comment.md
           gh issue comment "$number" --repo "$GITHUB_REPOSITORY" --body-file comment.md
 
       - name: Keep it on the reports branch

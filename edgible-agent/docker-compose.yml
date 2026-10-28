@@ -169,7 +169,7 @@ services:
       - litellm-secrets:/run/card-secrets
 
   litellm:
-    image: ghcr.io/berriai/litellm:v1.106.4
+    image: ghcr.io/berriai/litellm:v1.106.5
     profiles: [gateway]
     restart: unless-stopped
     entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]

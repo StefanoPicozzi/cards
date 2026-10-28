@@ -2,6 +2,7 @@
 """Write the daily report: what last night's jobs did, and what needs a person.
 
     GH_TOKEN=... python3 .github/scripts/daily_report.py > report.md
+    GH_TOKEN=... python3 .github/scripts/daily_report.py --json ops.json   (the same night, for the ops page)
 
 It reads GitHub only (runs, issues, pull requests, main's history, the test-status branch), through the gh
 CLI, so every number in it is exact. It covers the last 24 hours, and starts with the
@@ -13,6 +14,7 @@ import json
 import os
 import subprocess
 import sys
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
 REPO = os.environ.get("GITHUB_REPOSITORY", "edgible-org/cards")
@@ -21,6 +23,10 @@ SITE = os.environ.get("SITE_URL") or "https://cards.edgible.org"
 NOW = datetime.now(timezone.utc)
 SINCE = NOW - timedelta(hours=24)
 JOBS = {"regression": "Cards regression", "skill-evals": "Skill evals", "grow": "Grow"}
+# The ops page lists these, in the order the night runs them.
+NIGHT = {"image-scan": "Image scan", "skill-evals": "Skill evals", "grow": "Grow",
+         "regression": "Cards regression", "site": "Site build"}
+ROOT = Path(os.environ.get("CARDS_DIR", "."))
 
 
 def gh(*args: str) -> object:
@@ -79,7 +85,113 @@ def card_changes() -> tuple[list[str], list[str], list[str]]:
     return added, changed, removed
 
 
+def file_json(branch: str, path: str) -> dict:
+    out = subprocess.run(["gh", "api", f"repos/{REPO}/contents/{path}?ref={branch}", "--jq", ".content"],
+                         capture_output=True, text=True)
+    if out.returncode != 0:
+        return {}
+    import base64
+    try:
+        return json.loads(base64.b64decode(out.stdout.strip() or "e30="))
+    except ValueError:
+        return {}
+
+
+def pr_state(p: dict, agent: bool) -> tuple[str, str]:
+    """ready | hold | review, and why, for the ops page. Ready means everything that can be checked
+    by a machine has been: a person can merge it on sight."""
+    heads = [c["messageHeadline"] for c in p.get("commits") or []]
+    tested = any(h.startswith("test.yml for the image bump") for h in heads)
+    conflict = p.get("mergeable") == "CONFLICTING"
+    if p.get("isDraft"):
+        return "hold", "draft"
+    if conflict:
+        return "hold", "has a merge conflict; for a bump, tick its rebase box"
+    if agent:
+        return "review", "its test passed on a device (see the PR); read the card, then merge or close"
+    if p["headRefName"].startswith("renovate/"):
+        if tested:
+            return "ready", "image bump; its test passed and the result is in the PR"
+        return "hold", "image bump; the test has not finished or did not pass"
+    return "review", "needs a person"
+
+
+def ops_data() -> dict:
+    """The night as data, for the ops page: what ran, what failed, what waits for a person."""
+    st = status()
+    day = NOW.date()
+    names = sorted(p.parent.name for p in ROOT.glob("*/card.yml"))
+    failing = sorted(k for k, v in st.items() if v.get("result") == "fail")
+    ages = {k: (day - datetime.fromisoformat(v["tested"]).date()).days for k, v in st.items() if v.get("tested")}
+    jobs = []
+    for wf, label in NIGHT.items():
+        found = runs(wf)
+        state = "none"
+        if found:
+            latest = found[0]
+            state = "running" if latest["status"] in ("queued", "in_progress") else \
+                    ("ok" if latest["conclusion"] in ("success", "skipped") else "fail")
+        jobs.append({"workflow": wf, "name": label, "state": state, "count": len(found),
+                     "failed": sum(1 for r in found if r["conclusion"] == "failure"),
+                     "latest": found[0]["url"] if found else "",
+                     "at": found[0]["createdAt"] if found else ""})
+    scan = file_json("scan-status", "scan.json")
+    per_card: dict[str, set] = {}
+    for img in scan.values():
+        for c in img.get("cards", []):
+            per_card.setdefault(c, set()).update(f["id"] for f in img.get("findings", []))
+    dirty = sorted(((len(v), k) for k, v in per_card.items() if v), reverse=True)
+    queue = []
+    open_prs = gh("pr", "list", "--repo", REPO, "--state", "open", "--limit", "50",
+                  "--json", "number,title,url,headRefName,mergeable,isDraft,labels") or []
+    for p in open_prs:
+        agent = any(l["name"] == "agent-card" for l in p.get("labels", []))
+        if p["headRefName"].startswith("renovate/") and not p.get("isDraft"):
+            # The commits one PR at a time: asking for them across fifty is more than GitHub allows.
+            p["commits"] = (gh("pr", "view", str(p["number"]), "--repo", REPO, "--json", "commits") or {}).get("commits", [])
+        state, why = pr_state(p, agent)
+        queue.append({"number": p["number"], "title": p["title"], "url": p["url"],
+                      "kind": "new card" if agent else ("image bump" if p["headRefName"].startswith("renovate/") else "change"),
+                      "state": state, "why": why})
+    kit = [{"number": p["number"], "title": p["title"], "url": p["url"]} for p in prs(KIT, "--state", "open")]
+    made = [{"title": p["title"], "url": p["url"]} for p in prs(REPO, "--label", "agent-card", "--state", "all")
+            if when(p["createdAt"]) >= SINCE]
+    unmade = [{"title": i["title"], "url": i["url"]} for i in issues("--label", "agent-card", "--state", "all")
+              if when(i["createdAt"]) >= SINCE]
+    upstream = {}
+    for f in sorted((ROOT / "upstream").glob("*.md")):
+        if f.name == "README.md":
+            continue
+        for line in f.read_text().splitlines()[:12]:
+            if line.startswith("status:"):
+                k = line.split(":", 1)[1].strip()
+                upstream[k] = upstream.get(k, 0) + 1
+    regress = [{"number": i["number"], "title": i["title"], "url": i["url"],
+                "days": (NOW - when(i["createdAt"])).days} for i in issues("--state", "open")
+               if i["title"].startswith("Regression:")]
+    evals = next(iter(issues("--state", "open", "--search", "\"Skill eval report\" in:title")), None)
+    return {
+        "generated": NOW.isoformat(timespec="seconds"), "repo": REPO, "site": SITE,
+        "jobs": jobs,
+        "cards": {"total": len(names), "with_status": len(st), "passing": len(st) - len(failing), "failing": failing,
+                  "tested_24h": sum(1 for a in ages.values() if a <= 1),
+                  "oldest": max(((a, k) for k, a in ages.items()), default=(0, ""))[::-1],
+                  "no_test_yet": [n for n in names if n not in st]},
+        "regression_issues": regress,
+        "images": {"cards_with_fixable": len(dirty), "worst": [{"card": k, "count": n} for n, k in dirty[:5]],
+                   "scanned": len(scan)},
+        "queue": queue, "card_kit_prs": kit,
+        "grow": {"made": made, "could_not_make": unmade,
+                 "agent_prs_open": sum(1 for q in queue if q["kind"] == "new card")},
+        "upstream": upstream,
+        "skill_evals_report": evals["url"] if evals else "",
+    }
+
+
 def main() -> int:
+    if "--json" in sys.argv:
+        Path(sys.argv[sys.argv.index("--json") + 1]).write_text(json.dumps(ops_data(), indent=1) + "\n")
+        return 0
     actions: list[str] = []
     body: list[str] = []
 

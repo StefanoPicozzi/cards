@@ -48,7 +48,10 @@ jobs:
       - name: Gather the facts
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 cards/.github/scripts/daily_report.py > report.md && cat report.md
+        run: |
+          python3 cards/.github/scripts/daily_report.py > report.md && cat report.md
+          # The same night as data, for the ops page (cards.edgible.org/ops/).
+          CARDS_DIR=cards python3 cards/.github/scripts/daily_report.py --json ops.json
 
       - name: Add a summary
         run: |
@@ -94,6 +97,15 @@ jobs:
             mkdir reports && git -C reports init -q -b reports
           fi
           cp report.md "reports/$day.md"
+          # The ops page reads latest.json; the model's short summary, if there is one, goes in it.
+          python3 - <<'PY'
+          import json
+          lines = open("report.md").read().splitlines()[2:]
+          summary = " ".join(l for l in lines[: next((i for i, l in enumerate(lines) if l.startswith("## ")), 0)] if l.strip())
+          data = json.load(open("ops.json"))
+          data["summary"] = summary
+          open("reports/latest.json", "w").write(json.dumps(data, indent=1) + "\n")
+          PY
           cd reports
           git add -A
           git diff --cached --quiet && exit 0

@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: wiki-js
+  description: Wiki.js, a team wiki and knowledge base with Markdown and Git sync, behind your org login
+  type: app
+  added: 2026-10-28
+  homepage: https://js.wiki
+  license: AGPL-3.0-only
+
+applications:
+  - name: wiki-js
+    what: Wiki.js wiki, for the people who read and edit it in a browser
+    from: ghcr.io/requarks/wiki:2.5.317
+    database: postgres:17.11-alpine
+    port: 3000
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [org]
+    place: wiki-js
+
+secrets:
+  WIKI_JS_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: wiki-js-db
+      command: psql -U wikijs -d wikijs -c "ALTER USER wikijs PASSWORD '$WIKI_JS_DB_PASSWORD'"
+  WIKI_JS_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -hex 16
+    for: the admin's first sign-in, set by prepare.sh when it finishes the setup
+
+data:
+  volumes:
+    wiki-js-db-data:
+      class: irreplaceable
+      dump:
+        service: wiki-js-db
+        command: pg_dump -U "$POSTGRES_USER" -Fc "$POSTGRES_DB"
+        restore: pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean
+    wiki-js-secrets:
+      class: irreplaceable
+  fingerprint:
+    service: wiki-js-db
+    command: psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "select json_build_object('users', (select count(*) from users), 'pages', (select count(*) from pages))"
+
+places:
+  wiki-js:
+    memory: 1 GB
+    disk: 3 GB
+    arch: [amd64, arm64]
+    gpu: none

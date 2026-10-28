@@ -1,0 +1,30 @@
+tested: 2026-10-29
+result: pass
+card-kit: "fa59bf9"
+edgible-cli: 1.4.29
+files: sha256:890acc94d27afc8f
+machine: darwin/arm64, docker 29.4.3
+images:
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
+  - ghcr.io/requarks/wiki:2.5.317@sha256:e4708eed80c014449c0c8426c8d466c7a52a62131555bb44372fa48378b448b8
+  - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+image_facts:
+  ghcr.io/requarks/wiki:2.5.317: {user: "node", archs: ["amd64", "arm64"], healthcheck: false}
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    wiki-js: pass
+  checks:
+    admin-signs-in: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"users": 2, "pages": 0}
+measured:
+  wiki-js:
+    memory: 306 MB
+    images: 292 MB
+    data: 50 MB
+duration: 6m
+by: agent

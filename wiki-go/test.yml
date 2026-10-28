@@ -1,0 +1,29 @@
+tested: 2026-10-29
+result: pass
+card-kit: "fa59bf9"
+edgible-cli: 1.4.29
+files: sha256:cb04c68943febd7e
+machine: darwin/arm64, docker 29.4.3
+images:
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
+  - leomoonstudios/wiki-go:1.9.2@sha256:621c2f6fc8f860af5c550ea0061b805977462e415972999ea1409253d1c7f41b
+image_facts:
+  leomoonstudios/wiki-go:1.9.2: {user: "appuser", archs: ["amd64", "arm64"], healthcheck: false}
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    wiki-go: pass
+  checks:
+    admin-signs-in: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"documents": 0}
+measured:
+  wiki-go:
+    memory: 16 MB
+    images: 25 MB
+    data: 594 KB
+duration: 4m
+by: agent

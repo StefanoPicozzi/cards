@@ -106,13 +106,13 @@ def pr_state(p: dict, agent: bool) -> tuple[str, str]:
     if p.get("isDraft"):
         return "hold", "draft"
     if conflict:
-        return "hold", "has a merge conflict; for a bump, tick its rebase box"
+        return "hold", "merge conflict; for a bump, tick its rebase box on the PR"
     if agent:
-        return "review", "its test passed on a device (see the PR); read the card, then merge or close"
+        return "review", "its test passed on a device; read the card, then merge or close"
     if p["headRefName"].startswith("renovate/"):
         if tested:
-            return "ready", "image bump; its test passed and the result is in the PR"
-        return "hold", "image bump; the test has not finished or did not pass"
+            return "ready", "its test passed on a device; merge it"
+        return "hold", "its test has not finished, or did not pass"
     return "review", "needs a person"
 
 

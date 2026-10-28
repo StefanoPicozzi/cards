@@ -187,12 +187,20 @@ jobs:
                         gh issue list --repo "$GITHUB_REPOSITORY" --label agent-card --state all --limit 500 --json title --jq '.[].title'; } \
                       | sed -nE 's/^(New app card|App request): //p' | tr '\n' ' ')
           echo "proposed before: ${proposed:-none}"
+          # Categories a card was proposed for in the last two weeks are skipped, so a night's card is
+          # not another of the same kind: a category stays a gap until its card is merged and the
+          # needs-map pull request lands, which takes days.
+          mapfile -t cats < <( { gh pr list --repo "$GITHUB_REPOSITORY" --label agent-card --state all --limit 100 --json body,createdAt \
+                                   --jq '.[] | select(.createdAt > (now - 1209600 | todate)) | (.body | capture("Category: (?<c>[^\n]+)")? | .c) // empty'
+                                 gh issue list --repo "$GITHUB_REPOSITORY" --label agent-card --state all --limit 100 --json body,createdAt \
+                                   --jq '.[] | select(.createdAt > (now - 1209600 | todate)) | (.body | capture("category: (?<c>[^)]+)\\)")? | .c) // empty'; } | sort -u )
+          echo "categories skipped: ${cats[*]:-none}"
           if [ -n "$APP" ]; then
             if ! [[ "$APP" =~ ^[A-Za-z0-9\ ._-]+$ ]]; then echo "app: a name, letters, digits, spaces, . _ -" >&2; exit 2; fi
             # The named app, and its needs-map category, so the merged card lands in the map.
             (cd cards && ../card-kit/run pick-app --app "$APP") > pick.json
           else
-            (cd cards && ../card-kit/run pick-app --exclude $proposed) > pick.json || { echo "no gap left to fill"; echo "none=true" >> "$GITHUB_OUTPUT"; exit 0; }
+            (cd cards && ../card-kit/run pick-app --exclude $proposed --exclude-category ${cats[@]+"${cats[@]}"}) > pick.json || { echo "no gap left to fill"; echo "none=true" >> "$GITHUB_OUTPUT"; exit 0; }
           fi
           jq -r '"category: \(.category)\ncandidates: \([.candidates[].name] | join(", "))"' pick.json
           echo "none=false" >> "$GITHUB_OUTPUT"
@@ -406,6 +414,12 @@ jobs:
             } > ../pr.md
             gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$branch" \
               --title "New app card: $CARD" --label agent-card --body-file ../pr.md
+            # The mechanical part of the review, as a comment: secrets in git, default passwords, open ports,
+            # elevated access, unpinned images, and so on. It names keys, never values. A failure here does not
+            # stop the pull request.
+            python3 -m pip install -q pyyaml || true
+            python3 .github/scripts/card_verdict.py "$CARD" > ../verdict.md \
+              && gh pr comment "$branch" --repo "$GITHUB_REPOSITORY" --body-file ../verdict.md || echo "no automated checks comment"
           else
             name=${CARD:-$(jq -r '.candidates[0].name' "$pick")}
             {

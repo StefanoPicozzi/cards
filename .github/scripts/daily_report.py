@@ -57,6 +57,14 @@ def prs(repo: str, *args: str) -> list[dict]:
               "number,title,url,createdAt,headRefName", *args) or []
 
 
+def agent_prs(state: str) -> list[dict]:
+    """Pull requests grow made, by the label read from each one rather than by a search: a search
+    can lag behind a merge, and last night's report listed six merged cards as waiting, with no titles."""
+    found = gh("pr", "list", "--repo", REPO, "--state", state, "--limit", "100", "--json",
+               "number,title,url,createdAt,headRefName,labels") or []
+    return [p for p in found if p.get("title") and any(l["name"] == "agent-card" for l in p.get("labels", []))]
+
+
 def status() -> dict:
     out = subprocess.run(["gh", "api", f"repos/{REPO}/contents/status.json?ref=test-status",
                           "--jq", ".content"], capture_output=True, text=True)
@@ -177,7 +185,7 @@ def ops_data() -> dict:
                       "kind": "new card" if agent else ("image bump" if p["headRefName"].startswith("renovate/") else "change"),
                       "state": state, "why": why})
     kit = [{"number": p["number"], "title": p["title"], "url": p["url"]} for p in prs(KIT, "--state", "open")]
-    made = [{"title": p["title"], "url": p["url"]} for p in prs(REPO, "--label", "agent-card", "--state", "all")
+    made = [{"title": p["title"], "url": p["url"]} for p in agent_prs("all")
             if when(p["createdAt"]) >= SINCE]
     unmade = [{"title": i["title"], "url": i["url"]} for i in issues("--label", "agent-card", "--state", "all")
               if when(i["createdAt"]) >= SINCE]
@@ -282,9 +290,9 @@ def main() -> int:
 
     # Grow
     gr = runs("grow")
-    new_prs = [p for p in prs(REPO, "--label", "agent-card", "--state", "all") if when(p["createdAt"]) >= SINCE]
+    new_prs = [p for p in agent_prs("all") if when(p["createdAt"]) >= SINCE]
     new_issues = [i for i in issues("--label", "agent-card", "--state", "all") if when(i["createdAt"]) >= SINCE]
-    queue = prs(REPO, "--label", "agent-card", "--state", "open")
+    queue = agent_prs("open")
     body += ["## Grow", ""]
     if not gr:
         body.append("- Did not run in the last 24 hours.")

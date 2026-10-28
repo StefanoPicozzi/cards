@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: otter-wiki
+  description: Otter Wiki, a simple Markdown team wiki that keeps every page in Git, behind your org login
+  type: app
+  added: 2026-10-28
+  homepage: https://otterwiki.com
+  license: MIT
+
+applications:
+  - name: otter-wiki
+    what: Otter Wiki, for the people who read and edit it in a browser
+    from: redimp/otterwiki:2.25.0
+    port: 8080
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [org]
+    place: otter-wiki
+
+secrets:
+  OTTER_WIKI_SECRET_KEY:
+    kind: internal
+    use: signing
+    make: openssl rand -hex 32
+
+data:
+  volumes:
+    otter-wiki-data:
+      class: irreplaceable
+    otter-wiki-secrets:
+      class: irreplaceable
+  fingerprint:
+    service: otter-wiki
+    command: >-
+      printf 'pages: %s\n' "$(git -c safe.directory='*' -C /app-data/repository ls-files '*.md' | wc -l | tr -d ' ')" | sed 's/^pages: \(.*\)$/{"pages": \1}/'
+
+places:
+  otter-wiki:
+    memory: 256 MB
+    disk: 1.5 GB
+    arch: [amd64, arm64]
+    gpu: none

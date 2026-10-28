@@ -1,0 +1,56 @@
+# Compose file for the otter-wiki card.
+# The host port, ORG_LABEL and the admin's email come from card.env. The key that signs
+# sessions is made on this machine by otter-wiki-secrets, at first start, and never leaves it.
+# Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+# The image's own healthcheck applies.
+
+name: otter-wiki
+
+services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume otter-wiki-secrets, then exits. It never changes one that exists.
+  otter-wiki-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        OTTER_WIKI_SECRET_KEY=openssl rand -hex 32
+    volumes:
+      - otter-wiki-secrets:/run/card-secrets
+
+  otter-wiki:
+    image: ${OTTER_WIKI_IMAGE:-redimp/otterwiki:2.25.0}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${OTTER_WIKI_PORT:?set OTTER_WIKI_PORT in card.env}:80"
+    # Otter Wiki reads SECRET_KEY from the environment, so it starts through the loader, which
+    # sets it from the secret file and then runs the image's own entrypoint and command.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command:
+      - >-
+        export SECRET_KEY="$$OTTER_WIKI_SECRET_KEY" &&
+        exec /entrypoint.sh /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+    environment:
+      # Only people who signed in can read or write. Edgible's sign-in is the first door and
+      # the wiki's own accounts, which tag each Git commit with its author, are the second.
+      READ_ACCESS: REGISTERED
+      WRITE_ACCESS: REGISTERED
+      ATTACHMENT_ACCESS: REGISTERED
+      # No mail server is set up, so a new account cannot confirm its email.
+      EMAIL_NEEDS_CONFIRMATION: "False"
+      AUTO_APPROVAL: "True"
+      # Only this email becomes the admin when it registers.
+      ADMIN_USER_EMAIL: ${OTTER_WIKI_ADMIN_EMAIL:?set OTTER_WIKI_ADMIN_EMAIL in card.env}
+      SITE_NAME: ${OTTER_WIKI_SITE_NAME:-Team wiki}
+      ROBOTS_TXT: disallow
+    volumes:
+      - otter-wiki-data:/app-data
+      - otter-wiki-secrets:/run/card-secrets:ro
+    depends_on:
+      otter-wiki-secrets:
+        condition: service_completed_successfully
+
+volumes:
+  otter-wiki-data: {}
+  otter-wiki-secrets: {}

@@ -1,0 +1,51 @@
+# Compose file for the leafwiki card.
+# The host port and the admin's email come from card.env. The signing key and the admin's
+# password are made on this machine by leafwiki-secrets, at first start, and never leave it.
+# Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+# The image has no healthcheck of its own, so this file adds one on the start page.
+
+name: leafwiki
+
+services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume leafwiki-secrets, then exits. It never changes one that exists.
+  leafwiki-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        LEAFWIKI_JWT_SECRET=openssl rand -hex 32
+        LEAFWIKI_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - leafwiki-secrets:/run/card-secrets
+
+  leafwiki:
+    image: ${LEAFWIKI_IMAGE:-ghcr.io/perber/leafwiki:v0.14.2}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${LEAFWIKI_PORT:?set LEAFWIKI_PORT in card.env}:8080"
+    # LeafWiki reads its signing key and the admin's password from the environment, which the
+    # loader sets from the secret files, named as LeafWiki names them, before the image's own
+    # start script runs.
+    entrypoint: ["sh", "/run/card-secrets/.load", "/docker-entrypoint.sh"]
+    environment:
+      LEAFWIKI_ADMIN_EMAIL: ${LEAFWIKI_ADMIN_EMAIL:-admin@example.org}
+      # The app is plain HTTP on the machine; Edgible ends HTTPS in front of it.
+      LEAFWIKI_ALLOW_INSECURE: "true"
+    volumes:
+      - leafwiki-data:/app/data
+      - leafwiki-secrets:/run/card-secrets:ro
+    depends_on:
+      leafwiki-secrets:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://127.0.0.1:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+volumes:
+  leafwiki-data: {}
+  leafwiki-secrets: {}

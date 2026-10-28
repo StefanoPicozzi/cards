@@ -27,6 +27,11 @@ secrets:
     update:
       service: miniflux-db
       command: psql -U miniflux -d miniflux -c "ALTER USER miniflux PASSWORD '$MINIFLUX_DB_PASSWORD'"
+  MINIFLUX_DATABASE_URL:
+    kind: internal
+    use: password
+    on-move: new
+    make: printf 'postgres://miniflux:'; cat /run/card-secrets/MINIFLUX_DB_PASSWORD; printf '@miniflux-db/miniflux?sslmode=disable'
   MINIFLUX_ADMIN_PASSWORD:
     kind: human
     make: openssl rand -hex 16

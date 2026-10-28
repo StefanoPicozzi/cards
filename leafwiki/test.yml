@@ -1,0 +1,29 @@
+tested: 2026-10-29
+result: pass
+card-kit: "fa59bf9"
+edgible-cli: 1.4.29
+files: sha256:880509c93b15f323
+machine: darwin/arm64, docker 29.4.3
+images:
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
+  - ghcr.io/perber/leafwiki:v0.14.2@sha256:bc07b7d0f3de916233a570f6d4b54fe14de0e2cb77e179e6a07bf417fb109585
+image_facts:
+  ghcr.io/perber/leafwiki:v0.14.2: {user: "root", archs: ["amd64", "arm64"], healthcheck: false}
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    leafwiki: pass
+  checks:
+    admin-signs-in: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"files": 1}
+measured:
+  leafwiki:
+    memory: 18 MB
+    images: 27 MB
+    data: 770 KB
+duration: 4m
+by: agent

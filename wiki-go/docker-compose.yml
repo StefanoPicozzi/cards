@@ -1,0 +1,41 @@
+# Compose file for the wiki-go card.
+# The host port comes from card.env. The admin's password is made on this machine by
+# wiki-go-secrets, at first start, and never leaves it. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+
+name: wiki-go
+
+services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume wiki-go-secrets, then exits. It never changes one that exists.
+  wiki-go-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        WIKI_GO_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - wiki-go-secrets:/run/card-secrets
+
+  wiki-go:
+    image: ${WIKI_GO_IMAGE:-leomoonstudios/wiki-go:1.9.2}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WIKI_GO_PORT:?set WIKI_GO_PORT in card.env}:8080"
+    volumes:
+      # Pages, uploads, users and settings (config.yaml) are all files in here.
+      - wiki-go-data:/wiki/data
+    depends_on:
+      wiki-go-secrets:
+        condition: service_completed_successfully
+    # The image has no healthcheck of its own.
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null http://127.0.0.1:8080/login"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  wiki-go-data: {}
+  wiki-go-secrets: {}

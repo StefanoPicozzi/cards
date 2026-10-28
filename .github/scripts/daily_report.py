@@ -116,6 +116,25 @@ def pr_state(p: dict, agent: bool) -> tuple[str, str]:
     return "review", "needs a person"
 
 
+def verdict(number: int) -> str:
+    """The headline of the automated-checks comment grow posts on a new card's pull request, or ''."""
+    found = gh("pr", "view", str(number), "--repo", REPO, "--json", "comments") or {}
+    for c in reversed(found.get("comments") or []):
+        first = (c.get("body") or "").splitlines()[:1]
+        if first and first[0].startswith("## Automated checks: "):
+            return first[0].removeprefix("## Automated checks: ")
+    return ""
+
+
+def candidates() -> list[dict]:
+    """What check-upstream found with no request yet (the workflow runs it and names the file)."""
+    path = os.environ.get("OPS_CANDIDATES")
+    try:
+        return json.loads(Path(path).read_text()).get("new", []) if path else []
+    except (OSError, ValueError):
+        return []
+
+
 def ops_data() -> dict:
     """The night as data, for the ops page: what ran, what failed, what waits for a person."""
     st = status()
@@ -150,6 +169,10 @@ def ops_data() -> dict:
             # The commits one PR at a time: asking for them across fifty is more than GitHub allows.
             p["commits"] = (gh("pr", "view", str(p["number"]), "--repo", REPO, "--json", "commits") or {}).get("commits", [])
         state, why = pr_state(p, agent)
+        if agent and not p.get("isDraft"):
+            checks = verdict(p["number"])
+            if checks:
+                why = f"checks: {checks}. {why}"
         queue.append({"number": p["number"], "title": p["title"], "url": p["url"],
                       "kind": "new card" if agent else ("image bump" if p["headRefName"].startswith("renovate/") else "change"),
                       "state": state, "why": why})
@@ -184,6 +207,7 @@ def ops_data() -> dict:
         "grow": {"made": made, "could_not_make": unmade,
                  "agent_prs_open": sum(1 for q in queue if q["kind"] == "new card")},
         "upstream": upstream,
+        "upstream_candidates": [{"card": c["card"], "topic": c["topic"], "image": c["image"]} for c in candidates()],
         "skill_evals_report": evals["url"] if evals else "",
     }
 
@@ -280,6 +304,14 @@ def main() -> int:
     for p in kit:
         actions.append(f"Merge the needs-map update [{p['title']}]({p['url']}), so grow moves on to the next gap.")
     body.append("")
+
+    # Upstream candidates: what cards work around that an app's author could fix, with no request yet
+    cand = candidates()
+    if cand:
+        body += ["## Upstream", ""]
+        body.append(f"- {len(cand)} thing(s) the cards work around, not yet checked against the apps: "
+                    + ", ".join(sorted({f"{c['card']} ({c['topic']})" for c in cand})) + ".")
+        body.append("")
 
     # Health
     late = []

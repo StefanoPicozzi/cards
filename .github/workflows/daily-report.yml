@@ -45,10 +45,19 @@ jobs:
         with:
           path: cards
 
+      - name: Find what the cards work around
+        # card-kit's check-upstream: secrets loaded from files because an app reads only the environment,
+        # and apps with no healthcheck of their own. Candidates only; a request waits for them to be checked
+        # against the app's source. Without card-kit the report still goes out.
+        run: |
+          rm -rf card-kit && git clone -q --depth 1 https://github.com/edgible-org/card-kit.git card-kit || true
+          (cd cards && ../card-kit/run check-upstream --json) > candidates.json || echo '{"new": []}' > candidates.json
+
       - name: Gather the facts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          export OPS_CANDIDATES="$PWD/candidates.json"
           python3 cards/.github/scripts/daily_report.py > report.md && cat report.md
           # The same night as data, for the ops page (cards.edgible.org/ops/).
           CARDS_DIR=cards python3 cards/.github/scripts/daily_report.py --json ops.json

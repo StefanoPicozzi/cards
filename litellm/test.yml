@@ -1,11 +1,11 @@
-tested: 2026-10-27
+tested: 2026-10-28
 result: pass
-card-kit: "76c305d"
+card-kit: "acf9c1b"
 edgible-cli: 1.4.12
-files: sha256:3abbfc56ae696216
+files: sha256:85e0ec09ddc19012
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/berriai/litellm:v1.106.4@sha256:c169fb3adc514fcf210377c203f3de406d54f10bfdacf13948a4a839db9af7de
+  - ghcr.io/berriai/litellm:v1.106.5@sha256:7d6ae6c8d73d1b6aea4cb75d07c4a8a953f0809b0764522b8eab693734c5e905
   - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
   - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
 image_facts:
@@ -24,8 +24,8 @@ steps:
 fingerprint: {"keys": 0}
 measured:
   litellm:
-    memory: 700 MB
+    memory: 766 MB
     images: 546 MB
-    data: 53 MB
+    data: 54 MB
 duration: 3m
 by: ci

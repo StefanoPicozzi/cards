@@ -1,12 +1,12 @@
-tested: 2026-10-27
+tested: 2026-10-29
 result: pass
-card-kit: "a206c5b"
-edgible-cli: 1.4.12
-files: sha256:a89ee55425bb8ca5
+card-kit: "f3b49c6"
+edgible-cli: 1.4.29
+files: sha256:0ba92658d5313095
 machine: darwin/arm64, docker 29.4.3
 images:
   - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
-  - ghcr.io/openclaw/openclaw:2026.10.7@sha256:fb26f0841659dc757f23feec9adeab51f11d76779a409db5d22e191b43841afa
+  - ghcr.io/openclaw/openclaw:2026.10.8@sha256:82b6ce63048e75ca749dbc250e872ee21f4b1c098fc6bff94636e357bcb64bf5
 image_facts:
   ghcr.io/openclaw/openclaw:2026.10.5: {user: "node", archs: ["amd64", "arm64"], healthcheck: true}
 steps:
@@ -22,8 +22,8 @@ steps:
 fingerprint: {"sessions": 1, "workspace_files": 22}
 measured:
   openclaw:
-    memory: 1.5 GB
+    memory: 1.4 GB
     images: 1.3 GB
     data: 152 MB
-duration: 3m
+duration: 4m
 by: ci

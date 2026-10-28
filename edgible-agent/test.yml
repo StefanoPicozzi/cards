@@ -1,14 +1,14 @@
-tested: 2026-10-28
+tested: 2026-10-29
 result: pass
-card-kit: "acf9c1b"
-edgible-cli: 1.4.12
-files: sha256:b18d36d7c58d5375
+card-kit: "f3b49c6"
+edgible-cli: 1.4.29
+files: sha256:d3f8999623fbbd67
 machine: darwin/arm64, docker 29.4.3
 images:
   - ghcr.io/berriai/litellm:v1.106.5@sha256:7d6ae6c8d73d1b6aea4cb75d07c4a8a953f0809b0764522b8eab693734c5e905
   - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
   - ghcr.io/edgible-org/edgible-mcp:0.7.22@sha256:e3ea9c89c43b0e66bdf87fac3efc53371e4625072db386587c6f167901b73a21
-  - ghcr.io/openclaw/openclaw:2026.10.7@sha256:fb26f0841659dc757f23feec9adeab51f11d76779a409db5d22e191b43841afa
+  - ghcr.io/openclaw/openclaw:2026.10.8@sha256:82b6ce63048e75ca749dbc250e872ee21f4b1c098fc6bff94636e357bcb64bf5
   - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
 image_facts:
   ghcr.io/openclaw/openclaw:2026.10.5: {user: "node", archs: ["amd64", "arm64"], healthcheck: true}
@@ -29,5 +29,5 @@ measured:
     memory: 2 GB
     images: 2 GB
     data: 95 MB
-duration: 6m
+duration: 5m
 by: ci

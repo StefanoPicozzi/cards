@@ -15,6 +15,7 @@ services:
       CARD_SECRETS: |
         MINIFLUX_DB_PASSWORD=openssl rand -hex 16
         MINIFLUX_ADMIN_PASSWORD=openssl rand -hex 16
+        MINIFLUX_DATABASE_URL=printf 'postgres://miniflux:'; cat /run/card-secrets/MINIFLUX_DB_PASSWORD; printf '@miniflux-db/miniflux?sslmode=disable'
     volumes:
       - miniflux-secrets:/run/card-secrets
 
@@ -23,21 +24,20 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:${MINIFLUX_PORT:?set MINIFLUX_PORT in card.env}:8080"
-    # Miniflux reads these only from the environment, so it starts through the loader, which sets
-    # them from the secret files and then runs the image's own start command.
-    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
-    command:
-      - >-
-        export DATABASE_URL="postgres://miniflux:$$MINIFLUX_DB_PASSWORD@miniflux-db/miniflux?sslmode=disable"
-        ADMIN_PASSWORD="$$MINIFLUX_ADMIN_PASSWORD" && exec /usr/bin/miniflux
+    # Miniflux reads these two from files, so no entrypoint script is needed and the values are
+    # never in the container's environment.
     volumes:
       - miniflux-secrets:/run/card-secrets:ro
     environment:
+      DATABASE_URL_FILE: /run/card-secrets/MINIFLUX_DATABASE_URL
+      ADMIN_PASSWORD_FILE: /run/card-secrets/MINIFLUX_ADMIN_PASSWORD
       RUN_MIGRATIONS: "1"
       CREATE_ADMIN: "1"
       ADMIN_USERNAME: admin
       BASE_URL: ${MINIFLUX_URL:-https://miniflux.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
     depends_on:
+      miniflux-secrets:
+        condition: service_completed_successfully
       miniflux-db:
         condition: service_healthy
     healthcheck:

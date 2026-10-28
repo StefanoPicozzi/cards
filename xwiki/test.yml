@@ -1,0 +1,30 @@
+tested: 2026-10-29
+result: pass
+card-kit: "fa59bf9"
+edgible-cli: 1.4.29
+files: sha256:811270a23b0b0121
+machine: darwin/arm64, docker 29.4.3
+images:
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
+  - postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+  - xwiki:17.10.14-postgres-tomcat@sha256:0eeee26e149a2a00e632eb2bf45397c64703e4b9ca8edc7e27eafffc6c9bde80
+image_facts:
+  xwiki:17.10.14-postgres-tomcat: {user: "root", archs: ["amd64", "arm64"], healthcheck: false}
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    xwiki: pass
+  checks:
+    wiki-serves: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"tables": 41}
+measured:
+  xwiki:
+    memory: 1.2 GB
+    images: 893 MB
+    data: 60 MB
+duration: 5m
+by: agent

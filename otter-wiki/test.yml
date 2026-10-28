@@ -1,0 +1,29 @@
+tested: 2026-10-29
+result: pass
+card-kit: "fa59bf9"
+edgible-cli: 1.4.29
+files: sha256:40b09f6077bce654
+machine: darwin/arm64, docker 29.4.3
+images:
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
+  - redimp/otterwiki:2.25.0@sha256:1435c8cc536dd1a99eb0c54e02ff3bd636fe55ca38d331374f3e7db166bb0168
+image_facts:
+  redimp/otterwiki:2.25.0: {user: "root", archs: ["amd64", "arm", "arm64"], healthcheck: true}
+steps:
+  check-env: pass
+  start: pass
+  publish: pass
+  verify:
+    otter-wiki: pass
+  checks:
+    anonymous-is-turned-away: pass
+  fingerprint: pass
+  teardown: pass
+fingerprint: {"pages": 1}
+measured:
+  otter-wiki:
+    memory: 96 MB
+    images: 163 MB
+    data: 246 KB
+duration: 4m
+by: agent

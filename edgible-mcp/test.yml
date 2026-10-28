@@ -5,7 +5,7 @@ edgible-cli: 1.4.12
 files: sha256:028af3a91b2048af
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/edgible-org/edgible-mcp:0.7.21@sha256:8dd1f8d3b63368c3f6a693ca24114ce8240d0d29b72228b09c5a88ba6a64d9c0
+  - ghcr.io/edgible-org/edgible-mcp:0.7.22@sha256:e3ea9c89c43b0e66bdf87fac3efc53371e4625072db386587c6f167901b73a21
 image_facts:
   ghcr.io/edgible-org/edgible-mcp:0.7.20: {user: "root", archs: ["amd64", "arm64"], healthcheck: true}
 steps:

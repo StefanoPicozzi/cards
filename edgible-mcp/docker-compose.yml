@@ -7,7 +7,7 @@ name: edgible-mcp
 
 services:
   edgible-mcp:
-    image: ghcr.io/edgible-org/edgible-mcp:0.7.21
+    image: ghcr.io/edgible-org/edgible-mcp:0.7.22
     restart: unless-stopped
     ports:
       - "127.0.0.1:${EDGIBLE_MCP_PORT:?set EDGIBLE_MCP_PORT in card.env}:8000"

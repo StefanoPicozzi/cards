@@ -1,0 +1,73 @@
+# Compose file for the wiki-js card.
+# The host port, ORG_LABEL and the admin's email come from card.env. The database password and the
+# admin's password are made on this machine by wiki-js-secrets, at first start, and never leave it.
+# Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+
+name: wiki-js
+
+services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume wiki-js-secrets, then exits. It never changes one that exists.
+  wiki-js-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        WIKI_JS_DB_PASSWORD=openssl rand -hex 16
+        WIKI_JS_ADMIN_PASSWORD=openssl rand -hex 16
+    volumes:
+      - wiki-js-secrets:/run/card-secrets
+
+  wiki-js:
+    image: ${WIKI_JS_IMAGE:-ghcr.io/requarks/wiki:2.5.317}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WIKI_JS_PORT:?set WIKI_JS_PORT in card.env}:3000"
+    # Wiki.js reads the database password from the environment, so it starts through the loader,
+    # which sets it from the secret file and then runs the image's own start command.
+    entrypoint: ["sh", "/run/card-secrets/.load", "sh", "-c"]
+    command:
+      - export DB_PASS="$$WIKI_JS_DB_PASSWORD" && exec node server
+    volumes:
+      - wiki-js-secrets:/run/card-secrets:ro
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: wiki-js-db
+      DB_PORT: "5432"
+      DB_USER: wikijs
+      DB_NAME: wikijs
+    depends_on:
+      wiki-js-secrets:
+        condition: service_completed_successfully
+      wiki-js-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+
+  wiki-js-db:
+    image: postgres:17.11-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wikijs
+      POSTGRES_USER: wikijs
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/WIKI_JS_DB_PASSWORD
+    volumes:
+      - wiki-js-db-data:/var/lib/postgresql/data
+      - wiki-js-secrets:/run/card-secrets:ro
+    depends_on:
+      wiki-js-secrets:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wikijs -d wikijs"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  wiki-js-db-data: {}
+  wiki-js-secrets: {}

@@ -18,7 +18,10 @@
 # GitHub or Edgible login. This workflow, not the agent, checks the card, tests it, and opens
 # the pull request.
 #
-# It skips the night when 3 agent-made pull requests are already waiting for review.
+# It skips the night when MAX_OPEN agent-made pull requests are already waiting for review.
+# PER_NIGHT cards are made in a night, one after another: when a card's pull request or issue is
+# done, the run starts the next with `left` one lower, until none are left. A run started by hand
+# makes one card unless it is given `left`.
 
 name: grow
 
@@ -33,18 +36,24 @@ on:
         description: Make a card for this app instead of the next gap (its name on awesome-selfhosted)
         type: string
         default: ""
+      left:
+        description: How many more cards to make after this one (the nightly chain sets this itself)
+        type: string
+        default: "0"
 
 permissions:
   contents: write        # push the card's branch
   pull-requests: write   # open the pull request
   issues: write          # or the issue
+  actions: write         # start the next card's run
 
 concurrency:
   group: grow
   cancel-in-progress: false
 
 env:
-  MAX_OPEN: 3
+  MAX_OPEN: 6
+  PER_NIGHT: 5
   ATTEMPTS: 3
 
 defaults:
@@ -417,3 +426,24 @@ jobs:
             } > issue.md
             gh issue create --repo "$GITHUB_REPOSITORY" --title "App request: $name" --label app-request --label agent-card --body-file issue.md
           fi
+
+  again:
+    # The next card of the night, started as a run of its own so each card has the hub's session,
+    # the fleet's test and the review queue check to itself. Only after a card that was made, and
+    # only while the night has cards left: a skipped night, no gap left, or a run by hand with
+    # nothing left stops here. Runs queue behind this one (the concurrency group), so they never overlap.
+    needs: [write, finish]
+    if: always() && needs.write.outputs.go == 'true' && needs.finish.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start the next card
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEFT: ${{ inputs.left }}
+        run: |
+          set -euo pipefail
+          # The nightly chain starts without a count: it has PER_NIGHT - 1 left after this card.
+          if [ "$GITHUB_EVENT_NAME" = workflow_run ]; then left=$((PER_NIGHT - 1)); else left=${LEFT:-0}; fi
+          if [ "$left" -le 0 ]; then echo "tonight's cards are done"; exit 0; fi
+          echo "$left more tonight"
+          gh workflow run grow.yml --repo "$GITHUB_REPOSITORY" -f left=$((left - 1))

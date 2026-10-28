@@ -1,0 +1,121 @@
+{
+ "generated": "2026-10-28T23:25:01+00:00",
+ "repo": "edgible-org/cards",
+ "site": "https://cards.edgible.org",
+ "jobs": [
+  {
+   "workflow": "image-scan",
+   "name": "Image scan",
+   "state": "ok",
+   "count": 1,
+   "failed": 0,
+   "latest": "https://github.com/edgible-org/cards/actions/runs/40666491285",
+   "at": "2026-10-28T09:43:38Z"
+  },
+  {
+   "workflow": "skill-evals",
+   "name": "Skill evals",
+   "state": "ok",
+   "count": 1,
+   "failed": 0,
+   "latest": "https://github.com/edgible-org/cards/actions/runs/40748342032",
+   "at": "2026-10-28T18:47:12Z"
+  },
+  {
+   "workflow": "grow",
+   "name": "Grow",
+   "state": "ok",
+   "count": 5,
+   "failed": 0,
+   "latest": "https://github.com/edgible-org/cards/actions/runs/40761895809",
+   "at": "2026-10-28T20:17:10Z"
+  },
+  {
+   "workflow": "regression",
+   "name": "Cards regression",
+   "state": "ok",
+   "count": 1,
+   "failed": 0,
+   "latest": "https://github.com/edgible-org/cards/actions/runs/40750045066",
+   "at": "2026-10-28T18:58:26Z"
+  },
+  {
+   "workflow": "site",
+   "name": "Site build",
+   "state": "ok",
+   "count": 10,
+   "failed": 0,
+   "latest": "https://github.com/edgible-org/cards/actions/runs/40787017420",
+   "at": "2026-10-28T23:23:24Z"
+  }
+ ],
+ "cards": {
+  "total": 37,
+  "with_status": 29,
+  "passing": 29,
+  "failing": [],
+  "tested_24h": 25,
+  "oldest": [
+   "stirling-pdf",
+   16
+  ],
+  "no_test_yet": [
+   "accounts",
+   "assistant",
+   "leafwiki",
+   "otter-wiki",
+   "website",
+   "wiki-go",
+   "wiki-js",
+   "xwiki"
+  ]
+ },
+ "regression_issues": [],
+ "images": {
+  "cards_with_fixable": 31,
+  "worst": [
+   {
+    "card": "linkding",
+    "count": 204
+   },
+   {
+    "card": "immich",
+    "count": 183
+   },
+   {
+    "card": "uptime-kuma",
+    "count": 142
+   },
+   {
+    "card": "rallly",
+    "count": 138
+   },
+   {
+    "card": "teamdesk",
+    "count": 76
+   }
+  ],
+  "scanned": 44
+ },
+ "queue": [
+  {
+   "number": 190,
+   "title": "Update ghcr.io/openclaw/openclaw Docker tag to v2026.10.8",
+   "url": "https://github.com/edgible-org/cards/pull/190",
+   "kind": "image bump",
+   "state": "hold",
+   "why": "its test has not finished, or did not pass"
+  }
+ ],
+ "card_kit_prs": [],
+ "grow": {
+  "made": [],
+  "could_not_make": [],
+  "agent_prs_open": 0
+ },
+ "upstream": {
+  "draft": 11
+ },
+ "skill_evals_report": "https://github.com/edgible-org/cards/issues/17",
+ "summary": "Last night the cards regression passed all 25 cards it tested, and five new wiki cards (leafwiki, otter-wiki, wiki-go, wiki-js, xwiki) were added. Six new cards are waiting for your review, each to be merged or closed with a note; the skill evals are also weak, with only 1 of 5 held-out prompts passing this week."
+}

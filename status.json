@@ -20,6 +20,13 @@
     "files": "sha256:a1754383944e3c70",
     "device": "osxdevice"
   },
+  "docmost": {
+    "result": "pass",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:ea5bb164d467d04d",
+    "device": "osxdevice"
+  },
   "ech0": {
     "result": "pass",
     "tested": "2026-10-27",
@@ -29,23 +36,23 @@
   },
   "edgible-agent": {
     "result": "pass",
-    "tested": "2026-10-27",
-    "edgible-cli": "1.4.12",
-    "files": "sha256:9819f014ed2923c0",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:0af34d853706b3f0",
     "device": "osxdevice"
   },
   "edgible-connector": {
     "result": "pass",
-    "tested": "2026-10-27",
-    "edgible-cli": "1.4.12",
-    "files": "sha256:500c07d993896930",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:a52e429ddf8d4d6c",
     "device": "osxdevice"
   },
   "edgible-mcp": {
     "result": "pass",
-    "tested": "2026-10-27",
-    "edgible-cli": "1.4.12",
-    "files": "sha256:028af3a91b2048af",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:4a70f9ef69fb26de",
     "device": "osxdevice"
   },
   "gitea": {
@@ -57,9 +64,9 @@
   },
   "immich": {
     "result": "pass",
-    "tested": "2026-10-27",
-    "edgible-cli": "1.4.12",
-    "files": "sha256:1ae718771c5c35d4",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:2472bc5884086f25",
     "device": "osxdevice"
   },
   "jellyfin": {
@@ -78,9 +85,9 @@
   },
   "litellm": {
     "result": "pass",
-    "tested": "2026-10-27",
-    "edgible-cli": "1.4.12",
-    "files": "sha256:3abbfc56ae696216",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:85e0ec09ddc19012",
     "device": "osxdevice"
   },
   "mcp-bridge": {
@@ -104,9 +111,16 @@
   },
   "miniflux": {
     "result": "pass",
-    "tested": "2026-10-27",
-    "edgible-cli": "1.4.12",
-    "files": "sha256:8beab9dd07a9e5e1",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:45d00a1877b0b25e",
+    "device": "osxdevice"
+  },
+  "n8n": {
+    "result": "pass",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:b04cf9a269636594",
     "device": "osxdevice"
   },
   "ollama-osx": {
@@ -118,9 +132,9 @@
   },
   "openclaw": {
     "result": "pass",
-    "tested": "2026-10-27",
-    "edgible-cli": "1.4.12",
-    "files": "sha256:fe218497dc75fffe",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:a89ee55425bb8ca5",
     "device": "osxdevice"
   },
   "owncloud": {
@@ -159,9 +173,9 @@
   },
   "umami": {
     "result": "pass",
-    "tested": "2026-10-27",
-    "edgible-cli": "1.4.12",
-    "files": "sha256:8463ae572705139c",
+    "tested": "2026-10-28",
+    "edgible-cli": "1.4.29",
+    "files": "sha256:58dbaad2ba41520d",
     "device": "osxdevice"
   },
   "uptime-kuma": {

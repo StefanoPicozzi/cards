@@ -1,11 +1,11 @@
-tested: 2026-10-27
+tested: 2026-10-28
 result: pass
-card-kit: "ea4b037"
+card-kit: "acf9c1b"
 edgible-cli: 1.4.12
-files: sha256:1ae718771c5c35d4
+files: sha256:2472bc5884086f25
 machine: darwin/arm64, docker 29.4.3
 images:
-  - docker.io/valkey/valkey:9@sha256:418652cfb58ef879d4978c33553735d7147016032d5aefaa14c828e611eb9dfd
+  - docker.io/valkey/valkey:9@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7
   - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
   - ghcr.io/immich-app/immich-machine-learning:v3.3.1@sha256:513c831cfb010ad319341a0c86b42c575a0d5b688d3e8cae346ee624074a58ed
   - ghcr.io/immich-app/immich-server:v3.3.1@sha256:db996e352359771c6a3db121a0ed8761516b22f727fc092a0f46dcfef82c1bc1
@@ -24,7 +24,7 @@ steps:
 measured:
   immich:
     memory: 2.2 GB
-    images: 855 MB
+    images: 856 MB
     data: 346 MB
 duration: 4m
 by: ci

@@ -1,0 +1,67 @@
+# Compose file for the xwiki card.
+# The host port and ORG_LABEL come from card.env. The database password is made on this machine
+# by xwiki-secrets, at first start, and never leaves it. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+
+name: xwiki
+
+services:
+  # Makes each secret in card.yml's secrets: that does not exist yet, one file each in the
+  # volume xwiki-secrets, then exits. It never changes one that exists.
+  xwiki-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        XWIKI_DB_PASSWORD=openssl rand -hex 16
+    volumes:
+      - xwiki-secrets:/run/card-secrets
+
+  xwiki:
+    image: ${XWIKI_IMAGE:-xwiki:17.10.14-postgres-tomcat}
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:${XWIKI_PORT:?set XWIKI_PORT in card.env}:8080"
+    environment:
+      DB_HOST: xwiki-db
+      DB_USER: xwiki
+      DB_DATABASE: xwiki
+      DB_PASSWORD_FILE: /run/card-secrets/XWIKI_DB_PASSWORD
+    volumes:
+      - xwiki-secrets:/run/card-secrets:ro
+      - xwiki-data:/usr/local/xwiki
+    depends_on:
+      xwiki-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSL -o /dev/null http://127.0.0.1:8080/"]
+      interval: 15s
+      timeout: 20s
+      retries: 40
+      start_period: 120s
+
+  xwiki-db:
+    image: postgres:17.11-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: xwiki
+      POSTGRES_USER: xwiki
+      POSTGRES_PASSWORD_FILE: /run/card-secrets/XWIKI_DB_PASSWORD
+      POSTGRES_INITDB_ARGS: --encoding=UTF8
+    volumes:
+      - xwiki-db-data:/var/lib/postgresql/data
+      - xwiki-secrets:/run/card-secrets:ro
+    depends_on:
+      xwiki-secrets:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U xwiki -d xwiki"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  xwiki-db-data: {}
+  xwiki-data: {}
+  xwiki-secrets: {}

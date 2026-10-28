@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: xwiki
+  description: XWiki, an extensible team wiki and Confluence alternative, behind your org login
+  type: app
+  added: 2026-10-28
+  homepage: https://www.xwiki.org
+  license: LGPL-2.1-only
+
+applications:
+  - name: xwiki
+    what: XWiki, for the people who read and edit the wiki in a browser
+    from: xwiki:17.10.14-postgres-tomcat
+    database: postgres:17.11-alpine
+    port: 8080
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [org]
+    place: xwiki
+
+secrets:
+  XWIKI_DB_PASSWORD:
+    kind: internal
+    use: password
+    make: openssl rand -hex 16
+    update:
+      service: xwiki-db
+      command: psql -U xwiki -d xwiki -c "ALTER USER xwiki PASSWORD '$XWIKI_DB_PASSWORD'"
+
+data:
+  volumes:
+    xwiki-db-data:
+      class: irreplaceable
+      dump:
+        service: xwiki-db
+        command: pg_dump -U "$POSTGRES_USER" -Fc "$POSTGRES_DB"
+        restore: pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean
+    xwiki-data:
+      class: irreplaceable
+    xwiki-secrets:
+      class: irreplaceable
+  fingerprint:
+    service: xwiki-db
+    command: psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "select json_build_object('tables', (select count(*) from information_schema.tables where table_schema = 'public'))"
+
+places:
+  xwiki:
+    memory: 2 GB
+    disk: 4 GB
+    arch: [amd64, arm64]
+    gpu: none

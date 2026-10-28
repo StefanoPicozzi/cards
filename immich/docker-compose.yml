@@ -27,7 +27,7 @@ services:
       - immich-secrets:/run/card-secrets
 
   immich-server:
-    image: ghcr.io/immich-app/immich-server:v3.3.1
+    image: ghcr.io/immich-app/immich-server:v3.3.5
     restart: unless-stopped
     ports:
       - "127.0.0.1:${IMMICH_PORT:?set IMMICH_PORT in card.env}:2283"
@@ -43,7 +43,7 @@ services:
 
   # Face recognition and smart search. Remove this service to run without them.
   immich-machine-learning:
-    image: ghcr.io/immich-app/immich-machine-learning:v3.3.1
+    image: ghcr.io/immich-app/immich-machine-learning:v3.3.5
     restart: unless-stopped
     environment: *immich-env
     volumes:

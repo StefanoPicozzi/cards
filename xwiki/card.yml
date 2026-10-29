@@ -7,6 +7,7 @@ metadata:
   added: 2026-10-28
   homepage: https://www.xwiki.org
   license: LGPL-2.1-only
+  steward: edgible-org
 
 applications:
   - name: xwiki

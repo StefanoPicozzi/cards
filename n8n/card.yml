@@ -5,6 +5,7 @@ metadata:
   description: Locked editor and open webhook hostname, one n8n process
   type: pattern
   added: 2026-10-05
+  steward: edgible-org
 
 applications:
   - name: n8n

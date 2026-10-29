@@ -5,6 +5,7 @@ metadata:
   description: Sign-up and sign-in for your visitors, and the console that manages them
   type: pattern
   added: 2026-10-09
+  steward: edgible-org
 
 applications:
   - name: accounts

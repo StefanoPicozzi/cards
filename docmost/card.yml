@@ -7,6 +7,7 @@ metadata:
   added: 2026-10-27
   homepage: https://docmost.com
   license: AGPL-3.0-only
+  steward: edgible-org
 
 applications:
   - name: docmost

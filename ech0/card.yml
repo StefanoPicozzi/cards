@@ -6,6 +6,7 @@ metadata:
   type: app
   added: 2026-10-17
   homepage: https://github.com/lin-snow/Ech0
+  steward: edgible-org
 
 applications:
   - name: ech0

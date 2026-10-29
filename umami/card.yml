@@ -6,6 +6,7 @@ metadata:
   type: app
   added: 2026-10-09
   homepage: https://umami.is
+  steward: edgible-org
 
 applications:
   - name: umami

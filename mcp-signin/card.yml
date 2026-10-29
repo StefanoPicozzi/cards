@@ -5,6 +5,7 @@ metadata:
   description: Sign in with Edgible in front of any MCP server, so Claude on the web and phone can use it
   type: app
   added: 2026-10-20
+  steward: edgible-org
 
 applications:
   - name: mcp-signin

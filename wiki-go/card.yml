@@ -7,6 +7,7 @@ metadata:
   added: 2026-10-28
   homepage: https://leomoon.com/downloads/web-apps/wiki-go/
   license: GPL-3.0-only
+  steward: edgible-org
 
 applications:
   - name: wiki-go

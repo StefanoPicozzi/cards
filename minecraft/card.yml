@@ -6,6 +6,7 @@ metadata:
   type: app
   added: 2026-10-09
   homepage: https://papermc.io
+  steward: edgible-org
 
 applications:
   - name: mc-java

@@ -5,6 +5,7 @@ metadata:
   description: Public React site, its editor, open tracker, locked dashboard, locked monitor
   type: pattern
   added: 2026-10-05
+  steward: edgible-org
 
 applications:
   - name: site

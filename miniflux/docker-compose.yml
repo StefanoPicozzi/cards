@@ -20,7 +20,7 @@ services:
       - miniflux-secrets:/run/card-secrets
 
   miniflux:
-    image: miniflux/miniflux:2.3.3
+    image: miniflux/miniflux:2.3.4
     restart: unless-stopped
     ports:
       - "127.0.0.1:${MINIFLUX_PORT:?set MINIFLUX_PORT in card.env}:8080"

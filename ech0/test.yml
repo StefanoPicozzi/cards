@@ -1,11 +1,12 @@
-tested: 2026-10-18
+tested: 2026-10-29
 result: pass
-card-kit: "a2dd494"
-edgible-cli: 1.4.12
-files: sha256:d3bb3331b7d80f96
+card-kit: "747e0c9"
+edgible-cli: 1.4.29
+files: sha256:46fd736eaef929d7
 machine: darwin/arm64, docker 29.4.3
 images:
-  - sn0wl1n/ech0:v5.8.0@sha256:77c236b0a6981a8f32132b9bd61a960405c7de9827e28f5d36cf08e018ac632e
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
+  - sn0wl1n/ech0:v5.8.3@sha256:93e796080ebbb92d1631eb94634036b397d63aedca96b1cca181b5f8a9fff36f
 image_facts:
   sn0wl1n/ech0:v5.8.0: {user: "root", archs: ["amd64", "arm64"], healthcheck: false}
 steps:
@@ -21,8 +22,8 @@ steps:
 fingerprint: {"owners": 1}
 measured:
   ech0:
-    memory: 25 MB
-    images: 41 MB
+    memory: 23 MB
+    images: 47 MB
     data: 1 MB
-duration: 2m
-by: agent
+duration: 9m
+by: ci

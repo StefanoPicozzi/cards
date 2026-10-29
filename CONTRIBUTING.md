@@ -50,7 +50,7 @@ You need Docker. To test a card, which every app card must be, you also need an 
 
    `check-cards --fresh` fails a card whose files changed after its `test.yml`, so test again after any change. A picture is optional: `../card-kit/run card-image <name>`. So is an icon, the app's own logo for the catalog site: `../card-kit/run card-icon <name>` fetches it from the open icon sets, and without one the site shows the Edgible symbol.
 
-5. **Name a steward,** or leave it out. `metadata.steward` in card.yml is the GitHub user or organisation that will review changes to the card and fix it when its test fails. The site shows it on the card's page. A card with none is listed as having no steward, which is allowed, and is still tested every night.
+5. **Name a steward,** or leave it out. `metadata.steward` in card.yml is the GitHub user or organisation that will review changes to the card and fix it when its test fails. The site shows it on the card's page. A card with none is listed as having no steward, which is allowed, and is still tested every night. You may add `metadata.contact`, a public way to reach whoever looks after the card (an https address or an email address): it is shown beside the steward, and stays in git history for good, so use a role address or a page, not a personal or account sign-in address.
 
 6. **Check nothing private is left:** no device name, hostname, organization id, password, or your own domain, in any file.
 

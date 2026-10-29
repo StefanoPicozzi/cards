@@ -19,6 +19,7 @@ result:
      when its test fails. Leave it out if nobody will: the card is then listed as having no steward, which is allowed. -->
 
 Steward: 
+Contact (optional, public and permanent in git history, so a role address or a page rather than a personal or sign-in address): 
 
 If you wrote the app yourself, the result of `python3 ../card-kit/check-app.py <your app's folder> --image <name:tag> --steward <your GitHub name>` (names only, no values):
 

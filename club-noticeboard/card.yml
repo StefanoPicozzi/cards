@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Card
+metadata:
+  name: club-noticeboard
+  description: Club noticeboard, notices members read without an account, posted by a committee with its own password
+  type: app
+  added: 2026-10-29
+  homepage: https://github.com/StefanoPicozzi/club-noticeboard
+  license: MIT
+  steward: StefanoPicozzi
+
+applications:
+  - name: club-noticeboard
+    what: the club noticeboard, public notices and the committee's login
+    from: ghcr.io/stefanopicozzi/club-noticeboard:1.0.0
+    port: 5000
+    protocol: https
+    subtype: existing
+    published: true
+    authModes: [none]
+    place: club-noticeboard
+    source:
+      repo: https://github.com/StefanoPicozzi/club-noticeboard
+      ref: v1.0.0
+      dockerfile: Dockerfile
+      dev: pip install -r requirements.txt && ADMIN_PASSWORD=dev SECRET_KEY=dev SESSION_COOKIE_SECURE=0 DB_PATH=./data/notices.db flask --app app run
+
+data:
+  volumes:
+    club-noticeboard-data:
+      class: irreplaceable
+    club-noticeboard-secrets:
+      class: irreplaceable        # the card's secrets, made on the device: back up with the data
+  fingerprint:
+    service: club-noticeboard
+    command: >-
+      python -c "import json, os, sqlite3; p = '/app/data/notices.db';
+      n = sqlite3.connect(p).execute('select count(*) from notices').fetchone()[0] if os.path.exists(p) else 0;
+      print(json.dumps({'notices': n}))"
+
+secrets:
+  CLUB_NOTICEBOARD_ADMIN_PASSWORD:
+    kind: human
+    make: openssl rand -base64 18
+    for: the committee's login at /login
+  CLUB_NOTICEBOARD_SECRET_KEY:
+    kind: internal
+    use: signing
+    make: openssl rand -hex 32
+
+places:
+  club-noticeboard:
+    memory: 256 MB
+    disk: 1.5 GB
+    arch: [amd64, arm64]
+    gpu: none

@@ -1,0 +1,41 @@
+# Compose file for the club-noticeboard card.
+# The host port comes from card.env. The committee password and the cookie-signing key are
+# made on this machine by club-noticeboard-secrets, at first start, and never leave it. Start with:
+#   docker compose --env-file card.env -f docker-compose.yml up -d --wait
+# The image's own HEALTHCHECK (on /healthz) is used as the healthcheck.
+# CLUB_NOTICEBOARD_IMAGE in card.env replaces the pinned image with one built from the source.
+
+name: club-noticeboard
+
+services:
+  # Makes the card's secrets (card.yml secrets:) if they do not exist yet, as files in the
+  # volume club-noticeboard-secrets, then exits. It never changes them after.
+  club-noticeboard-secrets:
+    image: ghcr.io/edgible-org/card-secrets:0.1.2
+    restart: "no"
+    environment:
+      CARD_SECRETS: |
+        CLUB_NOTICEBOARD_ADMIN_PASSWORD=openssl rand -base64 18
+        CLUB_NOTICEBOARD_SECRET_KEY=openssl rand -hex 32
+    volumes:
+      - club-noticeboard-secrets:/run/card-secrets
+
+  club-noticeboard:
+    image: ${CLUB_NOTICEBOARD_IMAGE:-ghcr.io/stefanopicozzi/club-noticeboard:1.0.0}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${CLUB_NOTICEBOARD_PORT:?set CLUB_NOTICEBOARD_PORT in card.env}:5000"
+    environment:
+      CLUB_NAME: ${CLUB_NOTICEBOARD_CLUB_NAME:-Our club}
+      ADMIN_PASSWORD_FILE: /run/card-secrets/CLUB_NOTICEBOARD_ADMIN_PASSWORD
+      SECRET_KEY_FILE: /run/card-secrets/CLUB_NOTICEBOARD_SECRET_KEY
+    volumes:
+      - club-noticeboard-data:/app/data
+      - club-noticeboard-secrets:/run/card-secrets:ro
+    depends_on:
+      club-noticeboard-secrets:
+        condition: service_completed_successfully
+
+volumes:
+  club-noticeboard-data: {}
+  club-noticeboard-secrets: {}

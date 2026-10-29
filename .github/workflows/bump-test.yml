@@ -147,7 +147,7 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
           CARDS: ${{ matrix.cards }}
         run: |
-          gh pr comment "$PR" --body "test-card failed for: $CARDS. The run, with the failing step: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "test-card failed for: $CARDS. The run, with the failing step: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           exit 1
 
       - name: Clean up

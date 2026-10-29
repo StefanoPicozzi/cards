@@ -22,7 +22,7 @@ services:
       - litellm-secrets:/run/card-secrets
 
   litellm:
-    image: ghcr.io/berriai/litellm:v1.106.5
+    image: ghcr.io/berriai/litellm:v1.106.6
     restart: unless-stopped
     ports:
       - "127.0.0.1:${LITELLM_PORT:?set LITELLM_PORT in card.env}:4000"

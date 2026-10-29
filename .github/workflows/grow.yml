@@ -403,6 +403,7 @@ jobs:
               echo "- [ ] The README says where the data lives, and Tear down backs it up before deleting it."
               echo "- [ ] The app is a sensible choice for its category, and its image is from its own project."
               echo "- [ ] Nothing names a device, a hostname, or an organization."
+              echo "- [ ] \`steward:\` is not set on a new card, so it is listed as having none. Set it in this pull request (a GitHub name that will answer for the card, such as edgible-org) if you take it on, or leave it."
               if [ -f "$CARD/images/icon.svg" ] || [ -f "$CARD/images/icon.png" ]; then
                 echo "- [ ] The icon is the app's own logo: ${icon#wrote }."
               else

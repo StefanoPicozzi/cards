@@ -145,6 +145,8 @@ def main(argv: list[str]) -> int:
     readme = (card / "README.md").read_text() if (card / "README.md").is_file() else ""
     if not re.search(r"back\s?up", readme, re.I):
         info.append("The README does not mention backing up (the review asks where the data lives and that Tear down backs it up).")
+    if not (meta.get("metadata") or {}).get("steward"):
+        info.append("No steward: the card will be listed as having none until someone sets metadata.steward.")
     test = load(card / "test.yml")
     info.append(f"test.yml: {test.get('result', 'missing')}.")
 

@@ -41,6 +41,10 @@ Running something yourself only makes sense if you know what's yours and that it
 - **What it protects.** Every password and key the app uses is listed, with where it comes from. The ones only the app needs are made on your machine the first time it starts. Nobody types them, and they're never written into a file you share or sent anywhere: not to your AI assistant, not to Edgible. The one you need, such as the admin's password, is made there too, and you see it with one command on that machine. Keys you bring, such as an AI model's, stay in `card.env` on your machine.
 - **How well the app fits self-hosting.** A short list of facts about the app itself: does it keep its secrets in files, does it check its own health, does it start without root, does it run on both kinds of processor. Each card's tile shows how many it passes. They're facts, not opinions, and when an app falls short we'd rather ask its authors kindly than complain.
 
+## A person behind every card
+
+A card's app may be written by a person, with an AI's help, or entirely by an AI. Cards do not label that. They show who answers for the card: a person or an organisation (the steward), or that nobody does. Running or testing a card needs an Edgible account that a person created, and a person at Edgible reads a card before it is listed, so there is always a human responsible for what is here.
+
 ## Why "cards" and not a catalog
 
 We thought about building a catalog of apps for a long time. The trouble is that a catalog is a promise: every app in it works, stays up to date, and is supported. Keeping that promise for every app out there would be a full-time job, and a fragile one.

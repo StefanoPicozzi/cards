@@ -20,7 +20,7 @@ services:
       - ech0-secrets:/run/card-secrets
 
   ech0:
-    image: sn0wl1n/ech0:v5.8.0
+    image: sn0wl1n/ech0:v5.8.3
     restart: unless-stopped
     ports:
       - "127.0.0.1:${ECH0_PORT:?set ECH0_PORT in card.env}:6277"

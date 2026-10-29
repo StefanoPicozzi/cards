@@ -30,7 +30,7 @@ services:
       - wordpress-secrets:/run/card-secrets
 
   wordpress:
-    image: wordpress:7.1.3-php8.3-apache
+    image: wordpress:7.1.4-php8.3-apache
     restart: unless-stopped
     ports:
       - "127.0.0.1:${WORDPRESS_PORT:?set WORDPRESS_PORT in card.env}:80"

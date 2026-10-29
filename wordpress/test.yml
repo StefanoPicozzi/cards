@@ -1,12 +1,13 @@
-tested: 2026-10-11
+tested: 2026-10-29
 result: pass
-card-kit: "5950737"
-edgible-cli: 1.4.6
-files: sha256:6a17f79480fce2a0
+card-kit: "747e0c9"
+edgible-cli: 1.4.29
+files: sha256:5f9d729dff4f2304
 machine: darwin/arm64, docker 29.4.3
 images:
+  - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
   - mariadb:11.8.9@sha256:6422478cb8e159f080fb1d8ccf65101e26fe51385787fde7d16c3b165a331f15
-  - wordpress:7.1.3-php8.3-apache@sha256:8ecd8d8e374167ea22235acf30f80d1165b82f07ffa5bcef90c1cad8f7be251f
+  - wordpress:7.1.4-php8.3-apache@sha256:12ec50e21cb81a5ea964669d434578b7da4a101a45aef83f5f1c2227bcd1b058
 image_facts:
   wordpress:7.1.3-php8.3-apache: {user: "root", archs: ["386", "amd64", "arm", "arm64", "ppc64le", "riscv64", "s390x"], healthcheck: false}
 steps:
@@ -20,8 +21,8 @@ steps:
   teardown: pass
 measured:
   wordpress:
-    memory: 298 MB
-    images: 372 MB
+    memory: 247 MB
+    images: 377 MB
     data: 292 MB
-duration: 3m
-by: agent
+duration: 5m
+by: ci

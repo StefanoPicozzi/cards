@@ -19,7 +19,7 @@ services:
       - owncloud-secrets:/run/card-secrets
 
   owncloud:
-    image: owncloud/ocis:8.2.1
+    image: owncloud/ocis:8.2.2
     restart: unless-stopped
     # ownCloud reads the admin's password only from the environment, so it starts through the
     # loader, which sets it from the secret file, then makes the config once and serves.

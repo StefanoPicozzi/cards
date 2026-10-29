@@ -1,11 +1,11 @@
-tested: 2026-10-11
+tested: 2026-10-29
 result: pass
-card-kit: "5950737"
-edgible-cli: 1.4.6
-files: sha256:a91b802be389bcbb
+card-kit: "4bdb4ad"
+edgible-cli: 1.4.29
+files: sha256:6073051ca9c1c430
 machine: darwin/arm64, docker 29.4.3
 images:
-  - louislam/uptime-kuma:2.5.5-slim@sha256:9c56a772a7df53f444a404c579e87a27bd0c201375d00d6745a75bf8138f4342
+  - louislam/uptime-kuma:2.5.8-slim@sha256:3e0ae13fa92d0a1108b7e4133eaa25b2bc4e26d2f5d8691a5cb01ee1fe5c95f1
 image_facts:
   louislam/uptime-kuma:2.5.5-slim: {user: "root", archs: ["amd64", "arm", "arm64"], healthcheck: true}
 steps:
@@ -17,8 +17,8 @@ steps:
   teardown: pass
 measured:
   uptime-kuma:
-    memory: 152 MB
-    images: 180 MB
+    memory: 151 MB
+    images: 183 MB
     data: 16 KB
-duration: 2m
-by: agent
+duration: 3m
+by: ci

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>n8n: Locked editor and open webhook hostname, one n8n process | Edgible cards</title>
+<meta name="description" content="Locked editor and open webhook hostname, one n8n process">
+<link rel="canonical" href="https://cards.edgible.org/n8n/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="n8n: Locked editor and open webhook hostname, one n8n process">
+<meta property="og:description" content="Locked editor and open webhook hostname, one n8n process">
+<meta property="og:url" content="https://cards.edgible.org/n8n/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / n8n</p>
+<h1 class="with-icon"><img class="icon" src="../n8n/icon.svg" alt="" width="56" height="56" loading="lazy"><span>n8n</span></h1>
+<p class="lead">Locked editor and open webhook hostname, one n8n process</p>
+<p class="meta"><span class="kind">Pattern card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-28, Edgible 1.4.29</span><span class="added">Added 5 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://github.com/edgible-org/cards/tree/main/n8n">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the n8n card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>n8n</code></td><td>n8n editor</td><td>org login</td><td><code>workhorse</code></td></tr><tr><td><code>n8n-hooks</code></td><td>n8n webhooks, same process as n8n</td><td>open to anyone</td><td><code>workhorse</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>615 MB</strong>, a few minutes on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><p>Its data is in the volumes <code>db_storage</code> and <code>n8n_storage</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+<h2>What it protects</h2><ul><li><strong>In card.env on your machine:</strong> <code>POSTGRES_PASSWORD</code>, <code>POSTGRES_NON_ROOT_PASSWORD</code> and <code>RUNNERS_AUTH_TOKEN</code>. Check fills them in, and they stay on the machine.</li></ul>
+
+
+<h2>Needs it answers</h2><ul><li><a href="../needs/automation/">Automation</a></li><li><a href="../needs/ai-chatbots-for-customers-and-communities/">AI chatbots for customers and communities</a></li><li><a href="../needs/ai-app-builders-and-agents/">AI app builders and agents</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Moving work between systems usually goes to a hosted automation service, along with the keys to everything it touches. This card keeps that work on a machine you own. The editor asks for an org login. The webhook address stays open, because GitHub, Stripe, and <code>curl</code> cannot complete a browser login.</p>
+<h2 id="what">What</h2>
+<p>Both apps are the place <code>workhorse</code>, so they stay on one serving device. They share port <code>5678</code>. The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/n8n/docker-compose.yml">docker-compose.yml</a>. It runs Postgres and a task runner, and <a href="https://github.com/edgible-org/cards/blob/main/n8n/init-data.sh">init-data.sh</a> sits next to it. The file reads the passwords, the host port, and <code>ORG_LABEL</code> from <a href="https://github.com/edgible-org/cards/blob/main/n8n/card.env">card.env</a>. The editor hostname is <code>n8n</code> plus that label. The webhook hostname is <code>n8n-hooks</code> plus that label. The card is <a href="https://github.com/edgible-org/cards/blob/main/n8n/card.yml">card.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Six steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/n8n/card.env">card.env</a> before you start. <a href="https://github.com/edgible-org/cards/blob/main/n8n/docker-compose.yml">docker-compose.yml</a> reads that file.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<p>On the machine that will run the containers, fetch this card. Running this again replaces <code>card.env</code>, including the device name and any password you filled in.</p>
+<pre><code class="language-bash">mkdir -p n8n
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C n8n cards-main/n8n
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Open <code>n8n/card.env</code> and follow the comments in that file.</p>
+<pre><code class="language-bash">nano n8n/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<p>Check this machine before anything starts. The check reads <code>card.env</code> and looks for what the card would collide with: a host port, a container name, a Compose project, a leftover volume, a device name, or an app name. Each conflict prints its remedy. The report ends with those remedies as lines to paste into a shell: they fill empty secrets and change ports in <code>card.env</code>, keeping the old copy as <code>card.env.bak</code>. A line that stops or deletes something starts with <code>#</code>, so it runs only if you remove the <code>#</code>. Run the check again until it says <code>no conflicts</code>. It needs <code>python3</code> and Docker, and it uses <code>edgible</code> when that is installed.</p>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py n8n
+</code></pre>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file n8n/card.env -f n8n/docker-compose.yml pull
+docker compose --env-file n8n/card.env -f n8n/docker-compose.yml up -d --wait
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file, which takes longer for a larger app. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. A healthcheck comes from the Compose file or from the image. <code>ps</code> shows <code>(healthy)</code> in the status of each service that has one:</p>
+<pre><code class="language-bash">docker compose --env-file n8n/card.env -f n8n/docker-compose.yml ps
+</code></pre>
+<p>If <code>--wait</code> stops with <code>unhealthy</code>, <code>logs &lt;service&gt;</code> with the same <code>--env-file</code> and <code>-f</code> usually says why.</p>
+<h3 id="5-create-the-owner">5. Create the owner</h3>
+<p>Open <code>http://127.0.0.1:5678</code> and create the n8n owner. This account stays on this machine.</p>
+<h3 id="6-publish">6. Publish</h3>
+<p><code>jq</code> reads that device's id out of <code>edgible device list</code>.</p>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. n8n/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name n8n \
+  --port &quot;$N8N_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$device_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name n8n-hooks \
+  --port &quot;$N8N_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<p><code>edgible app list</code> shows <code>n8n</code> with <code>org</code> and <code>n8n-hooks</code> with <code>none</code>.</p>
+<h2 id="verify">Verify</h2>
+<p><code>edgible app list</code> prints each hostname. Each app answers the way its auth mode says: <code>none</code> with the app, <code>org</code> with a redirect to the Edgible sign-in, and <code>api-key</code> with <code>401</code> until a key is sent. This checks the card. The rest of each app's setup is in that app's docs.</p>
+<p><code>n8n</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;n8n hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. Open the hostname in a browser and sign in. The owner is the account you created on <code>127.0.0.1:5678</code>. The rest of the setup is in the <a href="https://docs.n8n.io">n8n docs</a>.</p>
+<p><code>n8n-hooks</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -fsS &quot;https://&lt;n8n-hooks hostname&gt;/healthz&quot;
+</code></pre>
+<p>That prints <code>{"status":"ok"}</code> from n8n, not the Edgible sign-in.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<p>Delete the apps first, so no hostname points at a stopped container, and the names are free if you set the card up again.</p>
+<pre><code class="language-bash">edgible app delete n8n --yes
+edgible app delete n8n-hooks --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<p>This stops and removes the containers. The volumes stay, so Start brings the card back with its data.</p>
+<pre><code class="language-bash">docker compose --env-file n8n/card.env -f n8n/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. It cannot be undone. The loop first copies each volume to a <code>.tgz</code> file in this directory. The containers are stopped, so each copy is whole.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=n8n); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file n8n/card.env -f n8n/docker-compose.yml down --volumes
+</code></pre>
+<p>To bring a copy back, keep the <code>card.env</code> it was made with, because the databases in it expect those passwords. <code>create</code> makes the containers and the volumes without starting them. Unpack each copy into its volume, then Start.</p>
+<pre><code class="language-bash">docker compose --env-file n8n/card.env -f n8n/docker-compose.yml create
+docker run --rm -v &quot;&lt;volume&gt;:/data&quot; -v &quot;$PWD:/backup&quot; alpine tar -xzf &quot;/backup/&lt;volume&gt;.tgz&quot; -C /data
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<p><code>card.env</code> holds the passwords, and <code>card.env.bak</code> holds the copy from before the check edited it. If you kept the volumes in step 3, keep <code>card.env</code> too. The databases in those volumes expect its passwords.</p>
+<pre><code class="language-bash">rm -rf n8n
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

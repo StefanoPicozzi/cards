@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>static-site: A static website from a tarball URL, served by Caddy and kept up to date | Edgible cards</title>
+<meta name="description" content="A static website from a tarball URL, served by Caddy and kept up to date">
+<link rel="canonical" href="https://cards.edgible.org/static-site/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="static-site: A static website from a tarball URL, served by Caddy and kept up to date">
+<meta property="og:description" content="A static website from a tarball URL, served by Caddy and kept up to date">
+<meta property="og:url" content="https://cards.edgible.org/static-site/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / static-site</p>
+<h1 class="with-icon"><span class="icon placeholder" style="width:56px;height:56px" aria-hidden="true"></span><span>static-site</span></h1>
+<p class="lead">A static website from a tarball URL, served by Caddy and kept up to date</p>
+<p class="meta"><span class="kind">App card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-27, Edgible 1.4.12</span><span class="pill fit" title="Self-hosting fit, from facts about the app. Starts as a non-root user: no, starts as root (caddy:2.11.7-alpine); Builds for arm64 and amd64: no, no builds listed"><svg class="ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7.86 1.57A5.50 5.50 0 0 1 12.13 8.97" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M11.27 10.46A5.50 5.50 0 0 1 2.73 10.46" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/><path d="M1.87 8.97A5.50 5.50 0 0 1 6.14 1.57" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/></svg>fit 1/3</span><span class="added">Added 13 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://caddyserver.com" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/static-site">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the static-site card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>static-site</code></td><td>Caddy serving the site&#x27;s files, open to anyone</td><td>open to anyone</td><td><code>static-site</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>static-site</code></td><td>256 MB</td><td>1.5 GB</td><td>amd64, arm64, arm</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>35 MB</strong>, under a minute on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><p>Its data is in the volumes <code>static-site-www</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+
+<h2>Self-hosting fit</h2><div class="fit-box"><svg class="ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path d="M27.14 4.18A20.07 20.07 0 0 1 42.74 31.19" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M39.60 36.63A20.07 20.07 0 0 1 8.40 36.63" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/><path d="M5.26 31.19A20.07 20.07 0 0 1 20.86 4.18" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/></svg><p><strong>1 of 3</strong> checks passed. Each is a fact about the app, not an opinion: <a href="https://github.com/edgible-org/card-kit/blob/main/card-fit.py">how they are decided</a>.</p></div><ul class="fit-list"><li class="fit-yes"><span class="mark">✓</span><strong>Has a health check</strong> <span>in the card&#x27;s Compose file</span></li><li class="fit-no"><span class="mark">✗</span><strong>Starts as a non-root user</strong> <span>starts as root (caddy:2.11.7-alpine)</span></li><li class="fit-no"><span class="mark">✗</span><strong>Builds for arm64 and amd64</strong> <span>no builds listed</span></li></ul>
+
+<h2>Needs it answers</h2><ul><li><a href="../needs/static-site-generators/">Static Site Generators</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>A static site, such as a project's docs, a catalog, or a small business's pages built by a site generator, is usually handed to a hosting service: GitHub Pages, Netlify, Cloudflare Pages, or an S3 bucket. This card serves it from a machine you own instead, through Edgible, and keeps it up to date from wherever the site is built, with no hosting account and no inbound port. <a href="https://caddyserver.com">Caddy</a> serves the files.</p>
+<h2 id="what">What</h2>
+<p>One app, <code>static-site</code>, on <code>none</code>, because a public site is for anyone. Two containers run it. <code>static-site-sync</code> downloads the site as a <code>.tar.gz</code> from <code>STATIC_SITE_SOURCE</code> every <code>STATIC_SITE_EVERY</code> seconds, and puts a new version live only when it downloaded in full, changed, has no paths that reach outside its folder, and has an <code>index.html</code> at its top. Going live is one rename, so a visitor never sees half a site, and anything wrong leaves the live site as it is. It runs as its image's own user, not root. <code>static-site</code> is Caddy on port <code>8080</code>, serving that copy read-only, with its admin API off and no certificate of its own: Edgible gives the site its hostname and HTTPS. A page the site does not have gets the site's own <code>404.html</code> when it has one, or, for a single-page app with its own routes, the page <code>STATIC_SITE_FALLBACK</code> names, such as <code>/index.html</code>, with status 200. The source can be any URL that serves a <code>.tar.gz</code>: a branch archive from GitHub, GitLab, or your own Gitea, or a file on any web server. Build the site wherever you like, such as in CI, and publish the build to that branch or URL.</p>
+<p>The live version and the one before it live in the volume <code>static-site-www</code>. Nothing in it needs a backup: the source has the site. Minimum recommended for the place <code>static-site</code>: 256 MB of memory and 1.5 GB of disk, on an arm64, amd64 or 32-bit arm machine, with no GPU.</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/static-site/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/static-site/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/static-site/card.yml">card.yml</a>, and the last test <a href="https://github.com/edgible-org/cards/blob/main/static-site/test.yml">test.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/static-site/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p static-site
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C static-site cards-main/static-site
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints, and <code>STATIC_SITE_SOURCE</code> to the URL of the site's <code>.tar.gz</code>. Keep <code>STATIC_SITE_STRIP=1</code> for a Git host's branch archive, which puts everything in one top folder, and set it to <code>0</code> for a tarball made from inside the site's folder. Set <code>STATIC_SITE_FALLBACK=/index.html</code> when the site is a single-page app with its own routes, such as a React app with React Router, so that opening one of its pages directly works. Change <code>STATIC_SITE_PORT</code> only if 8080 is taken.</p>
+<pre><code class="language-bash">nano static-site/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py static-site
+</code></pre>
+<p>It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file static-site/card.env -f static-site/docker-compose.yml pull
+docker compose --env-file static-site/card.env -f static-site/docker-compose.yml up -d --wait
+docker compose --env-file static-site/card.env -f static-site/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file: about 35 MB, under a minute on a typical home connection. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. Here that means the first copy of the site is in place and Caddy serves it, so it fails when the source cannot be downloaded or has no <code>index.html</code> at its top. Then <code>docker compose --env-file static-site/card.env -f static-site/docker-compose.yml logs static-site-sync</code> says why.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. static-site/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name static-site \
+  --port &quot;$STATIC_SITE_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<h2 id="verify">Verify</h2>
+<p><code>static-site</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;static-site hostname&gt;&quot;
+</code></pre>
+<p>A new version of the site goes live within <code>STATIC_SITE_EVERY</code> seconds of reaching the source, and the sync container logs <code>live:</code> with its hash. To serve the site on your own domain, publish with <code>--hostnames</code>, and point that name at Edgible as its docs say.</p>
+<p>The rest of the setup is in the <a href="https://caddyserver.com/docs/caddyfile/directives/file_server">Caddy file server docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete static-site --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file static-site/card.env -f static-site/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=static-site); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file static-site/card.env -f static-site/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf static-site
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>assistant: Chat that answers from your own documents, and the model that runs it | Edgible cards</title>
+<meta name="description" content="Chat that answers from your own documents, and the model that runs it">
+<link rel="canonical" href="https://cards.edgible.org/assistant/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="assistant: Chat that answers from your own documents, and the model that runs it">
+<meta property="og:description" content="Chat that answers from your own documents, and the model that runs it">
+<meta property="og:url" content="https://cards.edgible.org/assistant/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / assistant</p>
+<h1 class="with-icon"><span class="icon placeholder" style="width:56px;height:56px" aria-hidden="true"></span><span>assistant</span></h1>
+<p class="lead">Chat that answers from your own documents, and the model that runs it</p>
+<p class="meta"><span class="kind">Pattern card</span><span class="pill untested">not tested yet</span><span class="added">Added 9 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://github.com/edgible-org/cards/tree/main/assistant">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the assistant card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>assistant</code></td><td>chat over your documents</td><td>org login</td><td><code>desk</code></td></tr><tr><td><code>ollama</code></td><td>chat and embedding models</td><td>API key</td><td><code>desk</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody></tbody></table></div>
+
+<h2>What it keeps</h2><p>Its data is in the volumes <code>ollama</code> and <code>open-webui</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+
+
+
+<h2>Needs it answers</h2><ul><li><a href="../needs/knowledge-management-tools/">Knowledge Management Tools</a></li><li><a href="../needs/generative-artificial-intelligence-genai/">Generative Artificial Intelligence (GenAI)</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Asking questions of your own documents usually means handing those files to someone else's chat. This card keeps the documents and the model on a machine you own. The chat asks for an org login. The model asks for an API key, so another machine you own can call it, and a stranger cannot.</p>
+<h2 id="what">What</h2>
+<p>Both apps are the place <code>desk</code>, so they stay on one serving device. <code>assistant</code> is Open WebUI on port <code>8088</code>, behind an org login. <code>ollama</code> is the chat model and the embedding model on port <code>11434</code>, behind an API key. Open WebUI calls Ollama on the machine, not through the public hostname. The document index stays inside Open WebUI.</p>
+<p>Port <code>8088</code> is the host port. The website card already uses <code>8080</code> for nginx. The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/assistant/docker-compose.yml">docker-compose.yml</a>. It reads the host ports from <a href="https://github.com/edgible-org/cards/blob/main/assistant/card.env">card.env</a>. The sample document is <a href="https://github.com/edgible-org/cards/blob/main/assistant/etc/sample-help.pdf">etc/sample-help.pdf</a>. The card is <a href="https://github.com/edgible-org/cards/blob/main/assistant/card.yml">card.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Six steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/assistant/card.env">card.env</a> before you start. <a href="https://github.com/edgible-org/cards/blob/main/assistant/docker-compose.yml">docker-compose.yml</a> reads the host ports from that file.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<p>On the machine that will run the containers, fetch this card. Running this again replaces <code>card.env</code>, including the device name and any password you filled in.</p>
+<pre><code class="language-bash">mkdir -p assistant
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C assistant cards-main/assistant
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Open <code>assistant/card.env</code> and follow the comments in that file.</p>
+<pre><code class="language-bash">nano assistant/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<p>Check this machine before anything starts. The check reads <code>card.env</code> and looks for what the card would collide with: a host port, a container name, a Compose project, a leftover volume, a device name, or an app name. Each conflict prints its remedy. The report ends with those remedies as lines to paste into a shell: they fill empty secrets and change ports in <code>card.env</code>, keeping the old copy as <code>card.env.bak</code>. A line that stops or deletes something starts with <code>#</code>, so it runs only if you remove the <code>#</code>. Run the check again until it says <code>no conflicts</code>. It needs <code>python3</code> and Docker, and it uses <code>edgible</code> when that is installed.</p>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py assistant
+</code></pre>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file assistant/card.env -f assistant/docker-compose.yml pull
+docker compose --env-file assistant/card.env -f assistant/docker-compose.yml up -d --wait
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file, which takes longer for a larger app. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. A healthcheck comes from the Compose file or from the image. <code>ps</code> shows <code>(healthy)</code> in the status of each service that has one:</p>
+<pre><code class="language-bash">docker compose --env-file assistant/card.env -f assistant/docker-compose.yml ps
+</code></pre>
+<p>If <code>--wait</code> stops with <code>unhealthy</code>, <code>logs &lt;service&gt;</code> with the same <code>--env-file</code> and <code>-f</code> usually says why.</p>
+<h3 id="5-pull-the-models">5. Pull the models</h3>
+<p><code>qwen2.5:7b</code> is the chat model. <code>nomic-embed-text</code> is the embedding model. The pulls are large and stay on this machine.</p>
+<pre><code class="language-bash">docker exec ollama ollama pull qwen2.5:7b
+docker exec ollama ollama pull nomic-embed-text
+</code></pre>
+<h3 id="6-publish">6. Publish</h3>
+<p><code>jq</code> reads that device's id out of <code>edgible device list</code>.</p>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. assistant/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name assistant \
+  --port &quot;$ASSISTANT_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$device_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name ollama \
+  --port &quot;$OLLAMA_PORT&quot; \
+  --protocol https \
+  --auth-modes api-key \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<p><code>edgible app list</code> shows <code>assistant</code> with <code>org</code> and <code>ollama</code> with <code>api-key</code>.</p>
+<h2 id="verify">Verify</h2>
+<p><code>edgible app list</code> prints each hostname. Each app answers the way its auth mode says: <code>none</code> with the app, <code>org</code> with a redirect to the Edgible sign-in, and <code>api-key</code> with <code>401</code> until a key is sent. This checks the card. The rest of each app's setup is in that app's docs.</p>
+<p><code>assistant</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;assistant hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. Open the hostname in a browser and sign in. The first visit creates the Open WebUI admin. Upload <code>assistant/etc/sample-help.pdf</code> and ask what the support hours are. The answer is weekdays 9 to 5, so the chat reached the model and read the document. The rest of the setup is in the <a href="https://docs.openwebui.com">Open WebUI docs</a>.</p>
+<p><code>ollama</code> uses <code>api-key</code>. Without a key, it answers <code>401</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;ollama hostname&gt;/api/tags&quot;
+</code></pre>
+<p>Create a key. The secret is shown once. The app id is the one <code>edgible app list</code> prints for <code>ollama</code>.</p>
+<pre><code class="language-bash">edgible app api-keys create --app-id &lt;ollama-app-id&gt; --name caller
+</code></pre>
+<pre><code class="language-bash">curl -fsS &quot;https://&lt;ollama hostname&gt;/api/tags&quot; -H &quot;Authorization: Bearer &lt;secret&gt;&quot;
+</code></pre>
+<p>A response means the hostname accepted the key. The rest of the setup is in the <a href="https://docs.ollama.com">Ollama docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<p>Delete the apps first, so no hostname points at a stopped container, and the names are free if you set the card up again.</p>
+<pre><code class="language-bash">edgible app delete assistant --yes
+edgible app delete ollama --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<p>This stops and removes the containers. The volumes stay, so Start brings the card back with its data.</p>
+<pre><code class="language-bash">docker compose --env-file assistant/card.env -f assistant/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. It cannot be undone. The loop first copies each volume to a <code>.tgz</code> file in this directory. The containers are stopped, so each copy is whole.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=assistant); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file assistant/card.env -f assistant/docker-compose.yml down --volumes
+</code></pre>
+<p>To bring a copy back, keep the <code>card.env</code> it was made with, because the databases in it expect those passwords. <code>create</code> makes the containers and the volumes without starting them. Unpack each copy into its volume, then Start.</p>
+<pre><code class="language-bash">docker compose --env-file assistant/card.env -f assistant/docker-compose.yml create
+docker run --rm -v &quot;&lt;volume&gt;:/data&quot; -v &quot;$PWD:/backup&quot; alpine tar -xzf &quot;/backup/&lt;volume&gt;.tgz&quot; -C /data
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<p><code>card.env</code> holds the passwords, and <code>card.env.bak</code> holds the copy from before the check edited it. If you kept the volumes in step 3, keep <code>card.env</code> too. The databases in those volumes expect its passwords.</p>
+<pre><code class="language-bash">rm -rf assistant
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

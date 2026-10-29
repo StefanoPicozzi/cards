@@ -1,0 +1,88 @@
+# Edgible cards
+
+> Self-hosted apps to run on a machine you control (at home, in the office, or a small cloud server), published through Edgible. Each card records the images, ports, and auth mode of each hostname, and is tested end to end on a real Edgible serving device.
+
+Why cards exist, and why they are shaped for sharing: https://cards.edgible.org/about/
+How to use cards with an AI agent, and the skill to install: https://cards.edgible.org/ai/
+How to run a card on your own server without Edgible: https://cards.edgible.org/run-without-edgible/
+
+Each card page has how to start, publish, check, and remove the card. Each need page says whether self-hosting suits that need, which questions decide it, and how to publish it safely. The source of every card is https://github.com/edgible-org/cards. An AI agent can do the whole flow with the edgible-cards skill: https://github.com/edgible-org/card-kit/tree/main/skills/edgible-cards
+
+## App cards
+
+- [bloglite](https://cards.edgible.org/bloglite/): bloglite, a micro-blog with Markdown, syntax highlighting and phone publishing, public with the owner's own login. Test passed 2026-10-27 on Edgible 1.4.12.
+- [canary](https://cards.edgible.org/canary/): A smoke test for Edgible, one tiny container that answers on every auth mode. Test passed 2026-10-27 on Edgible 1.4.12.
+- [docmost](https://cards.edgible.org/docmost/): Docmost, a collaborative team wiki and Notion or Confluence alternative, behind your org login. Test passed 2026-10-28 on Edgible 1.4.29.
+- [ech0](https://cards.edgible.org/ech0/): Ech0, a lightweight publishing platform for short posts, public with the owner's own login. Test passed 2026-10-27 on Edgible 1.4.12.
+- [edgible-mcp](https://cards.edgible.org/edgible-mcp/): Edgible tools for Claude and other assistants, read-only unless you allow writes. Test passed 2026-10-28 on Edgible 1.4.29.
+- [gitea](https://cards.edgible.org/gitea/): Gitea, your own Git forge, with Git over HTTPS and SSH. Test passed 2026-10-27 on Edgible 1.4.12.
+- [immich](https://cards.edgible.org/immich/): Immich, your photo and video library, for its phone apps and the web. Test passed 2026-10-28 on Edgible 1.4.29.
+- [jellyfin](https://cards.edgible.org/jellyfin/): Jellyfin, your films, shows and music, streamed to its apps and the web. Test passed 2026-10-27 on Edgible 1.4.12.
+- [leafwiki](https://cards.edgible.org/leafwiki/): LeafWiki, a fast Markdown wiki with a page tree, for a team, behind your org login. Not tested yet.
+- [linkding](https://cards.edgible.org/linkding/): linkding, a minimal bookmark manager, for your browsers and its extension. Test passed 2026-10-27 on Edgible 1.4.12.
+- [litellm](https://cards.edgible.org/litellm/): An AI gateway for your apps, one address for every model, with a key and a budget per app. Test passed 2026-10-28 on Edgible 1.4.29.
+- [mcp-bridge](https://cards.edgible.org/mcp-bridge/): Any stdio MCP server, published over Streamable HTTP for your AI assistants. Test passed 2026-10-12 on Edgible 1.4.6.
+- [mcp-signin](https://cards.edgible.org/mcp-signin/): Sign in with Edgible in front of any MCP server, so Claude on the web and phone can use it. Test passed 2026-10-27 on Edgible 1.4.12.
+- [minecraft](https://cards.edgible.org/minecraft/): A Minecraft server for friends on PC over TCP and on phones over UDP, one world. Test passed 2026-10-12 on Edgible 1.4.6.
+- [miniflux](https://cards.edgible.org/miniflux/): Miniflux, the minimalist feed reader, behind your org login. Test passed 2026-10-28 on Edgible 1.4.29.
+- [ollama-osx](https://cards.edgible.org/ollama-osx/): Ollama on an Apple Silicon Mac, natively on its GPU, as an API behind a key. Test passed 2026-10-27 on Edgible 1.4.12.
+- [openclaw](https://cards.edgible.org/openclaw/): OpenClaw, the open-source AI agent, with its Control UI behind your organisation's sign-in. Test passed 2026-10-28 on Edgible 1.4.29.
+- [otter-wiki](https://cards.edgible.org/otter-wiki/): Otter Wiki, a simple Markdown team wiki that keeps every page in Git, behind your org login. Not tested yet.
+- [owncloud](https://cards.edgible.org/owncloud/): ownCloud Infinite Scale, your files and shares, for its desktop and phone apps and the web. Test passed 2026-10-27 on Edgible 1.4.12.
+- [rallly](https://cards.edgible.org/rallly/): Rallly date polls, open to anyone with the link and sign-in limited to the emails you list. Test passed 2026-10-27 on Edgible 1.4.12.
+- [static-site](https://cards.edgible.org/static-site/): A static website from a tarball URL, served by Caddy and kept up to date. Test passed 2026-10-27 on Edgible 1.4.12.
+- [stirling-pdf](https://cards.edgible.org/stirling-pdf/): Stirling-PDF, the PDF toolbox, behind your org login. Test passed 2026-10-12 on Edgible 1.4.6.
+- [teamdesk](https://cards.edgible.org/teamdesk/): Teamdesk, room bookings, tasks and announcements for a small team, behind the organisation's Edgible sign-in. Test passed 2026-10-27 on Edgible 1.4.12.
+- [umami](https://cards.edgible.org/umami/): Umami analytics, the dashboard behind org and the tracking script open. Test passed 2026-10-28 on Edgible 1.4.29.
+- [uptime-kuma](https://cards.edgible.org/uptime-kuma/): Uptime Kuma, the uptime monitor, behind your org login. Test passed 2026-10-26 on Edgible 1.4.12.
+- [vaultwarden](https://cards.edgible.org/vaultwarden/): Vaultwarden, a Bitwarden-compatible password server, for your own apps and browsers. Test passed 2026-10-27 on Edgible 1.4.12.
+- [wiki-go](https://cards.edgible.org/wiki-go/): Wiki-Go, a databaseless flat-file team wiki with roles and page access rules, behind your org login. Not tested yet.
+- [wiki-js](https://cards.edgible.org/wiki-js/): Wiki.js, a team wiki and knowledge base with Markdown and Git sync, behind your org login. Not tested yet.
+- [wordpress](https://cards.edgible.org/wordpress/): WordPress with MariaDB, installed before it goes public. Test passed 2026-10-27 on Edgible 1.4.12.
+- [xwiki](https://cards.edgible.org/xwiki/): XWiki, an extensible team wiki and Confluence alternative, behind your org login. Not tested yet.
+
+## Pattern cards
+
+- [accounts](https://cards.edgible.org/accounts/): Sign-up and sign-in for your visitors, and the console that manages them. Not tested yet.
+- [assistant](https://cards.edgible.org/assistant/): Chat that answers from your own documents, and the model that runs it. Not tested yet.
+- [ci](https://cards.edgible.org/ci/): Your own Git forge with CI, and the runner on a machine of its own. Test passed 2026-10-27 on Edgible 1.4.12.
+- [edgible-agent](https://cards.edgible.org/edgible-agent/): Your own AI agent that looks after your Edgible apps, from your phone. Test passed 2026-10-28 on Edgible 1.4.29.
+- [edgible-connector](https://cards.edgible.org/edgible-connector/): Edgible in Claude's web, desktop and phone apps, signed in with Edgible. Test passed 2026-10-28 on Edgible 1.4.29.
+- [n8n](https://cards.edgible.org/n8n/): Locked editor and open webhook hostname, one n8n process. Test passed 2026-10-28 on Edgible 1.4.29.
+- [website](https://cards.edgible.org/website/): Public React site, its editor, open tracker, locked dashboard, locked monitor. Not tested yet.
+
+## Needs
+
+- [Bookmarks and Link Sharing](https://cards.edgible.org/needs/bookmarks-and-link-sharing/): Good fit. Replaces Pocket, Raindrop.io, Instapaper, Pinboard, Omnivore. Cards: linkding.
+- [Photo Galleries](https://cards.edgible.org/needs/photo-galleries/): Fits, with conditions. Replaces Google Photos, iCloud Photos, Amazon Photos, Flickr. Cards: immich.
+- [File Transfer & Synchronization](https://cards.edgible.org/needs/file-transfer-synchronization/): Fits, with conditions. Replaces Dropbox, Google Drive, OneDrive, Box, iCloud Drive. Cards: owncloud.
+- [Password Managers](https://cards.edgible.org/needs/password-managers/): Fits, with conditions. Replaces 1Password, LastPass, Bitwarden cloud, Dashlane. Cards: vaultwarden.
+- [Booking and Scheduling](https://cards.edgible.org/needs/booking-and-scheduling/): Fits, with conditions. Replaces court booking apps, Calendly, Doodle, Google Calendar booking pages. Cards: rallly.
+- [Analytics](https://cards.edgible.org/needs/analytics/): Good fit. Replaces Google Analytics, Plausible cloud, Fathom, Simple Analytics. Cards: umami, website.
+- [Content Management Systems (CMS)](https://cards.edgible.org/needs/content-management-systems-cms/): Fits, with conditions. Replaces Squarespace, Wix, WordPress.com, managed WordPress hosting. Cards: wordpress, website, accounts.
+- [Blogging Platforms](https://cards.edgible.org/needs/blogging-platforms/): Good fit. Replaces Substack, Medium, Ghost(Pro), Beehiiv. Cards: bloglite, ech0.
+- [Static Site Generators](https://cards.edgible.org/needs/static-site-generators/): Usually better elsewhere. Replaces Squarespace, Wix, GitHub Pages. Cards: static-site, website.
+- [Federated Identity & Authentication](https://cards.edgible.org/needs/federated-identity-authentication/): Fits, with conditions. Replaces Auth0, Clerk, AWS Cognito, Firebase Auth. Cards: accounts.
+- [Wikis](https://cards.edgible.org/needs/wikis/): Good fit. Replaces Notion, Confluence, Slab, GitBook. Cards: docmost.
+- [Knowledge Management Tools](https://cards.edgible.org/needs/knowledge-management-tools/): Good fit. Replaces Guru, Notion, Confluence, SharePoint, legal and professional knowledge platforms. Cards: assistant.
+- [Note-taking & Editors](https://cards.edgible.org/needs/note-taking-editors/): Good fit. Replaces Evernote, Notion, Google Keep, OneNote. No card yet.
+- [Document Management](https://cards.edgible.org/needs/document-management/): Good fit. Replaces Evernote scanning, Adobe Acrobat online, online PDF tools. Cards: stirling-pdf.
+- [Feed Readers](https://cards.edgible.org/needs/feed-readers/): Good fit. Replaces Feedly, Inoreader, NewsBlur. Cards: miniflux.
+- [Media Streaming - Multimedia Streaming](https://cards.edgible.org/needs/media-streaming-multimedia-streaming/): Good fit. Replaces Plex Pass, Netflix for owned media, iTunes Match. Cards: jellyfin.
+- [Internet of Things (IoT)](https://cards.edgible.org/needs/internet-of-things-iot/): Fits, with conditions. Replaces SmartThings, Google Home, Alexa routines, vendor cloud apps. No card yet.
+- [Video Surveillance](https://cards.edgible.org/needs/video-surveillance/): Fits, with conditions. Replaces Ring Protect, Nest Aware, Arlo Secure. No card yet.
+- [Automation](https://cards.edgible.org/needs/automation/): Good fit. Replaces Zapier, Make, IFTTT. Cards: n8n.
+- [Generative Artificial Intelligence (GenAI)](https://cards.edgible.org/needs/generative-artificial-intelligence-genai/): Fits, with conditions. Replaces ChatGPT, Claude.ai for private documents, hosted LLM APIs. Cards: assistant, litellm, ollama-osx.
+- [AI tools for assistants (MCP servers)](https://cards.edgible.org/needs/ai-tools-for-assistants-mcp-servers/): Good fit. Replaces hosted MCP platforms, Zapier MCP, keeping the server on one laptop. Cards: mcp-signin, mcp-bridge, edgible-mcp.
+- [Vector databases and AI search](https://cards.edgible.org/needs/vector-databases-and-ai-search/): Good fit. Replaces Pinecone, Weaviate Cloud, Zilliz Cloud, Qdrant Cloud. No card yet.
+- [AI chatbots for customers and communities](https://cards.edgible.org/needs/ai-chatbots-for-customers-and-communities/): Fits, with conditions. Replaces Intercom Fin, Chatbase, Tidio, Botpress Cloud, Voiceflow. Cards: n8n.
+- [AI app builders and agents](https://cards.edgible.org/needs/ai-app-builders-and-agents/): Good fit. Replaces OpenAI GPTs and Assistants, Relevance AI, Stack AI, LangChain hosted tools, hosted agent services, an agent left running on a laptop. Cards: openclaw, n8n, litellm.
+- [LLM observability and evaluation](https://cards.edgible.org/needs/llm-observability-and-evaluation/): Good fit. Replaces LangSmith, Helicone, Braintrust, Weights & Biases Weave. No card yet.
+- [Image, audio, and speech AI](https://cards.edgible.org/needs/image-audio-and-speech-ai/): Fits, with conditions. Replaces Midjourney, Otter.ai, ElevenLabs, Descript transcription. No card yet.
+- [Software Development - Project Management](https://cards.edgible.org/needs/software-development-project-management/): Good fit. Replaces GitHub, GitLab.com, Bitbucket. Cards: gitea, ci.
+- [Software Development - Continuous Integration & Deployment](https://cards.edgible.org/needs/software-development-continuous-integration-deployment/): Good fit. Replaces GitHub Actions minutes, CircleCI, GitLab CI minutes. Cards: ci.
+- [Monitoring & Status Pages](https://cards.edgible.org/needs/monitoring-status-pages/): Good fit. Replaces UptimeRobot, Pingdom, Statuspage, Better Uptime. Cards: uptime-kuma, website.
+- [Calendar & Contacts](https://cards.edgible.org/needs/calendar-contacts/): Fits, with conditions. Replaces Google Calendar, iCloud Calendar, Google Contacts. No card yet.
+- [Games](https://cards.edgible.org/needs/games/): Fits, with conditions. Replaces Minecraft Realms, rented game servers. Cards: minecraft.
+- [Communication - Email - Complete Solutions](https://cards.edgible.org/needs/communication-email-complete-solutions/): Usually better elsewhere. Replaces Gmail, Google Workspace, Microsoft 365, Fastmail. No card yet.
+- [DNS](https://cards.edgible.org/needs/dns/): Not recommended. Replaces NextDNS, ad-blocking DNS services. No card yet.

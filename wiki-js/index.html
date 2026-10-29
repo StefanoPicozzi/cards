@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wiki-js: Wiki.js, a team wiki and knowledge base with Markdown and Git sync, behind your org login | Edgible cards</title>
+<meta name="description" content="Wiki.js, a team wiki and knowledge base with Markdown and Git sync, behind your org login">
+<link rel="canonical" href="https://cards.edgible.org/wiki-js/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="wiki-js: Wiki.js, a team wiki and knowledge base with Markdown and Git sync, behind your org login">
+<meta property="og:description" content="Wiki.js, a team wiki and knowledge base with Markdown and Git sync, behind your org login">
+<meta property="og:url" content="https://cards.edgible.org/wiki-js/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / wiki-js</p>
+<h1 class="with-icon"><img class="icon" src="../wiki-js/icon.svg" alt="" width="56" height="56" loading="lazy"><span>wiki-js</span></h1>
+<p class="lead">Wiki.js, a team wiki and knowledge base with Markdown and Git sync, behind your org login</p>
+<p class="meta"><span class="kind">App card</span><span class="pill untested">not tested yet</span><span class="pill fit" title="Self-hosting fit, from facts about the app. Reads secrets from files: no, takes them from the environment, through the card&#x27;s loader"><svg class="ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7.86 1.57A5.50 5.50 0 0 1 11.90 4.50" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M12.43 6.14A5.50 5.50 0 0 1 10.89 10.89" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/><path d="M9.50 11.90A5.50 5.50 0 0 1 4.50 11.90" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M3.11 10.89A5.50 5.50 0 0 1 1.57 6.14" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M2.10 4.50A5.50 5.50 0 0 1 6.14 1.57" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/></svg>fit 4/5</span><span class="added">Added 28 October 2026</span><span class="license">License AGPL-3.0-only</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://js.wiki" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/wiki-js">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the wiki-js card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>wiki-js</code></td><td>Wiki.js wiki, for the people who read and edit it in a browser</td><td>org login</td><td><code>wiki-js</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>wiki-js</code></td><td>1 GB</td><td>3 GB</td><td>amd64, arm64</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>292 MB</strong>, a minute or two on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><div class="scroll"><table><thead><tr><th>Volume</th><th>What it is</th></tr></thead><tbody><tr><td><code>wiki-js-db-data</code></td><td>yours alone: backed up, and checked after a restore or a move</td></tr><tr><td><code>wiki-js-secrets</code></td><td>yours alone: backed up, and checked after a restore or a move</td></tr></tbody></table></div><p>After a restore or a move, a quick count shows the data arrived, with nothing read but numbers and dates.</p>
+<h2>What it protects</h2><ul><li><strong>Made on your machine, seen by nobody:</strong> <code>WIKI_JS_DB_PASSWORD</code>. The card makes them at first start, and only its own apps read them. They stay on the machine, and in its backups.</li><li><strong>For you:</strong> <code>WIKI_JS_ADMIN_PASSWORD</code>: the admin&#x27;s first sign-in, set by prepare.sh when it finishes the setup. Made on your machine too, where the <code>show</code> command in the README prints it.</li></ul>
+<h2>Self-hosting fit</h2><div class="fit-box"><svg class="ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path d="M27.14 4.18A20.07 20.07 0 0 1 41.88 14.89" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M43.82 20.86A20.07 20.07 0 0 1 38.19 38.19" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/><path d="M33.11 41.88A20.07 20.07 0 0 1 14.89 41.88" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M9.81 38.19A20.07 20.07 0 0 1 4.18 20.86" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M6.12 14.89A20.07 20.07 0 0 1 20.86 4.18" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/></svg><p><strong>4 of 5</strong> checks passed. Each is a fact about the app, not an opinion: <a href="https://github.com/edgible-org/card-kit/blob/main/card-fit.py">how they are decided</a>.</p></div><ul class="fit-list"><li class="fit-yes"><span class="mark">✓</span><strong>Secrets kept out of card.env</strong> <span>made on the device: WIKI_JS_DB_PASSWORD, WIKI_JS_ADMIN_PASSWORD</span></li><li class="fit-no"><span class="mark">✗</span><strong>Reads secrets from files</strong> <span>takes them from the environment, through the card&#x27;s loader</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Has a health check</strong> <span>in the card&#x27;s Compose file</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Starts as a non-root user</strong> <span>starts as node</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Builds for arm64 and amd64</strong> <span>amd64, arm64</span></li></ul>
+
+
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>A team wiki is where a team writes down how it does things, and hosted ones (Notion, Confluence) charge per seat and keep your pages on their servers. <a href="https://js.wiki">Wiki.js</a> is an open-source wiki with a visual and a Markdown editor, a page tree, search, page history, groups with per-page access rules, and optional sync of its pages to a Git repository. This card runs it on a machine you own, through Edgible.</p>
+<h2 id="what">What</h2>
+<p>One app, <code>wiki-js</code>, on <code>org</code>, so only members of your Edgible organization reach it. Everyone who reads or edits the wiki is a person in a browser, so the Edgible sign-in is the first door and Wiki.js's own login the second. Two containers run it: Wiki.js and PostgreSQL for its pages, uploads and accounts. People outside your organization cannot reach it. For a public knowledge base for customers, publish with <code>none</code> instead and let guests read only the pages you choose, which is a different choice from this card's. Use Wiki.js groups and page rules to keep confidential pages to the people who should see them.</p>
+<p>Pages, uploads and accounts are in the volume <code>wiki-js-db-data</code>, and the keys the card made are in <code>wiki-js-secrets</code>. Copy both; the keys unlock the database. Minimum recommended for the place <code>wiki-js</code>: 1 GB of memory and 3 GB of disk, on an arm64 or amd64 machine, with no GPU.</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/wiki-js/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/wiki-js/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/wiki-js/card.yml">card.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/wiki-js/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p wiki-js
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C wiki-js cards-main/wiki-js
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints, <code>ORG_LABEL</code> to the label in your hostnames, and <code>WIKI_JS_ADMIN_EMAIL</code> to your own email, which becomes the admin. Change <code>WIKI_JS_PORT</code> only if 3000 is taken.</p>
+<pre><code class="language-bash">nano wiki-js/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py wiki-js
+</code></pre>
+<p>It moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file wiki-js/card.env -f wiki-js/docker-compose.yml pull
+docker compose --env-file wiki-js/card.env -f wiki-js/docker-compose.yml up -d --wait
+docker compose --env-file wiki-js/card.env -f wiki-js/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file, which takes longer for a larger app. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. Here that means Wiki.js and its database are healthy. <code>prepare.sh</code> finishes Wiki.js's setup wizard and makes the admin on this machine, so the setup page is never open to a visitor.</p>
+<pre><code class="language-bash">sh wiki-js/prepare.sh
+</code></pre>
+<p><a href="https://github.com/edgible-org/cards/blob/main/wiki-js/prepare.sh">prepare.sh</a> is:</p>
+<pre><code class="language-sh">#!/bin/sh
+# Prepare for the wiki-js card: finish the setup and make the admin before the setup page is public.
+# Run it after Start and before Publish, from the directory that holds wiki-js/:
+#   sh wiki-js/prepare.sh
+set -eu
+cd &quot;$(dirname &quot;$0&quot;)&quot;
+set -a; . ./card.env; set +a
+COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The admin's password is the human secret wiki-js-secrets made on this machine.
+WIKI_JS_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps wiki-js-secrets show WIKI_JS_ADMIN_PASSWORD)
+WIKI_JS_SITE_URL=${WIKI_JS_URL:-https://wiki-js.${ORG_LABEL:?set ORG_LABEL in card.env}.${EDGIBLE_DOMAIN:-edgible.app}}
+
+# Wiki.js shows a setup wizard to the first visitor; this finishes it, then waits for the wiki to restart.
+$COMPOSE exec -T -e WIKI_JS_ADMIN_PASSWORD=&quot;$WIKI_JS_ADMIN_PASSWORD&quot; \
+  -e WIKI_JS_ADMIN_EMAIL=&quot;$WIKI_JS_ADMIN_EMAIL&quot; -e WIKI_JS_SITE_URL=&quot;$WIKI_JS_SITE_URL&quot; wiki-js node -e '
+const B = &quot;http://127.0.0.1:3000&quot;;
+const sleep = (ms) =&gt; new Promise((r) =&gt; setTimeout(r, ms));
+(async () =&gt; {
+  const r = await fetch(B + &quot;/finalize&quot;, {
+    method: &quot;POST&quot;,
+    headers: {&quot;Content-Type&quot;: &quot;application/json&quot;},
+    body: JSON.stringify({
+      adminEmail: process.env.WIKI_JS_ADMIN_EMAIL,
+      adminPassword: process.env.WIKI_JS_ADMIN_PASSWORD,
+      adminPasswordConfirm: process.env.WIKI_JS_ADMIN_PASSWORD,
+      siteUrl: process.env.WIKI_JS_SITE_URL,
+      telemetry: false,
+    }),
+  });
+  const body = await r.text();
+  if (!r.ok || body.includes(&quot;\&quot;ok\&quot;:false&quot;)) { console.error(&quot;setup answered &quot; + r.status + &quot;: &quot; + body); process.exit(1); }
+  for (let i = 0; i &lt; 60; i++) {
+    await sleep(2000);
+    try {
+      const h = await fetch(B + &quot;/healthz&quot;);
+      if (h.ok &amp;&amp; !(await h.text()).trimStart().startsWith(&quot;&lt;&quot;)) return;
+    } catch (e) {}
+  }
+  console.error(&quot;the wiki did not come back after setup&quot;);
+  process.exit(1);
+})();
+'
+echo &quot;the setup is finished; the admin signs in with WIKI_JS_ADMIN_EMAIL and WIKI_JS_ADMIN_PASSWORD&quot;
+</code></pre>
+<p>The admin signs in with <code>WIKI_JS_ADMIN_EMAIL</code>. Show the password with the <code>show</code> command in Verify, and change it in Wiki.js's administration area after the first sign-in.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. wiki-js/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name wiki-js \
+  --port &quot;$WIKI_JS_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<p><strong>Without Edgible:</strong> only Publish is Edgible's. The app listens on <code>127.0.0.1</code> at the port in <code>card.env</code>, so any reverse proxy or tunnel on the machine, such as Caddy, nginx, Cloudflare Tunnel or Tailscale, can publish it instead, and sign-in is then that tool's to provide. Every other step stays the same.</p>
+<h2 id="verify">Verify</h2>
+<p><code>wiki-js</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;wiki-js hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. The check proves the Edgible sign-in stands in front of the wiki. Then sign in as the admin and add your team from Administration, Users, and set who may see what under Groups.</p>
+<p>The rest of the setup is in the <a href="https://docs.requarks.io">Wiki.js docs docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete wiki-js --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file wiki-js/card.env -f wiki-js/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=wiki-js); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file wiki-js/card.env -f wiki-js/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf wiki-js
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

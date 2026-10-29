@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run an Edgible card without Edgible</title>
+<meta name="description" content="A card is plain Docker Compose: how to run one on your own server and domain, and what Edgible does for you instead.">
+<link rel="canonical" href="https://cards.edgible.org/run-without-edgible/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="Run an Edgible card without Edgible">
+<meta property="og:description" content="A card is plain Docker Compose: how to run one on your own server and domain, and what Edgible does for you instead.">
+<meta property="og:url" content="https://cards.edgible.org/run-without-edgible/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / run-without-edgible</p>
+<h1>Run a card without Edgible</h1>
+<article class="prose">
+<p>A card is a Docker Compose file, pinned images, and a <code>card.env</code> you edit. Edgible is the easiest way to put one on the internet, but it is not required to run one. This page says how to run a card on your own server, and what you take on yourself when you do.</p>
+<h2 id="how">How</h2>
+<ol>
+<li><strong>A machine with Docker and Compose</strong> (<code>docker compose version</code>). Any Linux server, a mini PC or a Mac will do.</li>
+<li><strong>Fetch the card.</strong> Clone this repo, or copy the card's folder, and read its README's Why and What.</li>
+<li><strong>Edit <code>card.env</code>.</strong> Set the host port each app listens on, and the address people will use: the card's <code>&lt;APP&gt;_URL</code> (such as <code>GITEA_URL=https://git.example.org</code>). With the address set you can leave <code>ORG_LABEL</code> empty. Secrets are made on the machine at first start; you do not write them. The README says which other lines to fill in.</li>
+<li><strong>Start it:</strong> <code>docker compose --env-file card.env -f docker-compose.yml up -d --wait</code>, as the card's README says. Each app listens on <code>127.0.0.1:&lt;port&gt;</code>, so nothing is reachable from outside yet.</li>
+<li><strong>Put a reverse proxy in front</strong> (Caddy, Traefik or nginx) that terminates HTTPS for your domain and forwards to that port. Point your domain's DNS at the machine, and open ports 80 and 443 on it, or use a tunnel you already trust. The README's Verify section lists the hostnames the card expects, and which ones must stay open (an app's phone client, a webhook).</li>
+<li><strong>Check it.</strong> Run the card's Verify steps against your address. <code>check-env</code> still checks ports and sizing on the machine; it skips the Edgible device and app checks when there is no <code>edgible</code> CLI.</li>
+</ol>
+<p>Some cards also publish a non-HTTP service, such as SSH for Gitea or a game port. You forward those yourself, and the card's address setting for them (<code>GITEA_SSH_DOMAIN</code>) tells the app what to advertise.</p>
+<h2 id="what-edgible-does-for-you-and-what-you-do-instead">What Edgible does for you, and what you do instead</h2>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th></th>
+<th>With Edgible</th>
+<th>Without it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reaching the app from outside</td>
+<td>A hostname and certificate for each app. The device connects out, so you open nothing on your router</td>
+<td>A domain, DNS records, a reverse proxy, certificate renewal, and ports opened or a tunnel</td>
+</tr>
+<tr>
+<td>Who may open a hostname</td>
+<td>An auth mode per hostname: <code>org</code> puts your Edgible sign-in in front, <code>none</code> leaves it to the app</td>
+<td>Your own sign-in in front of each <code>org</code> hostname (an auth proxy or single sign-on), and the app's own login for the rest</td>
+</tr>
+<tr>
+<td>Several machines</td>
+<td>Apps on different devices under one organisation, and a card's places assigned to devices</td>
+<td>You run the card where you choose and wire the machines together yourself</td>
+</tr>
+<tr>
+<td>Seeing and moving what runs</td>
+<td>One list of your apps, and tools that move an app to another machine</td>
+<td><code>docker compose ls</code> on each machine, and your own copy of the data</td>
+</tr>
+<tr>
+<td>Confidence in the card</td>
+<td>The same lifecycle test every card passes on a real Edgible device</td>
+<td>You test it yourself; the card's Verify and Tear down steps still apply</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="what-stays-the-same">What stays the same</h2>
+<ul>
+<li>The images and versions are the card's pins, and the nightly image scan applies to them.</li>
+<li>Secrets are made on your machine and never leave it.</li>
+<li><code>data:</code> in <code>card.yml</code> says what each volume holds, so you can back it up with your usual tool.</li>
+</ul>
+<h2 id="what-we-do-not-promise">What we do not promise</h2>
+<p>The test badges in the README are measured on Edgible devices. A card that passes there has not been tested behind your proxy. If you hit something that is specific to running without Edgible, tell us in an issue: it is the best way to make this page better.</p>
+</article>
+<p><a href="../">Browse the cards &rarr;</a></p>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

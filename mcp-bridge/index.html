@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mcp-bridge: Any stdio MCP server, published over Streamable HTTP for your AI assistants | Edgible cards</title>
+<meta name="description" content="Any stdio MCP server, published over Streamable HTTP for your AI assistants">
+<link rel="canonical" href="https://cards.edgible.org/mcp-bridge/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="mcp-bridge: Any stdio MCP server, published over Streamable HTTP for your AI assistants">
+<meta property="og:description" content="Any stdio MCP server, published over Streamable HTTP for your AI assistants">
+<meta property="og:url" content="https://cards.edgible.org/mcp-bridge/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / mcp-bridge</p>
+<h1 class="with-icon"><span class="icon placeholder" style="width:56px;height:56px" aria-hidden="true"></span><span>mcp-bridge</span></h1>
+<p class="lead">Any stdio MCP server, published over Streamable HTTP for your AI assistants</p>
+<p class="meta"><span class="kind">App card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-12, Edgible 1.4.6</span><span class="pill fit" title="Self-hosting fit, from facts about the app. Starts as a non-root user: no, starts as root (supercorp/supergateway:4.1.0-uvx)"><svg class="ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7.86 1.57A5.50 5.50 0 0 1 12.13 8.97" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M11.27 10.46A5.50 5.50 0 0 1 2.73 10.46" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/><path d="M1.87 8.97A5.50 5.50 0 0 1 6.14 1.57" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/></svg>fit 2/3</span><span class="added">Added 11 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://github.com/supercorp-ai/supergateway" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/mcp-bridge">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the mcp-bridge card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>mcp-bridge</code></td><td>an MCP server over Streamable HTTP, for AI assistants</td><td>API key</td><td><code>mcp-bridge</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>mcp-bridge</code></td><td>384 MB</td><td>1.5 GB</td><td>amd64, arm64</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>96 MB</strong>, under a minute on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><p>Its data is in the volumes <code>mcp-bridge-cache</code> and <code>mcp-bridge-data</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+
+<h2>Self-hosting fit</h2><div class="fit-box"><svg class="ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path d="M27.14 4.18A20.07 20.07 0 0 1 42.74 31.19" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M39.60 36.63A20.07 20.07 0 0 1 8.40 36.63" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/><path d="M5.26 31.19A20.07 20.07 0 0 1 20.86 4.18" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/></svg><p><strong>2 of 3</strong> checks passed. Each is a fact about the app, not an opinion: <a href="https://github.com/edgible-org/card-kit/blob/main/card-fit.py">how they are decided</a>.</p></div><ul class="fit-list"><li class="fit-yes"><span class="mark">✓</span><strong>Has a health check</strong> <span>in the card&#x27;s Compose file</span></li><li class="fit-no"><span class="mark">✗</span><strong>Starts as a non-root user</strong> <span>starts as root (supercorp/supergateway:4.1.0-uvx)</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Builds for arm64 and amd64</strong> <span>amd64, arm64</span></li></ul>
+
+<h2>Needs it answers</h2><ul><li><a href="../needs/ai-tools-for-assistants-mcp-servers/">AI tools for assistants (MCP servers)</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Most MCP servers speak stdio: the AI assistant starts them on the same computer, so they work on one laptop and nowhere else. This card runs any stdio MCP server, from npm or PyPI, on a machine that stays on, next to the data or tools it reaches, and serves it over Streamable HTTP, so you and your team can use it from Claude Code and other MCP clients wherever you are. The bridge is <a href="https://github.com/supercorp-ai/supergateway">Supergateway</a>.</p>
+<h2 id="what">What</h2>
+<p>One app, <code>mcp-bridge</code>, on the place <code>mcp-bridge</code>, on <code>api-key</code>. MCP clients send a key as <code>Authorization: Bearer</code>, and Edgible refuses a request without a valid one before it reaches the server. Give each person their own key, so one can be revoked when they leave. Claude Code and most developer clients can send a key; Claude's desktop and web connectors expect the server's own OAuth sign-in instead, so check your client's docs before you choose it. The server to run is <code>MCP_BRIDGE_COMMAND</code> in <code>card.env</code>, with an exact version. Supergateway runs it with <code>--stateful</code>: each client session gets its own server process, ended after 10 idle minutes. The image is <code>supercorp/supergateway:4.1.0-uvx</code>, which has Node for <code>npx</code> and Python with uv for <code>uvx</code>. Its healthcheck starts the server and pings it, so <code>healthy</code> means the MCP server itself works. The default server is the MCP project's test server, <code>@modelcontextprotocol/server-everything</code>, which shows every feature of the protocol. Replace it with your own before you rely on it: among its tools is <code>get-env</code>, which returns the server's environment. A server that needs its own settings or secrets, such as an access token, reads them from <code>server.env</code> beside the Compose file: one <code>NAME=value</code> per line, <code>chmod 600</code>, never committed. Every tool a server offers is something anyone with a key can make it do: prefer servers that only read, and ask before adding ones that change or delete things.</p>
+<p>Downloaded packages live in the volume <code>mcp-bridge-cache</code>, so a restart does not fetch the server again. Files the server keeps, for servers that keep any, live in <code>mcp-bridge-data</code>, which is the server's working directory, <code>/data</code>. Back up <code>mcp-bridge-data</code> when your server keeps something there. Minimum recommended for the place <code>mcp-bridge</code>: 384 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU.</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/mcp-bridge/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/mcp-bridge/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/mcp-bridge/card.yml">card.yml</a>, and the last test <a href="https://github.com/edgible-org/cards/blob/main/mcp-bridge/test.yml">test.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/mcp-bridge/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p mcp-bridge
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C mcp-bridge cards-main/mcp-bridge
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints, and <code>MCP_BRIDGE_COMMAND</code> to the command that runs your server, such as <code>npx -y @modelcontextprotocol/server-filesystem@&lt;version&gt; /data</code>, with the version from its package page. Put its own settings, if it has any, in <code>server.env</code>.</p>
+<pre><code class="language-bash">nano mcp-bridge/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py mcp-bridge
+</code></pre>
+<p>It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file mcp-bridge/card.env -f mcp-bridge/docker-compose.yml pull
+docker compose --env-file mcp-bridge/card.env -f mcp-bridge/docker-compose.yml up -d --wait
+docker compose --env-file mcp-bridge/card.env -f mcp-bridge/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file: about 96 MB, under a minute on a typical home connection. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. Here healthy means the MCP server answers. The first start downloads the server, so it takes longer.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. mcp-bridge/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name mcp-bridge \
+  --port &quot;$MCP_BRIDGE_PORT&quot; \
+  --protocol https \
+  --auth-modes api-key \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<h2 id="verify">Verify</h2>
+<p><code>mcp-bridge</code> uses <code>api-key</code>. Without a key, it answers <code>401</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;mcp-bridge hostname&gt;&quot;
+</code></pre>
+<p><code>401</code>, until a key is sent. Make a key for each person, which is shown once: <code>edgible app api-keys create --app mcp-bridge --name &lt;who&gt;</code>. Then add the server to Claude Code: <code>claude mcp add --transport http mcp-bridge https://&lt;mcp-bridge hostname&gt;/mcp --header "Authorization: Bearer &lt;key&gt;"</code>, and <code>/mcp</code> in Claude Code lists its tools. <code>edgible app api-keys list --app mcp-bridge</code> and <code>delete</code> manage the keys.</p>
+<p>The rest of the setup is in the <a href="https://github.com/supercorp-ai/supergateway">Supergateway docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete mcp-bridge --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file mcp-bridge/card.env -f mcp-bridge/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=mcp-bridge); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file mcp-bridge/card.env -f mcp-bridge/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf mcp-bridge
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>litellm: An AI gateway for your apps, one address for every model, with a key and a budget per app | Edgible cards</title>
+<meta name="description" content="An AI gateway for your apps, one address for every model, with a key and a budget per app">
+<link rel="canonical" href="https://cards.edgible.org/litellm/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="litellm: An AI gateway for your apps, one address for every model, with a key and a budget per app">
+<meta property="og:description" content="An AI gateway for your apps, one address for every model, with a key and a budget per app">
+<meta property="og:url" content="https://cards.edgible.org/litellm/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / litellm</p>
+<h1 class="with-icon"><img class="icon" src="../litellm/icon.svg" alt="" width="56" height="56" loading="lazy"><span>litellm</span></h1>
+<p class="lead">An AI gateway for your apps, one address for every model, with a key and a budget per app</p>
+<p class="meta"><span class="kind">App card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-28, Edgible 1.4.29</span><span class="pill fit" title="Self-hosting fit, from facts about the app. Starts as a non-root user: no, starts as root (ghcr.io/berriai/litellm:v1.106.2)"><svg class="ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7.86 1.57A5.50 5.50 0 0 1 12.43 6.14" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M12.43 7.86A5.50 5.50 0 0 1 7.86 12.43" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M6.14 12.43A5.50 5.50 0 0 1 1.57 7.86" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/><path d="M1.57 6.14A5.50 5.50 0 0 1 6.14 1.57" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/></svg>fit 3/4</span><span class="added">Added 9 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://docs.litellm.ai/" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/litellm">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the litellm card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>litellm</code></td><td>LiteLLM&#x27;s admin and its OpenAI-compatible API, one process</td><td>org login</td><td><code>litellm</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>litellm</code></td><td>2.5 GB</td><td>2 GB</td><td>amd64, arm64</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>546 MB</strong>, a few minutes on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><div class="scroll"><table><thead><tr><th>Volume</th><th>What it is</th></tr></thead><tbody><tr><td><code>litellm-db-data</code></td><td>yours alone: backed up, and checked after a restore or a move</td></tr><tr><td><code>litellm-secrets</code></td><td>yours alone: backed up, and checked after a restore or a move</td></tr></tbody></table></div><p>After a restore or a move, a quick count shows the data arrived, with nothing read but numbers and dates.</p>
+<h2>What it protects</h2><ul><li><strong>Made on your machine, seen by nobody:</strong> <code>LITELLM_DB_PASSWORD</code> and <code>LITELLM_SALT_KEY</code>. The card makes them at first start, and only its own apps read them. They stay on the machine, and in its backups.</li><li><strong>For you:</strong> <code>LITELLM_MASTER_KEY</code>: the admin (user admin) and creating keys; apps get their own keys, never this one. Made on your machine too, where the <code>show</code> command in the README prints it.</li><li><strong>You bring</strong>, into <code>card.env</code> on your machine: <code>GEMINI_API_KEY</code> (optional), from <a href="https://aistudio.google.com/apikey">https://aistudio.google.com/apikey</a> (free tier), for fast&#x27;s fallback; <code>DEEPSEEK_API_KEY</code> (optional), from <a href="https://platform.deepseek.com/api_keys">https://platform.deepseek.com/api_keys</a>, for fast and smart; <code>OPENROUTER_API_KEY</code> (optional), from <a href="https://openrouter.ai/settings/keys">https://openrouter.ai/settings/keys</a>, for open (one key, many open models); <code>ANTHROPIC_API_KEY</code> (optional), from <a href="https://console.anthropic.com/settings/keys">https://console.anthropic.com/settings/keys</a>, for the gateway&#x27;s best (Claude); <code>OLLAMA_API_KEY</code> (optional), from `edgible app api-keys create --app ollama --name gateway`, for private and private-smart when Ollama runs on another machine (the ollama-osx card&#x27;s app).</li></ul>
+<h2>Self-hosting fit</h2><div class="fit-box"><svg class="ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path d="M27.14 4.18A20.07 20.07 0 0 1 43.82 20.86" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M43.82 27.14A20.07 20.07 0 0 1 27.14 43.82" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M20.86 43.82A20.07 20.07 0 0 1 4.18 27.14" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/><path d="M4.18 20.86A20.07 20.07 0 0 1 20.86 4.18" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/></svg><p><strong>3 of 4</strong> checks passed. Each is a fact about the app, not an opinion: <a href="https://github.com/edgible-org/card-kit/blob/main/card-fit.py">how they are decided</a>.</p></div><ul class="fit-list"><li class="fit-yes"><span class="mark">✓</span><strong>Secrets kept out of card.env</strong> <span>made on the device: LITELLM_DB_PASSWORD, LITELLM_SALT_KEY, LITELLM_MASTER_KEY</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Reads secrets from files</strong> <span>reads them from files itself</span></li><li class="fit-no"><span class="mark">✗</span><strong>Starts as a non-root user</strong> <span>starts as root (ghcr.io/berriai/litellm:v1.106.2)</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Builds for arm64 and amd64</strong> <span>amd64, arm64</span></li></ul>
+<h2>Known upstream issues</h2><p>Found while testing this card. Each is a request for the app's authors, not a fault in the card.</p><ul><li><strong><a href="https://github.com/edgible-org/cards/blob/main/upstream/litellm-secret-files.md">Read <code>LITELLM_MASTER_KEY</code> and <code>LITELLM_SALT_KEY</code> and <code>DATABASE_URL</code> from a file</a></strong> (not yet reported, found 2026-10-28). For <a href="https://github.com/BerriAI/litellm" rel="noopener">litellm</a>.</li></ul>
+<h2>Needs it answers</h2><ul><li><a href="../needs/generative-artificial-intelligence-genai/">Generative Artificial Intelligence (GenAI)</a></li><li><a href="../needs/ai-app-builders-and-agents/">AI app builders and agents</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Every AI app wants its own provider key, and every key is a chore: find the provider's key page, keep credit on the account, wire the key into each app, add a second provider when the first runs out, and wonder which app spent what. This card is an AI gateway in front of all of them, from <a href="https://docs.litellm.ai/">LiteLLM</a>. You give it each provider's key once; your apps call it at one address, by purpose (<code>fast</code>, <code>smart</code>, <code>best</code>, <code>private</code>, <code>private-smart</code>), each with a key of its own and a budget, and it falls back to another provider when one fails. Local models count too, so private questions need not leave your machine.</p>
+<h2 id="what">What</h2>
+<p>One app, <code>litellm</code>, on the place <code>litellm</code>, behind Edgible's <code>org</code> sign-in: LiteLLM's admin and its OpenAI-compatible API, one process on port <code>4000</code>. Postgres runs beside it as <code>litellm-db</code>, for each app's key, budget and spend.</p>
+<p><strong>Models by purpose.</strong> <a href="https://github.com/edgible-org/cards/blob/main/litellm/gateway.yaml">gateway.yaml</a> names six, each set in <code>card.env</code>. Fallbacks go sideways or down, never up to a dearer model, and a private model never falls back to one elsewhere:</p>
+<div class="scroll"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Default</th>
+<th>For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fast</code></td>
+<td><code>deepseek/deepseek-chat</code></td>
+<td>Everyday answers, reliable and cents a day; falls back to <code>fast-fallback</code></td>
+</tr>
+<tr>
+<td><code>fast-fallback</code></td>
+<td><code>gemini/gemini-3.5-flash</code></td>
+<td>When <code>fast</code> fails; Gemini's free tier runs out quickly, so it is the fallback</td>
+</tr>
+<tr>
+<td><code>smart</code></td>
+<td><code>deepseek/deepseek-reasoner</code></td>
+<td>Harder questions; falls back to <code>fast</code></td>
+</tr>
+<tr>
+<td><code>open</code></td>
+<td><code>openrouter/z-ai/glm-5.3</code></td>
+<td>A strong open model through OpenRouter, whose one key reaches hundreds of models; falls back to <code>fast</code></td>
+</tr>
+<tr>
+<td><code>best</code></td>
+<td><code>anthropic/claude-opus-5-5</code></td>
+<td>When it really matters, dearest by far, asked for on purpose; capped at <code>LITELLM_BEST_BUDGET</code> ($5 per 30 days) across all apps, then falls back to <code>smart</code></td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td><code>ollama/qwen2.5:7b</code> at <code>LITELLM_PRIVATE_URL</code></td>
+<td>A model on your own machine, such as the ollama-osx card's; no fallback, so nothing leaves it</td>
+</tr>
+<tr>
+<td><code>private-smart</code></td>
+<td><code>ollama/qwen3.5:27b</code> at <code>LITELLM_PRIVATE_URL</code></td>
+<td>A larger model on your own machine, where there is memory for it; falls back to <code>private</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>An Ollama on another machine.</strong> <code>private</code> and <code>private-smart</code> can use an Ollama that Edgible publishes from a different device, such as the ollama-osx card's app on a Mac with a GPU. Set <code>LITELLM_PRIVATE_URL</code> to that app's address and <code>OLLAMA_API_KEY</code> to a key made for the gateway (<code>edgible app api-keys create --app ollama --name gateway</code>). The gateway sends it as <code>Authorization: Bearer &lt;key&gt;</code>. An Ollama on this machine needs no key.</p>
+<p><strong>Keys you bring</strong> (<code>GEMINI_API_KEY</code>, <code>DEEPSEEK_API_KEY</code>, <code>OPENROUTER_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>, and <code>OLLAMA_API_KEY</code> for an Ollama on another machine) are the only keys you handle. LiteLLM finds each in that provider's usual variable, so any provider it supports works the same way: add its variable to the Compose file and name its model. Deployed with Edgible's tools, a key comes from an Edgible organisation secret by reference and is never written down here.</p>
+<p><strong>The gateway's own secrets are made on the machine</strong> by <code>litellm-secrets</code>: the database password, the salt key that encrypts what the admin stores (it travels with the data on a move), and the master key, which signs you in to the admin as <code>admin</code>. See it with:</p>
+<pre><code class="language-bash">docker compose --env-file litellm/card.env -f litellm/docker-compose.yml run --rm --no-deps litellm-secrets show LITELLM_MASTER_KEY
+</code></pre>
+<p><strong>Each app has its own key.</strong> An app beside the gateway, such as an agent in a pattern card, gets a key made on the device like any secret: a file <code>LITELLM_KEY_&lt;APP&gt;</code> in the volume <code>litellm-secrets</code>. At each start, <a href="https://github.com/edgible-org/cards/blob/main/litellm/register-keys.py">register-keys.py</a> registers every such key that is new, named after the app, with <code>LITELLM_APP_BUDGET</code> dollars per <code>LITELLM_APP_BUDGET_PERIOD</code>. The admin then shows each app's spend. For an app on another machine, make its key in the admin. Never give an app the master key.</p>
+<p>To use it in a card, copy the three services, both volumes, <a href="https://github.com/edgible-org/cards/blob/main/litellm/gateway.yaml">gateway.yaml</a> and <a href="https://github.com/edgible-org/cards/blob/main/litellm/register-keys.py">register-keys.py</a> with their <code>configs:</code>, and the <code>secrets:</code> of <a href="https://github.com/edgible-org/cards/blob/main/litellm/card.yml">card.yml</a>; declare the app's key there too, made by the same <code>litellm-secrets</code> service, and point the app at <code>http://litellm:4000/v1</code> with that key.</p>
+<p>Each app's key, budget and spend live in <code>litellm-db-data</code>, and the gateway's secrets in <code>litellm-secrets</code>. Minimum recommended for the place <code>litellm</code>: 2.5 GB of memory and 2 GB of disk, on an arm64 or amd64 machine, with no GPU.</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/litellm/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/litellm/card.env">card.env</a>, and the card <a href="https://github.com/edgible-org/cards/blob/main/litellm/card.yml">card.yml</a>.</p>
+<h2 id="share-it">Share it</h2>
+<p>One gateway can serve every app on every machine of yours, with one admin showing who spent what. Publish its API as a second app, <code>litellm-api</code>, on <code>none</code>: every call to it needs a key the gateway issued, and an unknown key gets <code>401</code>.</p>
+<pre><code class="language-bash">edgible app create existing --non-interactive --name litellm-api --port &quot;$LITELLM_PORT&quot; \
+  --protocol https --auth-modes none --device-id &quot;$device_id&quot;
+</code></pre>
+<p>Then give each app its own key, made in the admin (Keys, Create key, with a budget), or by edgible-mcp's <code>gateway_key</code>, which makes the key and stores it as an Edgible organisation secret, so a deploy passes it to the app by reference and nobody sees it. Point the app at <code>https://&lt;litellm-api hostname&gt;/v1</code>. The admin's sign-in page also answers on that address, guarded by the master key; keep that key on the machine.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/litellm/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p litellm
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C litellm cards-main/litellm
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints. Put a key in <code>GEMINI_API_KEY</code>, <code>DEEPSEEK_API_KEY</code> or both; a model with no key fails, and its fallback answers. For <code>private</code>, point <code>LITELLM_PRIVATE_URL</code> at an Ollama, such as the ollama-osx card's on the same Mac (the default). There are no passwords to fill: Start makes them on the machine.</p>
+<pre><code class="language-bash">nano litellm/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py litellm
+</code></pre>
+<p>It moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file litellm/card.env -f litellm/docker-compose.yml pull
+docker compose --env-file litellm/card.env -f litellm/docker-compose.yml up -d --wait
+docker compose --env-file litellm/card.env -f litellm/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file: about 544 MB, a few minutes on a typical home connection. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. <code>litellm-secrets</code> makes the secrets first and exits.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. litellm/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name litellm \
+  --port &quot;$LITELLM_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<p><strong>Without Edgible:</strong> only Publish is Edgible's. The gateway listens on <code>127.0.0.1</code> at the port in <code>card.env</code>, so any reverse proxy or tunnel on the machine can publish it instead, and sign-in is then that tool's to provide.</p>
+<h2 id="verify">Verify</h2>
+<p><code>litellm</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;litellm hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an Edgible sign-in address. Open the hostname, sign in, open <code>/ui</code>, and sign in to the admin as <code>admin</code> with the master key. On the machine, the gateway answers only with a key:</p>
+<pre><code class="language-bash">curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4000/v1/models
+</code></pre>
+<p>That prints <code>401</code>. With an app's key it lists <code>fast</code>, <code>fast-fallback</code>, <code>smart</code>, <code>best</code>, <code>private</code> and <code>private-smart</code>.</p>
+<p>The rest is in the <a href="https://docs.litellm.ai/">LiteLLM docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete litellm --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file litellm/card.env -f litellm/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first. <code>litellm-secrets.tgz</code> holds the gateway's keys: keep it as safe as the data, which needs them.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=litellm); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file litellm/card.env -f litellm/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf litellm
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

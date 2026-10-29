@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jellyfin: Jellyfin, your films, shows and music, streamed to its apps and the web | Edgible cards</title>
+<meta name="description" content="Jellyfin, your films, shows and music, streamed to its apps and the web">
+<link rel="canonical" href="https://cards.edgible.org/jellyfin/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="jellyfin: Jellyfin, your films, shows and music, streamed to its apps and the web">
+<meta property="og:description" content="Jellyfin, your films, shows and music, streamed to its apps and the web">
+<meta property="og:url" content="https://cards.edgible.org/jellyfin/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / jellyfin</p>
+<h1 class="with-icon"><img class="icon" src="../jellyfin/icon.svg" alt="" width="56" height="56" loading="lazy"><span>jellyfin</span></h1>
+<p class="lead">Jellyfin, your films, shows and music, streamed to its apps and the web</p>
+<p class="meta"><span class="kind">App card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-27, Edgible 1.4.12</span><span class="pill fit" title="Self-hosting fit, from facts about the app. Starts as a non-root user: no, starts as root (jellyfin/jellyfin:12.2.20261005-225228)"><svg class="ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7.86 1.57A5.50 5.50 0 0 1 11.90 4.50" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M12.43 6.14A5.50 5.50 0 0 1 10.89 10.89" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M9.50 11.90A5.50 5.50 0 0 1 4.50 11.90" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M3.11 10.89A5.50 5.50 0 0 1 1.57 6.14" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/><path d="M2.10 4.50A5.50 5.50 0 0 1 6.14 1.57" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/></svg>fit 4/5</span><span class="added">Added 9 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://jellyfin.org" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/jellyfin">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the jellyfin card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>jellyfin</code></td><td>Jellyfin web, API, and its TV and phone apps</td><td>open to anyone</td><td><code>jellyfin</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>jellyfin</code></td><td>4 GB</td><td>10 GB</td><td>amd64, arm64</td><td>optional</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>424 MB</strong>, a minute or two on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><p>Its data is in the volumes <code>jellyfin-config</code>, <code>jellyfin-cache</code> and <code>jellyfin-secrets</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+<h2>What it protects</h2><ul><li><strong>For you:</strong> <code>JELLYFIN_ADMIN_PASSWORD</code>: the admin&#x27;s sign-in, set by prepare.sh. Made on your machine too, where the <code>show</code> command in the README prints it.</li></ul>
+<h2>Self-hosting fit</h2><div class="fit-box"><svg class="ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path d="M27.14 4.18A20.07 20.07 0 0 1 41.88 14.89" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M43.82 20.86A20.07 20.07 0 0 1 38.19 38.19" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M33.11 41.88A20.07 20.07 0 0 1 14.89 41.88" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M9.81 38.19A20.07 20.07 0 0 1 4.18 20.86" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/><path d="M6.12 14.89A20.07 20.07 0 0 1 20.86 4.18" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/></svg><p><strong>4 of 5</strong> checks passed. Each is a fact about the app, not an opinion: <a href="https://github.com/edgible-org/card-kit/blob/main/card-fit.py">how they are decided</a>.</p></div><ul class="fit-list"><li class="fit-yes"><span class="mark">✓</span><strong>Secrets kept out of card.env</strong> <span>made on the device: JELLYFIN_ADMIN_PASSWORD</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Reads secrets from files</strong> <span>reads them from files itself</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Has a health check</strong> <span>the image&#x27;s own</span></li><li class="fit-no"><span class="mark">✗</span><strong>Starts as a non-root user</strong> <span>starts as root (jellyfin/jellyfin:12.2.20261005-225228)</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Builds for arm64 and amd64</strong> <span>amd64, arm64</span></li></ul>
+
+<h2>Needs it answers</h2><ul><li><a href="../needs/media-streaming-multimedia-streaming/">Media Streaming - Multimedia Streaming</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Films, shows and music you already own shouldn't need a subscription to watch. <a href="https://jellyfin.org">Jellyfin</a> is a free media server that streams your own library to its TV, phone and desktop apps and to any browser, from a machine you own.</p>
+<h2 id="what">What</h2>
+<p>One app, <code>jellyfin</code>, on the place <code>jellyfin</code>, on <code>none</code>. That is deliberate: Jellyfin's TV, phone and desktop apps cannot get past an Edgible sign-in, so <code>org</code> would stop them playing. Jellyfin's own login protects it, and nobody can sign up: the setup wizard makes the admin from the command line before anything is public, and the admin adds everyone else.</p>
+<p>It runs one service, <code>jellyfin</code>, from the image Jellyfin publishes, pinned to <code>12.2.20261005-225228</code>. Your media folder is mounted read-only, so Jellyfin never changes your files. Hardware transcoding is optional: on Linux with an Intel or AMD GPU, uncomment the <code>devices:</code> lines in the Compose file. Without it, Jellyfin transcodes on the CPU, or not at all when the app plays the file as it is.</p>
+<p>To use it in a card, copy the <code>jellyfin-secrets</code> and <code>jellyfin</code> services, the three volumes, card.yml's <code>secrets:</code>, and the <code>JELLYFIN_</code> lines.</p>
+<p>Settings, users and watch history live in the volume <code>jellyfin-config</code>, and artwork and transcodes in <code>jellyfin-cache</code>. Back up <code>jellyfin-config</code>; the cache rebuilds. Your media stays in <code>JELLYFIN_MEDIA_DIR</code>, outside Docker. The memory below is Jellyfin's own documented minimum, which is higher than an empty test library measures; transcoding several streams wants more. The disk is for Jellyfin itself, not your media. Minimum recommended for the place <code>jellyfin</code>: 4 GB of memory and 10 GB of disk, on an arm64 or amd64 machine, with a GPU if you have one (it runs without).</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/jellyfin/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/jellyfin/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/jellyfin/card.yml">card.yml</a>, and the last test <a href="https://github.com/edgible-org/cards/blob/main/jellyfin/test.yml">test.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/jellyfin/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p jellyfin
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C jellyfin cards-main/jellyfin
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints, and <code>JELLYFIN_MEDIA_DIR</code> to the full path of the folder that holds your media. Keep that folder outside <code>jellyfin/</code>, because the last Tear down step deletes <code>jellyfin/</code>. There is no password to fill: Start makes the admin's on the machine.</p>
+<pre><code class="language-bash">nano jellyfin/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py jellyfin
+</code></pre>
+<p>It moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml pull
+docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml up -d --wait
+docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file: about 424 MB, a minute or two on a typical home connection. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. Then finish Jellyfin's setup wizard, before Publish, so it is never public. Until the wizard is finished, anyone who reaches Jellyfin can make the admin:</p>
+<pre><code class="language-bash">sh jellyfin/prepare.sh
+</code></pre>
+<p><a href="https://github.com/edgible-org/cards/blob/main/jellyfin/prepare.sh">prepare.sh</a> is:</p>
+<pre><code class="language-sh">#!/bin/sh
+# Prepare for the jellyfin card: finish Jellyfin's setup wizard, so it is never public.
+# Run it after Start and before Publish, from the directory that holds jellyfin/:
+#   sh jellyfin/prepare.sh
+set -eu
+cd &quot;$(dirname &quot;$0&quot;)&quot;
+set -a; . ./card.env; set +a
+COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The card made this password on this machine at Start (jellyfin-secrets).
+JELLYFIN_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps jellyfin-secrets show JELLYFIN_ADMIN_PASSWORD)
+
+B=&quot;http://127.0.0.1:$JELLYFIN_PORT&quot;
+H='Content-Type: application/json'
+curl -fsS -X POST &quot;$B/Startup/Configuration&quot; -H &quot;$H&quot; \
+  -d '{&quot;UICulture&quot;:&quot;en-US&quot;,&quot;MetadataCountryCode&quot;:&quot;US&quot;,&quot;PreferredMetadataLanguage&quot;:&quot;en&quot;}'
+curl -fsS &quot;$B/Startup/User&quot; &gt;/dev/null
+curl -fsS -X POST &quot;$B/Startup/User&quot; -H &quot;$H&quot; \
+  -d &quot;{\&quot;Name\&quot;:\&quot;$JELLYFIN_ADMIN_USER\&quot;,\&quot;Password\&quot;:\&quot;$JELLYFIN_ADMIN_PASSWORD\&quot;}&quot;
+curl -fsS -X POST &quot;$B/Startup/RemoteAccess&quot; -H &quot;$H&quot; \
+  -d '{&quot;EnableRemoteAccess&quot;:true,&quot;EnableAutomaticPortMapping&quot;:false}'
+curl -fsS -X POST &quot;$B/Startup/Complete&quot;
+</code></pre>
+<p>It prints nothing when it works.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. jellyfin/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name jellyfin \
+  --port &quot;$JELLYFIN_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<h2 id="verify">Verify</h2>
+<p><code>jellyfin</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;jellyfin hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code>: Jellyfin sending you to its web app, with no Edgible sign-in, as its apps need. Sign in with <code>JELLYFIN_ADMIN_USER</code> and the password the card made (<code>docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml run --rm --no-deps jellyfin-secrets show JELLYFIN_ADMIN_PASSWORD</code> prints it), and add a library pointing at <code>/media</code>. In a Jellyfin app, set the server to <code>https://&lt;jellyfin hostname&gt;</code> and sign in the same way.</p>
+<p>The rest of the setup is in the <a href="https://jellyfin.org/docs">Jellyfin docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete jellyfin --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first. <code>jellyfin-secrets.tgz</code> holds the card's passwords and keys: keep it as safe as the data, which needs them.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=jellyfin); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file jellyfin/card.env -f jellyfin/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf jellyfin
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 306" width="720" height="306" role="img" aria-labelledby="t d">
+<title id="t">The immich card lists one app in one place, and no hostnames. Place immich is one serving device: immich is Immich web, API, and phone app uploads on port 2283, open to anyone. The card names no device and no organization.</title>
+<desc id="d">The immich card lists one app in one place, and no hostnames. Place immich is one serving device: immich is Immich web, API, and phone app uploads on port 2283, open to anyone. The card names no device and no organization.</desc>
+<style>.label{font-family:Jost,system-ui,sans-serif;font-size:15px;fill:#000033}.small{font-family:Jost,system-ui,sans-serif;font-size:13px;fill:#4a4f66}.mono{font-family:Iosevka,ui-monospace,monospace;font-size:15px;fill:#000033}.head{font-family:Jost,system-ui,sans-serif;font-size:13px;font-weight:600;fill:#ffffff;letter-spacing:.04em}.place{font-family:Jost,system-ui,sans-serif;font-size:13px;fill:#000033}.card{fill:#ffffff;stroke:#c2c8d8;stroke-width:1.5}</style>
+<rect x="0" y="0" width="720" height="306" rx="10" fill="#e4e8f2"/>
+<path d="M10 0 h700 a10 10 0 0 1 10 10 v34 h-720 v-34 a10 10 0 0 1 10 -10 z" fill="#2e4a9e"/>
+<text class="head" x="28" y="28">IMMICH CARD</text>
+<text class="small" x="56" y="94">app</text>
+<text class="small" x="250" y="94">port</text>
+<text class="small" x="684" y="94" text-anchor="end">auth</text>
+<rect x="28" y="108" width="664" height="32" rx="6" fill="#e0e3ea"/>
+<text class="place" x="42" y="129">place</text>
+<text class="mono" x="90" y="130">immich</text>
+<text class="place" x="678" y="129" text-anchor="end">one serving device</text>
+<rect class="card" x="28" y="150" width="664" height="72" rx="8"/>
+<rect x="28" y="150" width="6" height="72" rx="3" fill="#2f6fb0"/>
+<text class="mono" x="56" y="180">immich</text>
+<text class="mono" x="250" y="180">2283</text>
+<text class="small" x="684" y="180" text-anchor="end">open to anyone</text>
+<text class="small" x="56" y="200">Immich web, API, and phone app uploads</text>
+<line x1="28" y1="238" x2="692" y2="238" stroke="#e0e3ea" stroke-width="1.5"/>
+<text class="small" x="28" y="260">no device name, no hostname, no organization id</text>
+</svg>

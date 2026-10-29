@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>umami: Umami analytics, the dashboard behind org and the tracking script open | Edgible cards</title>
+<meta name="description" content="Umami analytics, the dashboard behind org and the tracking script open">
+<link rel="canonical" href="https://cards.edgible.org/umami/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="umami: Umami analytics, the dashboard behind org and the tracking script open">
+<meta property="og:description" content="Umami analytics, the dashboard behind org and the tracking script open">
+<meta property="og:url" content="https://cards.edgible.org/umami/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / umami</p>
+<h1 class="with-icon"><img class="icon" src="../umami/icon.svg" alt="" width="56" height="56" loading="lazy"><span>umami</span></h1>
+<p class="lead">Umami analytics, the dashboard behind org and the tracking script open</p>
+<p class="meta"><span class="kind">App card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-28, Edgible 1.4.29</span><span class="pill fit" title="Self-hosting fit, from facts about the app. Every check passed."><svg class="ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7.86 1.57A5.50 5.50 0 0 1 12.43 6.14" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M12.43 7.86A5.50 5.50 0 0 1 7.86 12.43" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M6.14 12.43A5.50 5.50 0 0 1 1.57 7.86" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M1.57 6.14A5.50 5.50 0 0 1 6.14 1.57" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/></svg>fit 4/4</span><span class="added">Added 9 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://umami.is" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/umami">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the umami card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>umami</code></td><td>Umami dashboard</td><td>org login</td><td><code>umami</code></td></tr><tr><td><code>analytics</code></td><td>Umami tracking script, same process as umami</td><td>open to anyone</td><td><code>umami</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>umami</code></td><td>384 MB</td><td>1.5 GB</td><td>amd64, arm64</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>432 MB</strong>, a minute or two on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><p>Its data is in the volumes <code>umami-db-data</code> and <code>umami-secrets</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+<h2>What it protects</h2><ul><li><strong>Made on your machine, seen by nobody:</strong> <code>UMAMI_DB_PASSWORD</code>, <code>UMAMI_APP_SECRET</code> and <code>UMAMI_TWO_FACTOR_KEY</code>. The card makes them at first start, and only its own apps read them. They stay on the machine, and in its backups.</li><li><strong>For you:</strong> <code>UMAMI_ADMIN_PASSWORD</code>: the admin&#x27;s sign-in, set by prepare.sh in place of the default umami. Made on your machine too, where the <code>show</code> command in the README prints it.</li></ul>
+<h2>Self-hosting fit</h2><div class="fit-box"><svg class="ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path d="M27.14 4.18A20.07 20.07 0 0 1 43.82 20.86" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M43.82 27.14A20.07 20.07 0 0 1 27.14 43.82" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M20.86 43.82A20.07 20.07 0 0 1 4.18 27.14" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M4.18 20.86A20.07 20.07 0 0 1 20.86 4.18" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/></svg><p><strong>4 of 4</strong> checks passed. Each is a fact about the app, not an opinion: <a href="https://github.com/edgible-org/card-kit/blob/main/card-fit.py">how they are decided</a>.</p></div><ul class="fit-list"><li class="fit-yes"><span class="mark">✓</span><strong>Secrets kept out of card.env</strong> <span>made on the device: UMAMI_DB_PASSWORD, UMAMI_APP_SECRET, UMAMI_TWO_FACTOR_KEY, UMAMI_ADMIN_PASSWORD</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Reads secrets from files</strong> <span>reads them from files itself</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Starts as a non-root user</strong> <span>starts as nextjs</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Builds for arm64 and amd64</strong> <span>amd64, arm64</span></li></ul>
+<h2>Known upstream issues</h2><p>Found while testing this card. Each is a request for the app's authors, not a fault in the card.</p><ul><li><strong><a href="https://github.com/edgible-org/cards/blob/main/upstream/umami-secret-files.md">Read <code>APP_SECRET</code> and <code>TWO_FACTOR_ENCRYPTION_KEY</code> and <code>DATABASE_URL</code> from a file</a></strong> (not yet reported, found 2026-10-28). For <a href="https://github.com/umami-software/umami" rel="noopener">umami</a>.</li></ul>
+<h2>Needs it answers</h2><ul><li><a href="../needs/analytics/">Analytics</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Knowing whether anyone reads your site usually means handing every visitor to an analytics company. <a href="https://umami.is">Umami</a> counts page views without cookies or personal data, and keeps the database on a machine you own.</p>
+<h2 id="what">What</h2>
+<p>One process on two hostnames. <code>umami</code> is the dashboard, behind <code>org</code>. <code>analytics</code> serves the tracking script and takes page views, on <code>none</code>, because every visitor's browser has to reach it. Both are port <code>3000</code> on the place <code>umami</code>; list <code>umami</code> first so <code>UMAMI_PORT</code> is named after it. Postgres runs beside it as <code>umami-db</code>.</p>
+<p>The <code>analytics</code> hostname serves the whole Umami process, so its login page is public too. Umami's own password protects it, which is why Start changes the default password before anything is published.</p>
+<p>To use it in a card, copy the <code>umami-secrets</code>, <code>umami</code> and <code>umami-db</code> services, both volumes, and the <code>secrets:</code> section of <a href="https://github.com/edgible-org/cards/blob/main/umami/card.yml">card.yml</a>, then put the tracking snippet from the dashboard into your site with the <code>analytics</code> hostname.</p>
+<p>Page views, sites and accounts live in the volume <code>umami-db-data</code>.</p>
+<p>No password or key is in <code>card.env</code>. At first start <code>umami-secrets</code> makes the four that card.yml's <code>secrets:</code> declares on the machine, one file each in the volume <code>umami-secrets</code>, and never changes them after. The database reads its password from that file, and Umami starts through a loader that reads them. They never leave the machine, and nothing else needs to know them. The one a person needs, the admin's password, you see with:</p>
+<pre><code class="language-bash">docker compose --env-file umami/card.env -f umami/docker-compose.yml run --rm --no-deps umami-secrets show UMAMI_ADMIN_PASSWORD
+``` Minimum recommended for the place `umami`: 384 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU.
+
+The Compose file is [docker-compose.yml](docker-compose.yml), the settings [card.env](card.env), the card [card.yml](card.yml), and the last test [test.yml](test.yml).
+
+## How
+
+Five steps. Edit [card.env](card.env) before you start.
+
+### 1. Fetch
+
+```bash
+mkdir -p umami
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C umami cards-main/umami
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints. There are no secrets to fill: Start makes them on the machine.</p>
+<pre><code class="language-bash">nano umami/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py umami
+</code></pre>
+<p>It moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file umami/card.env -f umami/docker-compose.yml pull
+docker compose --env-file umami/card.env -f umami/docker-compose.yml up -d --wait
+docker compose --env-file umami/card.env -f umami/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file: about 439 MB, a minute or two on a typical home connection. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. <code>umami-secrets</code> makes the secrets first and exits. Umami starts with the account <code>admin</code> and the password <code>umami</code>, and the <code>analytics</code> hostname will make its login page public. Change that password now, before Publish:</p>
+<pre><code class="language-bash">sh umami/prepare.sh
+</code></pre>
+<p><a href="https://github.com/edgible-org/cards/blob/main/umami/prepare.sh">prepare.sh</a> is:</p>
+<pre><code class="language-sh">#!/bin/sh
+# Prepare for the umami card: change the default password, admin / umami, before the login page is public.
+# Run it after Start and before Publish, from the directory that holds umami/:
+#   sh umami/prepare.sh
+set -eu
+cd &quot;$(dirname &quot;$0&quot;)&quot;
+set -a; . ./card.env; set +a
+COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The new password is the human secret umami-secrets made on this machine.
+UMAMI_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps umami-secrets show UMAMI_ADMIN_PASSWORD)
+
+B=&quot;http://127.0.0.1:$UMAMI_PORT&quot;
+H='Content-Type: application/json'
+token=$(curl -fsS -X POST &quot;$B/api/auth/login&quot; -H &quot;$H&quot; -d '{&quot;username&quot;:&quot;admin&quot;,&quot;password&quot;:&quot;umami&quot;}' \
+  | sed -n 's/.*&quot;token&quot;:&quot;\([^&quot;]*\)&quot;.*/\1/p')
+curl -fsS -X POST &quot;$B/api/me/password&quot; -H &quot;$H&quot; -H &quot;Authorization: Bearer $token&quot; \
+  -d &quot;{\&quot;currentPassword\&quot;:\&quot;umami\&quot;,\&quot;newPassword\&quot;:\&quot;$UMAMI_ADMIN_PASSWORD\&quot;}&quot; &gt;/dev/null
+echo &quot;admin's password is now UMAMI_ADMIN_PASSWORD&quot;
+</code></pre>
+<p>It prints <code>admin's password is now UMAMI_ADMIN_PASSWORD</code>. Sign in as <code>admin</code> with that password, which the <code>show</code> command in What prints.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. umami/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name umami \
+  --port &quot;$UMAMI_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$device_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name analytics \
+  --port &quot;$UMAMI_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<h2 id="verify">Verify</h2>
+<p><code>umami</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;umami hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. Open the hostname in a browser, sign in, then sign in to Umami with the password you set in Start.</p>
+<p><code>analytics</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;analytics hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>200</code>. Fetch <code>/script.js</code> on it to see the tracking script, with no login.</p>
+<p>The rest of the setup is in the <a href="https://umami.is/docs">Umami docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete umami --yes
+edgible app delete analytics --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file umami/card.env -f umami/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first. <code>umami-secrets.tgz</code> holds the passwords and keys: keep it as safe as the data, since the data needs it.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=umami); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file umami/card.env -f umami/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf umami
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

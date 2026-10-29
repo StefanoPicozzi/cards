@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>website: Public React site, its editor, open tracker, locked dashboard, locked monitor | Edgible cards</title>
+<meta name="description" content="Public React site, its editor, open tracker, locked dashboard, locked monitor">
+<link rel="canonical" href="https://cards.edgible.org/website/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="website: Public React site, its editor, open tracker, locked dashboard, locked monitor">
+<meta property="og:description" content="Public React site, its editor, open tracker, locked dashboard, locked monitor">
+<meta property="og:url" content="https://cards.edgible.org/website/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / website</p>
+<h1 class="with-icon"><span class="icon placeholder" style="width:56px;height:56px" aria-hidden="true"></span><span>website</span></h1>
+<p class="lead">Public React site, its editor, open tracker, locked dashboard, locked monitor</p>
+<p class="meta"><span class="kind">Pattern card</span><span class="pill untested">not tested yet</span><span class="added">Added 5 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://github.com/edgible-org/cards/tree/main/website">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the website card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>site</code></td><td>your pages, served by React</td><td>open to anyone</td><td><code>web</code></td></tr><tr><td><code>strapi</code></td><td>Strapi editor</td><td>org login</td><td><code>web</code></td></tr><tr><td><code>umami</code></td><td>Umami dashboard</td><td>org login</td><td><code>web</code></td></tr><tr><td><code>analytics</code></td><td>Umami tracking script, same process as umami</td><td>open to anyone</td><td><code>web</code></td></tr><tr><td><code>status</code></td><td>Uptime Kuma</td><td>org login</td><td><code>monitor</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody></tbody></table></div>
+
+<h2>What it keeps</h2><p>Its data is in the volumes <code>strapi-data</code>, <code>strapi-uploads</code> and <code>umami-db-data</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+<h2>What it protects</h2><ul><li><strong>In card.env on your machine:</strong> <code>STRAPI_DATABASE_PASSWORD</code>, <code>POSTGRES_PASSWORD</code>, <code>APP_SECRET</code> and <code>TWO_FACTOR_ENCRYPTION_KEY</code>. Check fills them in, and they stay on the machine.</li></ul>
+
+
+<h2>Needs it answers</h2><ul><li><a href="../needs/analytics/">Analytics</a></li><li><a href="../needs/content-management-systems-cms/">Content Management Systems (CMS)</a></li><li><a href="../needs/static-site-generators/">Static Site Generators</a></li><li><a href="../needs/monitoring-status-pages/">Monitoring &amp; Status Pages</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>A site, the editor for its pages, the count of who read it, and a check that it is still up are usually services someone else runs. This card keeps them on machines you own. Strangers can open the site and the tracking script. The editor, the dashboard, and the monitor ask for an org login.</p>
+<h2 id="what">What</h2>
+<p><code>site</code> is a Vite React app, open to anyone. nginx serves the static build. The sample page is in those files, so the same build can be uploaded to S3. On this card, nginx forwards <code>/api</code> to Strapi, and a reload shows an edit from the editor. <code>strapi</code> is the editor behind an org login, and it needs Postgres. The editor stays on its own hostname. <code>analytics</code> is the Umami tracking script, also open. <code>umami</code> is that same process with its dashboard behind an org login, and it needs its own Postgres. Those four share the place <code>web</code>, so they run on one serving device. <code>status</code> is Uptime Kuma behind an org login, on the place <code>monitor</code>, which can be a second serving device. A monitor on the same machine as the site cannot report that machine going down.</p>
+<p>The Compose files are <a href="https://github.com/edgible-org/cards/blob/main/website/docker-compose.yml">docker-compose.yml</a>, <a href="https://github.com/edgible-org/cards/blob/main/website/umami-compose.yml">umami-compose.yml</a>, and <a href="https://github.com/edgible-org/cards/blob/main/website/kuma-compose.yml">kuma-compose.yml</a>. They read the host ports and the secrets from <a href="https://github.com/edgible-org/cards/blob/main/website/card.env">card.env</a>. The Vite app is <a href="https://github.com/edgible-org/cards/tree/main/website/site">site</a>. The Strapi project is <a href="https://github.com/edgible-org/cards/tree/main/website/strapi">strapi</a>. The card is <a href="https://github.com/edgible-org/cards/blob/main/website/card.yml">card.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Six steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/website/card.env">card.env</a> before you start. The Compose files read that file.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<p>On the machine that will run the containers, fetch this card. Running this again replaces <code>card.env</code>, including the device name and any password you filled in.</p>
+<pre><code class="language-bash">mkdir -p website
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C website cards-main/website
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Open <code>website/card.env</code> and follow the comments in that file.</p>
+<pre><code class="language-bash">nano website/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<p>Check this machine before anything starts. The check reads <code>card.env</code> and looks for what the card would collide with: a host port, a container name, a Compose project, a leftover volume, a device name, or an app name. Each conflict prints its remedy. The report ends with those remedies as lines to paste into a shell: they fill empty secrets and change ports in <code>card.env</code>, keeping the old copy as <code>card.env.bak</code>. A line that stops or deletes something starts with <code>#</code>, so it runs only if you remove the <code>#</code>. Run the check again until it says <code>no conflicts</code>. It needs <code>python3</code> and Docker, and it uses <code>edgible</code> when that is installed.</p>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py website -f docker-compose.yml -f umami-compose.yml
+</code></pre>
+<p>On the machine for place <code>monitor</code>, check the file that runs there:</p>
+<pre><code class="language-bash">python3 check-env.py website -f kuma-compose.yml
+</code></pre>
+<p>When both places are one machine, leave out <code>-f</code> and the check covers all three files.</p>
+<h3 id="4-start-the-site-and-umami">4. Start the site and Umami</h3>
+<p>Place <code>web</code> runs these two Compose files. The Vite site and Strapi images are built from this card.</p>
+<pre><code class="language-bash">docker compose --env-file website/card.env -f website/docker-compose.yml up -d --wait --build
+docker compose --env-file website/card.env -f website/umami-compose.yml pull
+docker compose --env-file website/card.env -f website/umami-compose.yml up -d --wait
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file, which takes longer for a larger app. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. A healthcheck comes from the Compose file or from the image. <code>ps</code> shows <code>(healthy)</code> in the status of each service that has one:</p>
+<pre><code class="language-bash">docker compose --env-file website/card.env -f website/docker-compose.yml ps
+docker compose --env-file website/card.env -f website/umami-compose.yml ps
+</code></pre>
+<p>If <code>--wait</code> stops with <code>unhealthy</code>, <code>logs &lt;service&gt;</code> with the same <code>--env-file</code> and <code>-f</code> usually says why.</p>
+<h3 id="5-start-the-monitor">5. Start the monitor</h3>
+<p>On the machine for place <code>monitor</code>, fetch this card the same way and edit <code>card.env</code> there. Then:</p>
+<pre><code class="language-bash">docker compose --env-file website/card.env -f website/kuma-compose.yml pull
+docker compose --env-file website/card.env -f website/kuma-compose.yml up -d --wait
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file, which takes longer for a larger app. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. A healthcheck comes from the Compose file or from the image. <code>ps</code> shows <code>(healthy)</code> in the status of each service that has one:</p>
+<pre><code class="language-bash">docker compose --env-file website/card.env -f website/kuma-compose.yml ps
+</code></pre>
+<p>If <code>--wait</code> stops with <code>unhealthy</code>, <code>logs &lt;service&gt;</code> with the same <code>--env-file</code> and <code>-f</code> usually says why.</p>
+<p>When both places are the same machine, run the <code>up</code> command in the same directory. That file reads <code>STATUS_PORT</code>.</p>
+<h3 id="6-publish">6. Publish</h3>
+<p><code>jq</code> reads each device's id out of <code>edgible device list</code>.</p>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. website/card.env
+set +a
+device_id() {
+  edgible device list --json | jq -er --arg name &quot;$1&quot; '
+    map(select(.name == $name))
+    | if length == 1 then .[0].id
+      else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+      end
+  '
+}
+web_id=$(device_id &quot;$WEB_DEVICE&quot;)
+monitor_id=$(device_id &quot;$MONITOR_DEVICE&quot;)
+edgible app create existing \
+  --non-interactive \
+  --name site \
+  --port &quot;$SITE_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$web_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name strapi \
+  --port &quot;$STRAPI_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$web_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name analytics \
+  --port &quot;$UMAMI_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$web_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name umami \
+  --port &quot;$UMAMI_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$web_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name status \
+  --port &quot;$STATUS_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$monitor_id&quot;
+edgible app list
+</code></pre>
+<p><code>edgible app list</code> shows <code>site</code> and <code>analytics</code> with <code>none</code>, and <code>strapi</code>, <code>umami</code>, and <code>status</code> with <code>org</code>.</p>
+<h2 id="verify">Verify</h2>
+<p><code>edgible app list</code> prints each hostname. Each app answers the way its auth mode says: <code>none</code> with the app, <code>org</code> with a redirect to the Edgible sign-in, and <code>api-key</code> with <code>401</code> until a key is sent. This checks the card. The rest of each app's setup is in that app's docs.</p>
+<p><code>site</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -fsS &quot;https://&lt;site hostname&gt;&quot; | grep -o &quot;Served from a box I own.&quot;
+</code></pre>
+<p>That prints the sentence. It is the sample Page in Strapi, so the site reached Strapi through <code>/api</code>. Edit the Page in the editor and reload the site.</p>
+<p><code>strapi</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;strapi hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. Open the hostname in a browser and sign in. The first visit creates the Strapi admin. The rest of the setup is in the <a href="https://docs.strapi.io">Strapi docs</a>.</p>
+<p><code>analytics</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -fsS &quot;https://&lt;analytics hostname&gt;/script.js&quot; | head -c 60
+</code></pre>
+<p>That prints the start of the tracking script, not the Edgible sign-in.</p>
+<p><code>umami</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;umami hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. Open the hostname in a browser and sign in. Umami starts with the account <code>admin</code> and the password <code>umami</code>. Change that password first. The rest of the setup is in the <a href="https://docs.umami.is/docs">Umami docs</a>.</p>
+<p><code>status</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;status hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. Open the hostname in a browser and sign in. The first visit creates the Uptime Kuma admin. The rest of the setup is in the <a href="https://github.com/louislam/uptime-kuma/wiki">Uptime Kuma docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine for each place. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<p>Delete the apps first, so no hostname points at a stopped container, and the names are free if you set the card up again.</p>
+<pre><code class="language-bash">edgible app delete site --yes
+edgible app delete strapi --yes
+edgible app delete analytics --yes
+edgible app delete umami --yes
+edgible app delete status --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<p>This stops and removes the containers. The volumes stay, so Start brings the card back with its data.</p>
+<p>On the machine for place <code>web</code>:</p>
+<pre><code class="language-bash">docker compose --env-file website/card.env -f website/docker-compose.yml down
+docker compose --env-file website/card.env -f website/umami-compose.yml down
+</code></pre>
+<p>On the machine for place <code>monitor</code>:</p>
+<pre><code class="language-bash">docker compose --env-file website/card.env -f website/kuma-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. It cannot be undone. The loop first copies each volume to a <code>.tgz</code> file in this directory. The containers are stopped, so each copy is whole.</p>
+<p>On the machine for place <code>web</code>:</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=site); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+for volume in $(docker volume ls -q --filter label=com.docker.compose.project=umami); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file website/card.env -f website/docker-compose.yml down --volumes
+docker compose --env-file website/card.env -f website/umami-compose.yml down --volumes
+</code></pre>
+<p>On the machine for place <code>monitor</code>:</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=status); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker run --rm -v &quot;$PWD/website/data:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/status-data.tgz&quot; -C /data .
+docker compose --env-file website/card.env -f website/kuma-compose.yml down --volumes
+docker run --rm -v &quot;$PWD/website:/card&quot; alpine rm -rf &quot;/card/data&quot;
+</code></pre>
+<p>Uptime Kuma keeps its data in the folder <code>website/data</code>, not in a volume, so the <code>monitor</code> step copies that folder to <code>status-data.tgz</code> and then removes it. Both run in a container, because the folder belongs to the container's user.</p>
+<p>To bring a copy back, keep the <code>card.env</code> it was made with, because the databases in it expect those passwords. <code>create</code> makes the containers and the volumes without starting them. Unpack each copy into its volume, then Start.</p>
+<pre><code class="language-bash">docker compose --env-file website/card.env -f website/docker-compose.yml create
+docker compose --env-file website/card.env -f website/umami-compose.yml create
+docker compose --env-file website/card.env -f website/kuma-compose.yml create
+docker run --rm -v &quot;&lt;volume&gt;:/data&quot; -v &quot;$PWD:/backup&quot; alpine tar -xzf &quot;/backup/&lt;volume&gt;.tgz&quot; -C /data
+docker run --rm -v &quot;$PWD/website/data:/data&quot; -v &quot;$PWD:/backup&quot; alpine tar -xzf &quot;/backup/status-data.tgz&quot; -C /data
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<p><code>card.env</code> holds the passwords, and <code>card.env.bak</code> holds the copy from before the check edited it. If you kept the volumes in step 3, keep <code>card.env</code> too. The databases in those volumes expect its passwords.</p>
+<pre><code class="language-bash">docker image rm website-site:latest website-strapi:latest
+rm -rf website
+</code></pre>
+<p>The card built those two images. The images it pulled stay, because other containers may use them. <code>docker image prune</code> removes the ones nothing uses.</p>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

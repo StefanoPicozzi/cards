@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>docmost: Docmost, a collaborative team wiki and Notion or Confluence alternative, behind your org login | Edgible cards</title>
+<meta name="description" content="Docmost, a collaborative team wiki and Notion or Confluence alternative, behind your org login">
+<link rel="canonical" href="https://cards.edgible.org/docmost/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="docmost: Docmost, a collaborative team wiki and Notion or Confluence alternative, behind your org login">
+<meta property="og:description" content="Docmost, a collaborative team wiki and Notion or Confluence alternative, behind your org login">
+<meta property="og:url" content="https://cards.edgible.org/docmost/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / docmost</p>
+<h1 class="with-icon"><img class="icon" src="../docmost/icon.svg" alt="" width="56" height="56" loading="lazy"><span>docmost</span></h1>
+<p class="lead">Docmost, a collaborative team wiki and Notion or Confluence alternative, behind your org login</p>
+<p class="meta"><span class="kind">App card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-28, Edgible 1.4.29</span><span class="pill fit" title="Self-hosting fit, from facts about the app. Reads secrets from files: no, takes them from the environment, through the card&#x27;s loader"><svg class="ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7.86 1.57A5.50 5.50 0 0 1 11.90 4.50" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M12.43 6.14A5.50 5.50 0 0 1 10.89 10.89" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/><path d="M9.50 11.90A5.50 5.50 0 0 1 4.50 11.90" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M3.11 10.89A5.50 5.50 0 0 1 1.57 6.14" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M2.10 4.50A5.50 5.50 0 0 1 6.14 1.57" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/></svg>fit 4/5</span><span class="added">Added 27 October 2026</span><span class="license">License AGPL-3.0-only</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://docmost.com" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/docmost">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the docmost card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>docmost</code></td><td>Docmost wiki, for the people who read and edit it in a browser</td><td>org login</td><td><code>docmost</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>docmost</code></td><td>1 GB</td><td>3 GB</td><td>amd64, arm64</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>368 MB</strong>, a minute or two on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><div class="scroll"><table><thead><tr><th>Volume</th><th>What it is</th></tr></thead><tbody><tr><td><code>docmost-db-data</code></td><td>yours alone: backed up, and checked after a restore or a move</td></tr><tr><td><code>docmost-data</code></td><td>yours alone: backed up, and checked after a restore or a move</td></tr><tr><td><code>docmost-redis-data</code></td><td>safe to lose, such as thumbnails or downloads</td></tr><tr><td><code>docmost-secrets</code></td><td>yours alone: backed up, and checked after a restore or a move</td></tr></tbody></table></div><p>After a restore or a move, a quick count shows the data arrived, with nothing read but numbers and dates.</p>
+<h2>What it protects</h2><ul><li><strong>Made on your machine, seen by nobody:</strong> <code>DOCMOST_DB_PASSWORD</code> and <code>DOCMOST_APP_SECRET</code>. The card makes them at first start, and only its own apps read them. They stay on the machine, and in its backups.</li><li><strong>For you:</strong> <code>DOCMOST_ADMIN_PASSWORD</code>: the admin&#x27;s first sign-in, set by prepare.sh when it makes the workspace. Made on your machine too, where the <code>show</code> command in the README prints it.</li></ul>
+<h2>Self-hosting fit</h2><div class="fit-box"><svg class="ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path d="M27.14 4.18A20.07 20.07 0 0 1 41.88 14.89" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M43.82 20.86A20.07 20.07 0 0 1 38.19 38.19" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/><path d="M33.11 41.88A20.07 20.07 0 0 1 14.89 41.88" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M9.81 38.19A20.07 20.07 0 0 1 4.18 20.86" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M6.12 14.89A20.07 20.07 0 0 1 20.86 4.18" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/></svg><p><strong>4 of 5</strong> checks passed. Each is a fact about the app, not an opinion: <a href="https://github.com/edgible-org/card-kit/blob/main/card-fit.py">how they are decided</a>.</p></div><ul class="fit-list"><li class="fit-yes"><span class="mark">✓</span><strong>Secrets kept out of card.env</strong> <span>made on the device: DOCMOST_DB_PASSWORD, DOCMOST_APP_SECRET, DOCMOST_ADMIN_PASSWORD</span></li><li class="fit-no"><span class="mark">✗</span><strong>Reads secrets from files</strong> <span>takes them from the environment, through the card&#x27;s loader</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Has a health check</strong> <span>in the card&#x27;s Compose file</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Starts as a non-root user</strong> <span>starts as node</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Builds for arm64 and amd64</strong> <span>amd64, arm64</span></li></ul>
+<h2>Known upstream issues</h2><p>Found while testing this card. Each is a request for the app's authors, not a fault in the card.</p><ul><li><strong><a href="https://github.com/edgible-org/cards/blob/main/upstream/docmost-healthcheck.md">Add a <code>HEALTHCHECK</code> to the image</a></strong> (not yet reported, found 2026-10-28). For <a href="https://github.com/docmost/docmost" rel="noopener">docmost</a>.</li><li><strong><a href="https://github.com/edgible-org/cards/blob/main/upstream/docmost-secret-files.md">Read <code>APP_SECRET</code> and <code>DATABASE_URL</code> from files</a></strong> (not yet reported, found 2026-10-28). For <a href="https://github.com/docmost/docmost" rel="noopener">docmost</a>.</li></ul>
+<h2>Needs it answers</h2><ul><li><a href="../needs/wikis/">Wikis</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>A team wiki is where a team writes down how it does things, and hosted ones (Notion, Confluence) charge per seat and keep your pages on their servers. <a href="https://docmost.com">Docmost</a> is an open-source wiki with spaces, page trees, real-time editing, comments, diagrams, and permissions per space and group. This card runs it on a machine you own, through Edgible.</p>
+<h2 id="what">What</h2>
+<p>One app, <code>docmost</code>, on <code>org</code>, so only members of your Edgible organization reach it. Everyone who reads or edits the wiki is a person in a browser, so the Edgible sign-in is the first door and Docmost's own login the second. Three containers run it: Docmost, PostgreSQL for its pages and accounts, and Redis for live editing. People outside your organization cannot reach it. For a public knowledge base for customers, publish with <code>none</code> instead and keep sign-up closed, which is a different choice from this card's. Use Docmost's spaces and roles to keep confidential pages to the people who should see them.</p>
+<p>Pages and accounts are in the volume <code>docmost-db-data</code>, uploaded files in <code>docmost-data</code>, and the keys the card made in <code>docmost-secrets</code>. Copy all three; the keys unlock the database. Minimum recommended for the place <code>docmost</code>: 1 GB of memory and 3 GB of disk, on an arm64 or amd64 machine, with no GPU.</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/docmost/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/docmost/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/docmost/card.yml">card.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/docmost/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p docmost
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C docmost cards-main/docmost
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints, <code>ORG_LABEL</code> to the label in your hostnames, and <code>DOCMOST_ADMIN_EMAIL</code> to your own email, which becomes the admin. Change <code>DOCMOST_PORT</code> only if 3000 is taken.</p>
+<pre><code class="language-bash">nano docmost/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py docmost
+</code></pre>
+<p>It moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file docmost/card.env -f docmost/docker-compose.yml pull
+docker compose --env-file docmost/card.env -f docmost/docker-compose.yml up -d --wait
+docker compose --env-file docmost/card.env -f docmost/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file, which takes longer for a larger app. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. Here that means Docmost, its database and Redis are healthy. <code>prepare.sh</code> makes the workspace and its admin on this machine, so the setup page is never open to a visitor.</p>
+<pre><code class="language-bash">sh docmost/prepare.sh
+</code></pre>
+<p><a href="https://github.com/edgible-org/cards/blob/main/docmost/prepare.sh">prepare.sh</a> is:</p>
+<pre><code class="language-sh">#!/bin/sh
+# Prepare for the docmost card: make the workspace and its admin before the setup page is public.
+# Run it after Start and before Publish, from the directory that holds docmost/:
+#   sh docmost/prepare.sh
+set -eu
+cd &quot;$(dirname &quot;$0&quot;)&quot;
+set -a; . ./card.env; set +a
+COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+# The admin's password is the human secret docmost-secrets made on this machine.
+DOCMOST_ADMIN_PASSWORD=$($COMPOSE run --rm --no-deps docmost-secrets show DOCMOST_ADMIN_PASSWORD)
+
+# Docmost lets the first visitor to /setup make the workspace; this takes that place.
+$COMPOSE exec -T -e DOCMOST_ADMIN_PASSWORD=&quot;$DOCMOST_ADMIN_PASSWORD&quot; \
+  -e DOCMOST_ADMIN_EMAIL=&quot;$DOCMOST_ADMIN_EMAIL&quot; -e DOCMOST_WORKSPACE=&quot;${DOCMOST_WORKSPACE:-Team wiki}&quot; docmost node -e '
+fetch(&quot;http://127.0.0.1:3000/api/auth/setup&quot;, {
+  method: &quot;POST&quot;,
+  headers: {&quot;Content-Type&quot;: &quot;application/json&quot;},
+  body: JSON.stringify({
+    workspaceName: process.env.DOCMOST_WORKSPACE,
+    name: &quot;Admin&quot;,
+    email: process.env.DOCMOST_ADMIN_EMAIL,
+    password: process.env.DOCMOST_ADMIN_PASSWORD,
+  }),
+}).then(async (r) =&gt; {
+  if (!r.ok) { console.error(&quot;setup answered &quot; + r.status + &quot;: &quot; + await r.text()); process.exit(1); }
+}).catch((e) =&gt; { console.error(String(e)); process.exit(1); });
+'
+echo &quot;the workspace is made; the admin signs in with DOCMOST_ADMIN_EMAIL and DOCMOST_ADMIN_PASSWORD&quot;
+</code></pre>
+<p>The admin signs in with <code>DOCMOST_ADMIN_EMAIL</code>. Show the password with the <code>show</code> command in Verify, and change it in Docmost's settings after the first sign-in.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. docmost/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name docmost \
+  --port &quot;$DOCMOST_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<p><strong>Without Edgible:</strong> only Publish is Edgible's. The app listens on <code>127.0.0.1</code> at the port in <code>card.env</code>, so any reverse proxy or tunnel on the machine, such as Caddy, nginx, Cloudflare Tunnel or Tailscale, can publish it instead, and sign-in is then that tool's to provide. Every other step stays the same.</p>
+<h2 id="verify">Verify</h2>
+<p><code>docmost</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;docmost hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. The check proves the Edgible sign-in stands in front of the wiki. Then sign in as the admin and invite your team from Settings, Members. Docmost sends invitations by email only when you configure mail in its settings; without it, copy each invitation link from the members page.</p>
+<p>The rest of the setup is in the <a href="https://docmost.com/docs">Docmost docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete docmost --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file docmost/card.env -f docmost/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=docmost); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file docmost/card.env -f docmost/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf docmost
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

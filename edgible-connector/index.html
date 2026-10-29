@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>edgible-connector: Edgible in Claude&#x27;s web, desktop and phone apps, signed in with Edgible | Edgible cards</title>
+<meta name="description" content="Edgible in Claude&#x27;s web, desktop and phone apps, signed in with Edgible">
+<link rel="canonical" href="https://cards.edgible.org/edgible-connector/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="edgible-connector: Edgible in Claude&#x27;s web, desktop and phone apps, signed in with Edgible">
+<meta property="og:description" content="Edgible in Claude&#x27;s web, desktop and phone apps, signed in with Edgible">
+<meta property="og:url" content="https://cards.edgible.org/edgible-connector/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / edgible-connector</p>
+<h1 class="with-icon"><span class="icon placeholder" style="width:56px;height:56px" aria-hidden="true"></span><span>edgible-connector</span></h1>
+<p class="lead">Edgible in Claude&#x27;s web, desktop and phone apps, signed in with Edgible</p>
+<p class="meta"><span class="kind">Pattern card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-28, Edgible 1.4.29</span><span class="added">Added 20 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://github.com/edgible-org/cards/tree/main/edgible-connector">Source on GitHub</a></p>
+
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>mcp-signin</code></td><td>The connector&#x27;s address, MCP and OAuth, passed on to edgible-mcp</td><td>open to anyone</td><td><code>connector</code></td></tr><tr><td><code>mcp-signin-login</code></td><td>The sign-in page, same process as mcp-signin</td><td>org login</td><td><code>connector</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>connector</code></td><td>256 MB</td><td>1.5 GB</td><td>amd64, arm64</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>162 MB</strong>, a minute or two on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><div class="scroll"><table><thead><tr><th>Volume</th><th>What it is</th></tr></thead><tbody><tr><td><code>edgible-mcp-cache</code></td><td>safe to lose, such as thumbnails or downloads</td></tr><tr><td><code>edgible-mcp-login</code></td><td>safe to lose, such as thumbnails or downloads</td></tr><tr><td><code>edgible-mcp-data</code></td><td>safe to lose, such as thumbnails or downloads</td></tr><tr><td><code>mcp-signin-data</code></td><td>safe to lose, such as thumbnails or downloads</td></tr></tbody></table></div>
+
+
+
+
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Claude's web, desktop and phone apps can use Edgible as a connector: ask what is running, whether an app answers, which card fits a need, and, if you allow it, have an app deployed, moved or removed, from wherever you are. A connector is called by Claude's own servers, so it needs an address on the internet and its own sign-in. This pattern is that, on a machine of yours, and you sign in with your Edgible account. It is built from the <a href="https://github.com/edgible-org/cards/tree/main/mcp-signin">mcp-signin</a> and <a href="https://github.com/edgible-org/cards/tree/main/edgible-mcp">edgible-mcp</a> app cards.</p>
+<h2 id="what">What</h2>
+<p>Two containers on one machine. <code>edgible-mcp</code> is Edgible's MCP server, with no address of its own: it acts as the Edgible CLI inside it, which you sign in once, after Start. <code>mcp-signin</code> sits in front, on two addresses: <code>mcp-signin</code> on <code>none</code>, which Claude's servers call with a token, and <code>mcp-signin-login</code> on <code>org</code>, the page where you sign in with Edgible and allow Claude. Only members of <code>EDGIBLE_ORGANIZATION_ID</code>, or the people in <code>MCP_SIGNIN_USERS</code>, get in, and mcp-signin tells edgible-mcp who each one is, which goes in its record. The tools only read unless <code>EDGIBLE_MCP_ALLOW_WRITE=1</code>: then they deploy, move and remove app cards, each change asked first, and <code>EDGIBLE_MCP_DEVICES</code> limits which devices may change. Everyone who gets in acts as the CLI's sign-in, so sign it in as an account that may do what you allow. A card that needs a key you bring, such as a model's API key, takes it from an Edgible organisation secret: Claude gives you a one-time link to a page on <code>mcp-signin-login</code> where you paste it, from your phone too, and edgible-mcp stores it with Edgible. Claude never sees the key. Claude keeps its own copy of a connector's list of tools: after this card moves to a version of edgible-mcp with new tools, disconnect and connect it again in Settings, Connectors, on claude.ai or the desktop app (the phone app cannot), so the phone sees them too.</p>
+<p>Nothing here needs a backup. <code>mcp-signin-data</code> holds the registered assistants and tokens: losing it signs everyone out. <code>edgible-mcp-login</code> holds the CLI's sign-in: losing it means signing in again. <code>edgible-mcp-data</code> holds, with writes, the record of what the tools did. Minimum recommended for the place <code>connector</code>: 256 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU.</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/edgible-connector/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/edgible-connector/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/edgible-connector/card.yml">card.yml</a>, and the last test <a href="https://github.com/edgible-org/cards/blob/main/edgible-connector/test.yml">test.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/edgible-connector/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p edgible-connector
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C edgible-connector cards-main/edgible-connector
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints and <code>ORG_LABEL</code>. Check fills <code>EDGIBLE_ORGANIZATION_ID</code> from the CLI. Set <code>MCP_SIGNIN_USERS</code> to limit who may sign in, and <code>EDGIBLE_MCP_ALLOW_WRITE=1</code> for the tools that change things, with <code>EDGIBLE_MCP_DEVICES</code> to keep them to some devices.</p>
+<pre><code class="language-bash">nano edgible-connector/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py edgible-connector
+</code></pre>
+<p>It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml pull
+docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml up -d --wait
+docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file: about 162 MB, a minute or two on a typical home connection. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. Then sign the server in to Edgible, once: <code>docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml exec edgible-mcp edgible auth login --no-browser</code> prints a link and a code. Open the link, check the code, and approve. Until then, the tools that read your organisation say they are not signed in.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. edgible-connector/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name mcp-signin \
+  --port &quot;$MCP_SIGNIN_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$device_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name mcp-signin-login \
+  --port &quot;$MCP_SIGNIN_LOGIN_PORT&quot; \
+  --protocol https \
+  --auth-modes org \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<p><strong>Without Edgible:</strong> only Publish is Edgible's. The app listens on <code>127.0.0.1</code> at the port in <code>card.env</code>, so any reverse proxy or tunnel on the machine, such as Caddy, nginx, Cloudflare Tunnel or Tailscale, can publish it instead, and sign-in is then that tool's to provide. Every other step stays the same.</p>
+<h2 id="verify">Verify</h2>
+<p><code>mcp-signin</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;mcp-signin hostname&gt;&quot;
+</code></pre>
+<p>Then add it to Claude: Settings, Connectors, Add custom connector, named Edgible, with the URL <code>https://&lt;mcp-signin hostname&gt;/mcp</code> and the OAuth fields empty. That is the <code>mcp-signin</code> app's hostname, which Claude's servers call, never <code>mcp-signin-login</code>'s: that one is the page people sign in on, behind Edgible's sign-in, and given it, Claude says it couldn't check the server or couldn't register. Connect: Edgible's sign-in, then a page asking you to allow Claude. Allow, and ask Claude "What Edgible apps are running?". It works on Claude's web, desktop and phone apps.</p>
+<p><code>mcp-signin-login</code> uses <code>org</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' &quot;https://&lt;mcp-signin-login hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>302</code> and an <code>edgible.com/application-access/</code> address, so the org sign-in is in front. Only Edgible's sign-in leads to the page, even for a caller that sends Edgible's identity headers itself.</p>
+<p>The rest of the setup is in the <a href="https://support.claude.com/en/articles/11503834">MCP in Claude docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete mcp-signin --yes
+edgible app delete mcp-signin-login --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=edgible-connector); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file edgible-connector/card.env -f edgible-connector/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf edgible-connector
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

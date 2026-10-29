@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ollama-osx: Ollama on an Apple Silicon Mac, natively on its GPU, as an API behind a key | Edgible cards</title>
+<meta name="description" content="Ollama on an Apple Silicon Mac, natively on its GPU, as an API behind a key">
+<link rel="canonical" href="https://cards.edgible.org/ollama-osx/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="ollama-osx: Ollama on an Apple Silicon Mac, natively on its GPU, as an API behind a key">
+<meta property="og:description" content="Ollama on an Apple Silicon Mac, natively on its GPU, as an API behind a key">
+<meta property="og:url" content="https://cards.edgible.org/ollama-osx/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / ollama-osx</p>
+<h1 class="with-icon"><span class="icon placeholder" style="width:56px;height:56px" aria-hidden="true"></span><span>ollama-osx</span></h1>
+<p class="lead">Ollama on an Apple Silicon Mac, natively on its GPU, as an API behind a key</p>
+<p class="meta"><span class="kind">App card, runs natively on macOS</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-27, Edgible 1.4.12</span><span class="added">Added 25 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://ollama.com" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/ollama-osx">Source on GitHub</a></p>
+
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>ollama</code></td><td>Ollama API on the Mac&#x27;s GPU, through a small Caddy proxy that lets a key use models but not manage them</td><td>API key</td><td><code>ollama</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>ollama</code></td><td>8 GB</td><td>2 GB</td><td>arm64</td><td>Apple GPU</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>598 MB</strong>, a few minutes on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+
+
+
+<h2>Known upstream issues</h2><p>Found while testing this card. Each is a request for the app's authors, not a fault in the card.</p><ul><li><strong><a href="https://github.com/edgible-org/cards/blob/main/upstream/ollama-allowed-hosts.md">A setting for extra allowed <code>Host</code> names</a></strong> (not yet reported, found 2026-10-27). For <a href="https://github.com/ollama/ollama" rel="noopener">ollama</a>.</li></ul>
+<h2>Needs it answers</h2><ul><li><a href="../needs/generative-artificial-intelligence-genai/">Generative Artificial Intelligence (GenAI)</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p><a href="https://ollama.com">Ollama</a> runs open models, such as Llama, Qwen, Mistral, and gpt-oss, on your own machine, behind one API that many tools speak. On an Apple Silicon Mac it is fast because it runs them on the Mac's GPU. In Docker it cannot: Docker on macOS runs a Linux VM with no access to the GPU, so the same models run several times slower on the CPU. This card runs Ollama on the Mac itself, and Edgible publishes it through a small proxy, so your tools and AI agents can use your models from anywhere, behind an API key, without a cloud provider seeing your prompts, and without anything on your own network being able to reach Ollama. On Linux or Windows, Ollama runs well in Docker, and an ollama card for that is planned.</p>
+<h2 id="what">What</h2>
+<p>One app, <code>ollama</code>, the Ollama API on <code>api-key</code>: without a key it answers <code>401</code>, and with one any client that speaks Ollama's API works, such as Open WebUI, Continue, or your own scripts, with the key sent as <code>Authorization: Bearer &lt;key&gt;</code>. Ollama has no login of its own, so the key is what keeps strangers off your GPU. Edgible checks the key on this Mac, before a request reaches anything, and accepts it as <code>Authorization: Bearer &lt;key&gt;</code> or <code>X-API-Key: &lt;key&gt;</code>.</p>
+<p><strong>Why there is a proxy.</strong> Ollama refuses any request whose <code>Host</code> is not localhost when it listens on 127.0.0.1 only, and Edgible forwards the app's own hostname, so a published, loopback-only Ollama answers every call with <code>403</code>, key or not. Listening on every address would fix that, and would let anything on this Mac's network use Ollama without a key. Instead, Ollama stays on 127.0.0.1 (<code>OLLAMA_LOCAL_PORT</code>), and a small <a href="https://caddyserver.com">Caddy</a> proxy on 127.0.0.1 too (<code>OLLAMA_PORT</code>) sets <code>Host</code> to localhost and passes on only what a client needs to use a model: chat, generate, embeddings, the model list and its details, and the OpenAI-style <code>/v1</code> routes. Pulling, creating, copying, pushing and deleting a model are refused with <code>403</code>, so a key can use your models and cannot change them: do those on the Mac, against <code>127.0.0.1:$OLLAMA_LOCAL_PORT</code>. Edgible publishes the proxy, <code>ollama</code>, and puts the key in front of it.</p>
+<p>The models live in the folder <code>OLLAMA_MODELS</code> names, by default <code>models/</code> in the card's directory. Plan for them: a small model takes 2 to 5 GB, a large one 20 to 40 GB, and a model needs about its own size in memory to run. Minimum recommended for the place <code>ollama</code>: an Apple Silicon Mac with 8 GB of memory and 2 GB of disk; it runs on the Mac's GPU.</p>
+<p>This card runs natively on macOS, not in Docker. <a href="https://github.com/edgible-org/cards/blob/main/ollama-osx/install.sh">install.sh</a> installs Ollama 0.40.4, checked against its SHA-256, and Caddy 2.11.7, checked against its SHA-512, into the card's own directory and starts them as two background services; <a href="https://github.com/edgible-org/cards/blob/main/ollama-osx/uninstall.sh">uninstall.sh</a> removes both. The settings are <a href="https://github.com/edgible-org/cards/blob/main/ollama-osx/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/ollama-osx/card.yml">card.yml</a>, and the last test <a href="https://github.com/edgible-org/cards/blob/main/ollama-osx/test.yml">test.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/ollama-osx/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p ollama-osx
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C ollama-osx cards-main/ollama-osx
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> and <code>ORG_LABEL</code>. Keep <code>OLLAMA_LOCAL_PORT</code> at <code>11434</code>, the port Ollama's clients expect, unless another Ollama already runs on this Mac: Install stops and names the program that holds a port, and then you set <code>OLLAMA_LOCAL_PORT</code> to a free one. <code>OLLAMA_PORT</code> is the port Edgible publishes; change it only if Check or Install says it is taken. To keep the models an earlier Ollama install downloaded, set <code>OLLAMA_MODELS=~/.ollama/models</code>, and stop that Ollama first (quit the Ollama app, or <code>brew services stop ollama</code>), so two never use the folder at once.</p>
+<pre><code class="language-bash">nano ollama-osx/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py ollama-osx
+</code></pre>
+<p>It checks this machine, the port, and the service name, and prints any fix as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-install">4. Install</h3>
+<pre><code class="language-bash">set -a
+. ollama-osx/card.env
+set +a
+sh ollama-osx/install.sh
+</code></pre>
+<p>It prints the version, where the models are, and the proxy's port. Both services start again at each login, and run while your user is logged in: for a Mac that serves while nobody uses it, turn on automatic login. Then download a model, such as <code>curl http://127.0.0.1:$OLLAMA_LOCAL_PORT/api/pull -d '{"model": "llama3.2"}'</code>, or with the release's own command: <code>OLLAMA_HOST=127.0.0.1:$OLLAMA_LOCAL_PORT ollama-osx/.native/ollama-*/ollama pull llama3.2</code>.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. ollama-osx/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name ollama \
+  --port &quot;$OLLAMA_PORT&quot; \
+  --protocol https \
+  --auth-modes api-key \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<h2 id="verify">Verify</h2>
+<p><code>ollama</code> uses <code>api-key</code>. Without a key, it answers <code>401</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;ollama hostname&gt;&quot;
+</code></pre>
+<p>Make a key for each person or tool, which is shown once: <code>edgible app api-keys create --app ollama --name &lt;who&gt;</code>. Then <code>curl -H "Authorization: Bearer &lt;key&gt;" https://&lt;ollama hostname&gt;/api/tags</code> lists your models. <code>edgible app api-keys list --app ollama</code> and <code>delete</code> manage the keys. The card's tests also ask a tiny model a question and check, with <code>/api/ps</code>, that it ran 100% on the GPU; make a key and call the published app with it (<code>401</code> without the key, <code>200</code> with it, a streamed answer, and <code>403</code> for pull, create, copy, delete and push), then delete the key; and check that Ollama and the proxy listen on 127.0.0.1 only.</p>
+<p>The rest of the setup is in the <a href="https://github.com/ollama/ollama/tree/main/docs">Ollama docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Three steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in, steps 2 and 3 on the machine that runs the card.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete ollama --yes
+</code></pre>
+<h3 id="2-uninstall">2. Uninstall</h3>
+<pre><code class="language-bash">set -a
+. ollama-osx/card.env
+set +a
+sh ollama-osx/uninstall.sh
+</code></pre>
+<p>It stops both services and removes them, Ollama and the proxy. The models stay: <code>models/</code> in the card's directory goes in step 3, and a folder elsewhere (<code>OLLAMA_MODELS</code>) is never deleted, because it is not this card's.</p>
+<h3 id="3-remove-the-card">3. Remove the card</h3>
+<pre><code class="language-bash">rm -rf ollama-osx
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

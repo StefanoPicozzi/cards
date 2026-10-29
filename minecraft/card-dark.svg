@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 390" width="720" height="390" role="img" aria-labelledby="t d">
+<title id="t">The minecraft card lists two apps in one place, and no hostnames. Place minecraft is one serving device: mc-java is Paper server, Java Edition players on port 25565, open to anyone. mc-bedrock is Geyser, Bedrock players, same process on port 29132, open to anyone. The card names no device and no organization.</title>
+<desc id="d">The minecraft card lists two apps in one place, and no hostnames. Place minecraft is one serving device: mc-java is Paper server, Java Edition players on port 25565, open to anyone. mc-bedrock is Geyser, Bedrock players, same process on port 29132, open to anyone. The card names no device and no organization.</desc>
+<style>.label{font-family:Jost,system-ui,sans-serif;font-size:15px;fill:#e7e7f0}.small{font-family:Jost,system-ui,sans-serif;font-size:13px;fill:#a5a8bd}.mono{font-family:Iosevka,ui-monospace,monospace;font-size:15px;fill:#e7e7f0}.head{font-family:Jost,system-ui,sans-serif;font-size:13px;font-weight:600;fill:#ffffff;letter-spacing:.04em}.place{font-family:Jost,system-ui,sans-serif;font-size:13px;fill:#e7e7f0}.card{fill:#22223c;stroke:#3a3a5c;stroke-width:1.5}</style>
+<rect x="0" y="0" width="720" height="390" rx="10" fill="#1a1a2e"/>
+<path d="M10 0 h700 a10 10 0 0 1 10 10 v34 h-720 v-34 a10 10 0 0 1 10 -10 z" fill="#3a56ad"/>
+<text class="head" x="28" y="28">MINECRAFT CARD</text>
+<text class="small" x="56" y="94">app</text>
+<text class="small" x="250" y="94">port</text>
+<text class="small" x="684" y="94" text-anchor="end">auth</text>
+<rect x="28" y="108" width="664" height="32" rx="6" fill="#33334f"/>
+<text class="place" x="42" y="129">place</text>
+<text class="mono" x="90" y="130">minecraft</text>
+<text class="place" x="678" y="129" text-anchor="end">one serving device</text>
+<rect class="card" x="28" y="150" width="664" height="72" rx="8"/>
+<rect x="28" y="150" width="6" height="72" rx="3" fill="#7db2e8"/>
+<text class="mono" x="56" y="180">mc-java</text>
+<text class="mono" x="250" y="180">25565</text>
+<text class="small" x="684" y="180" text-anchor="end">open to anyone</text>
+<text class="small" x="56" y="200">Paper server, Java Edition players</text>
+<rect class="card" x="28" y="234" width="664" height="72" rx="8"/>
+<rect x="28" y="234" width="6" height="72" rx="3" fill="#7db2e8"/>
+<text class="mono" x="56" y="264">mc-bedrock</text>
+<text class="mono" x="250" y="264">29132</text>
+<text class="small" x="684" y="264" text-anchor="end">open to anyone</text>
+<text class="small" x="56" y="284">Geyser, Bedrock players, same process</text>
+<line x1="28" y1="322" x2="692" y2="322" stroke="#33334f" stroke-width="1.5"/>
+<text class="small" x="28" y="344">no device name, no hostname, no organization id</text>
+</svg>

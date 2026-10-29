@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>linkding: linkding, a minimal bookmark manager, for your browsers and its extension | Edgible cards</title>
+<meta name="description" content="linkding, a minimal bookmark manager, for your browsers and its extension">
+<link rel="canonical" href="https://cards.edgible.org/linkding/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="linkding: linkding, a minimal bookmark manager, for your browsers and its extension">
+<meta property="og:description" content="linkding, a minimal bookmark manager, for your browsers and its extension">
+<meta property="og:url" content="https://cards.edgible.org/linkding/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / linkding</p>
+<h1 class="with-icon"><img class="icon" src="../linkding/icon.svg" alt="" width="56" height="56" loading="lazy"><span>linkding</span></h1>
+<p class="lead">linkding, a minimal bookmark manager, for your browsers and its extension</p>
+<p class="meta"><span class="kind">App card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-27, Edgible 1.4.12</span><span class="pill fit" title="Self-hosting fit, from facts about the app. Reads secrets from files: no, takes them from the environment, through the card&#x27;s loader; Starts as a non-root user: no, starts as root (ghcr.io/sissbruecker/linkding:1.47.0)"><svg class="ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7.86 1.57A5.50 5.50 0 0 1 11.90 4.50" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M12.43 6.14A5.50 5.50 0 0 1 10.89 10.89" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/><path d="M9.50 11.90A5.50 5.50 0 0 1 4.50 11.90" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/><path d="M3.11 10.89A5.50 5.50 0 0 1 1.57 6.14" fill="none" stroke="currentColor" stroke-width="2.00" opacity=".22"/><path d="M2.10 4.50A5.50 5.50 0 0 1 6.14 1.57" fill="none" stroke="currentColor" stroke-width="2.00" opacity="1"/></svg>fit 3/5</span><span class="added">Added 10 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://github.com/sissbruecker/linkding" rel="noopener">App home page</a><a href="https://github.com/edgible-org/cards/tree/main/linkding">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the linkding card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>linkding</code></td><td>linkding, for the web and the browser extension</td><td>open to anyone</td><td><code>linkding</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>linkding</code></td><td>384 MB</td><td>1.5 GB</td><td>amd64, arm64, arm</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>147 MB</strong>, a minute or two on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><p>Its data is in the volumes <code>linkding-data</code> and <code>linkding-secrets</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+<h2>What it protects</h2><ul><li><strong>For you:</strong> <code>LINKDING_ADMIN_PASSWORD</code>: the admin&#x27;s first sign-in; change it under Settings after. Made on your machine too, where the <code>show</code> command in the README prints it.</li></ul>
+<h2>Self-hosting fit</h2><div class="fit-box"><svg class="ring" width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><path d="M27.14 4.18A20.07 20.07 0 0 1 41.88 14.89" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M43.82 20.86A20.07 20.07 0 0 1 38.19 38.19" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/><path d="M33.11 41.88A20.07 20.07 0 0 1 14.89 41.88" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/><path d="M9.81 38.19A20.07 20.07 0 0 1 4.18 20.86" fill="none" stroke="currentColor" stroke-width="6.86" opacity=".22"/><path d="M6.12 14.89A20.07 20.07 0 0 1 20.86 4.18" fill="none" stroke="currentColor" stroke-width="6.86" opacity="1"/></svg><p><strong>3 of 5</strong> checks passed. Each is a fact about the app, not an opinion: <a href="https://github.com/edgible-org/card-kit/blob/main/card-fit.py">how they are decided</a>.</p></div><ul class="fit-list"><li class="fit-yes"><span class="mark">✓</span><strong>Secrets kept out of card.env</strong> <span>made on the device: LINKDING_ADMIN_PASSWORD</span></li><li class="fit-no"><span class="mark">✗</span><strong>Reads secrets from files</strong> <span>takes them from the environment, through the card&#x27;s loader</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Has a health check</strong> <span>the image&#x27;s own</span></li><li class="fit-no"><span class="mark">✗</span><strong>Starts as a non-root user</strong> <span>starts as root (ghcr.io/sissbruecker/linkding:1.47.0)</span></li><li class="fit-yes"><span class="mark">✓</span><strong>Builds for arm64 and amd64</strong> <span>amd64, arm, arm64</span></li></ul>
+<h2>Known upstream issues</h2><p>Found while testing this card. Each is a request for the app's authors, not a fault in the card.</p><ul><li><strong><a href="https://github.com/edgible-org/cards/blob/main/upstream/linkding-secret-files.md">Read <code>LD_SUPERUSER_PASSWORD</code> from a file</a></strong> (not yet reported, found 2026-10-28). For <a href="https://github.com/sissbruecker/linkding" rel="noopener">linkding</a>.</li></ul>
+<h2>Needs it answers</h2><ul><li><a href="../needs/bookmarks-and-link-sharing/">Bookmarks and Link Sharing</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Bookmarks kept in one browser's sync are tied to that browser and that company. <a href="https://github.com/sissbruecker/linkding">linkding</a> is a small, fast bookmark manager with tags, search, and a browser extension, that keeps your bookmarks on a machine you own.</p>
+<h2 id="what">What</h2>
+<p>One app, <code>linkding</code>, on the place <code>linkding</code>, on <code>none</code>. That is deliberate: the linkding browser extension and the community phone apps call its API with a token, and cannot get past an Edgible sign-in, so <code>org</code> would lock them out. linkding's own login takes its place: it has no sign-up page, so the only account is the admin made on first start, named <code>LINKDING_ADMIN_USER</code>, and the admin adds anyone else under <strong>Admin</strong>. Logins and saves come from the public hostname, so <code>LD_CSRF_TRUSTED_ORIGINS</code> is <code>https://linkding.&lt;ORG_LABEL&gt;.&lt;EDGIBLE_DOMAIN&gt;</code>, or <code>LINKDING_URL</code> on your own domain. The image is <code>ghcr.io/sissbruecker/linkding:1.47.0</code>, from GitHub's registry, with its own healthcheck. Its <code>-plus</code> variant adds Chromium for saving pages as HTML snapshots, at several times the size.</p>
+<p>Bookmarks, tags, users and settings live in the SQLite database in the volume <code>linkding-data</code>. Back it up. Minimum recommended for the place <code>linkding</code>: 384 MB of memory and 1.5 GB of disk, on an arm64, amd64 or 32-bit arm machine, with no GPU.</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/linkding/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/linkding/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/linkding/card.yml">card.yml</a>, and the last test <a href="https://github.com/edgible-org/cards/blob/main/linkding/test.yml">test.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Five steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/linkding/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p linkding
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C linkding cards-main/linkding
+</code></pre>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>DEVICE</code> to a name <code>edgible device list</code> prints, and <code>ORG_LABEL</code> to the part after the app name in a hostname <code>edgible app list</code> prints. There is no password to fill: Start makes the admin's on the machine.</p>
+<pre><code class="language-bash">nano linkding/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py linkding
+</code></pre>
+<p>It moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<pre><code class="language-bash">docker compose --env-file linkding/card.env -f linkding/docker-compose.yml pull
+docker compose --env-file linkding/card.env -f linkding/docker-compose.yml up -d --wait
+docker compose --env-file linkding/card.env -f linkding/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file: about 147 MB, a minute or two on a typical home connection. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. The admin is made on first start, from <code>card.env</code>, so there is no setup page for a stranger to find once it is published.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. linkding/card.env
+set +a
+device_id=$(edgible device list --json | jq -er --arg name &quot;$DEVICE&quot; '
+  map(select(.name == $name))
+  | if length == 1 then .[0].id
+    else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+    end
+')
+edgible app create existing \
+  --non-interactive \
+  --name linkding \
+  --port &quot;$LINKDING_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$device_id&quot;
+edgible app list
+</code></pre>
+<h2 id="verify">Verify</h2>
+<p><code>linkding</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;linkding hostname&gt;&quot;
+</code></pre>
+<p>The login page, with no Edgible sign-in, as the browser extension needs. Sign in as <code>LINKDING_ADMIN_USER</code> with the password <code>linkding-secrets</code> made on the machine at first start, and change it under <strong>Settings</strong>. See it with:</p>
+<pre><code class="language-bash">docker compose --env-file linkding/card.env -f linkding/docker-compose.yml run --rm --no-deps linkding-secrets show LINKDING_ADMIN_PASSWORD
+</code></pre>
+<p>It never left the machine, and nothing else knows it. For the browser extension, copy the REST API token from <strong>Settings → Integrations</strong>.</p>
+<p>The rest of the setup is in the <a href="https://linkding.link">linkding docs</a>.</p>
+<h2 id="tear-down">Tear down</h2>
+<p>Four steps, in this order. Step 1 runs wherever <code>edgible</code> is logged in. Steps 2 to 4 run on the machine that runs the containers. Steps 2 and 3 read <code>card.env</code>, so keep it until step 4.</p>
+<h3 id="1-unpublish">1. Unpublish</h3>
+<pre><code class="language-bash">edgible app delete linkding --yes
+</code></pre>
+<h3 id="2-stop">2. Stop</h3>
+<pre><code class="language-bash">docker compose --env-file linkding/card.env -f linkding/docker-compose.yml down
+</code></pre>
+<h3 id="3-delete-the-data">3. Delete the data</h3>
+<p>Skip this step to keep the data. The loop copies each volume to a <code>.tgz</code> file in this directory first.</p>
+<pre><code class="language-bash">for volume in $(docker volume ls -q --filter label=com.docker.compose.project=linkding); do
+  docker run --rm -v &quot;$volume:/data:ro&quot; -v &quot;$PWD:/backup&quot; alpine tar -czf &quot;/backup/$volume.tgz&quot; -C /data .
+done
+docker compose --env-file linkding/card.env -f linkding/docker-compose.yml down --volumes
+</code></pre>
+<h3 id="4-remove-the-card">4. Remove the card</h3>
+<pre><code class="language-bash">rm -rf linkding
+</code></pre>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

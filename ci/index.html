@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ci: Your own Git forge with CI, and the runner on a machine of its own | Edgible cards</title>
+<meta name="description" content="Your own Git forge with CI, and the runner on a machine of its own">
+<link rel="canonical" href="https://cards.edgible.org/ci/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Edgible cards">
+<meta property="og:title" content="ci: Your own Git forge with CI, and the runner on a machine of its own">
+<meta property="og:description" content="Your own Git forge with CI, and the runner on a machine of its own">
+<meta property="og:url" content="https://cards.edgible.org/ci/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/png" href="../assets/images/favicon.png">
+<link rel="stylesheet" href="../style.css?v=427516bd">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../"><img src="../assets/images/edgible-logo-white.png" alt="Edgible" width="107" height="24"><span>Cards</span></a>
+<nav><a href="../about/">About</a><a href="../ai/">With AI</a><a href="../#app-cards">Apps</a><a href="../#pattern-cards">Patterns</a><a href="../needs/">Needs</a><a href="https://www.edgible.ai/add-your-app/">Add your app</a><a class="star" href="https://github.com/edgible-org/cards" title="Star edgible-org/cards on GitHub, so others find it">&#9733; Star on GitHub</a></nav>
+</div></header>
+<main class="wrap">
+<p class="crumbs"><a href="../">Cards</a> / ci</p>
+<h1 class="with-icon"><span class="icon placeholder" style="width:56px;height:56px" aria-hidden="true"></span><span>ci</span></h1>
+<p class="lead">Your own Git forge with CI, and the runner on a machine of its own</p>
+<p class="meta"><span class="kind">Pattern card</span><span class="pill pass" title="Latest lifecycle test on a real Edgible serving device">passed 2026-10-27, Edgible 1.4.12</span><span class="added">Added 10 October 2026</span><span class="steward">Stewarded by <a href="https://github.com/edgible-org">edgible-org</a></span><a href="https://github.com/edgible-org/cards/tree/main/ci">Source on GitHub</a></p>
+<picture class="card-image"><source srcset="card-dark.svg" media="(prefers-color-scheme: dark)"><img src="card-light.svg" alt="The apps, ports, auth modes, and places in the ci card"></picture>
+<h2>Apps</h2>
+<div class="scroll"><table><thead><tr><th>App</th><th>What</th><th>Who can reach it</th><th>Place</th></tr></thead><tbody><tr><td><code>gitea</code></td><td>Gitea web, API, and Git over HTTPS</td><td>open to anyone</td><td><code>forge</code></td></tr><tr><td><code>gitea-ssh</code></td><td>Git over SSH, same process as gitea</td><td>open to anyone</td><td><code>forge</code></td></tr></tbody></table></div>
+<h2>Machine</h2>
+<p>A place is one serving device. Minimum recommended for each:</p>
+<div class="scroll"><table><thead><tr><th>Place</th><th>Memory</th><th>Disk</th><th>Architecture</th><th>GPU</th></tr></thead><tbody><tr><td><code>forge</code></td><td>384 MB</td><td>1.5 GB</td><td>amd64, arm64</td><td>none</td></tr><tr><td><code>runner</code></td><td>2 GB</td><td>10 GB</td><td>amd64, arm64</td><td>none</td></tr></tbody></table></div>
+<h2>First start</h2><p>The first start downloads the app's images: about <strong>203 MB</strong>, a minute or two on a typical home connection. That time is the download from the app's registry, not Edgible, and it happens once: later starts and upgrades reuse the images and fetch only what changed.</p>
+<h2>What it keeps</h2><p>Its data is in the volumes <code>gitea-data</code>, <code>gitea-db-data</code> and <code>gitea-runner-data</code>. The card does not say yet which of them hold what only you have, so back them all up.</p>
+<h2>What it protects</h2><ul><li><strong>In card.env on your machine:</strong> <code>GITEA_DB_PASSWORD</code>, <code>GITEA_SECRET_KEY</code>, <code>GITEA_ADMIN_PASSWORD</code> and <code>GITEA_RUNNER_TOKEN</code>. Check fills them in, and they stay on the machine.</li></ul>
+
+
+<h2>Needs it answers</h2><ul><li><a href="../needs/software-development-project-management/">Software Development - Project Management</a></li><li><a href="../needs/software-development-continuous-integration-deployment/">Software Development - Continuous Integration &amp; Deployment</a></li></ul>
+<article class="readme">
+<h2 id="why">Why</h2>
+<p>Code, reviews and CI usually sit on someone else's forge, and the build minutes are rented. This card runs <a href="https://about.gitea.com">Gitea</a>, a complete Git forge with Actions, on a machine you own, and its CI runner on a second machine, so builds use your own hardware.</p>
+<h2 id="what">What</h2>
+<p>Two places. <code>forge</code> runs Gitea and its Postgres, and publishes two hostnames: <code>gitea</code> for the web, the API, and Git over HTTPS, and <code>gitea-ssh</code> for Git over SSH, a TCP app on port <code>22222</code>. <code>runner</code> runs Gitea's <a href="https://docs.gitea.com/usage/actions/act-runner">act_runner</a> and publishes nothing: it connects out to the <code>gitea</code> hostname, takes jobs, and runs each one in a container.</p>
+<p>The runner has a machine of its own on purpose. A job runs whatever its workflow says, and the runner starts jobs through the Docker socket, which gives it full control of the machine it is on. Kept away from Gitea, a bad or compromised workflow can harm only the runner's machine, not your repositories, and a heavy build does not slow Gitea down. For a small, trusted setup, both places can be the same machine.</p>
+<p>Both hostnames are on <code>none</code>, as in the gitea card: <code>git</code>, the runner, API tokens and webhooks cannot get past an Edgible sign-in. Registration is off, the web installer is never served, and the admin is made from the command line before anything is public. Gitea and the runner share <code>GITEA_RUNNER_TOKEN</code> from <code>card.env</code>, so the runner registers itself.</p>
+<p>Built from the <a href="../gitea/">gitea card</a>, plus the runner.</p>
+<p>Repositories and settings live in the volume <code>gitea-data</code>, users and issues in <code>gitea-db-data</code>, both on place <code>forge</code>; the runner keeps its registration in <code>gitea-runner-data</code>. The runner's numbers are for the jobs it runs, not the runner itself, which needs little: each job is a container with its own image and caches, so give that machine room for your builds. Minimum recommended for the place <code>forge</code>: 384 MB of memory and 1.5 GB of disk, on an arm64 or amd64 machine, with no GPU. Minimum recommended for the place <code>runner</code>: 2 GB of memory and 10 GB of disk, on an arm64 or amd64 machine, with no GPU.</p>
+<p>The Compose file is <a href="https://github.com/edgible-org/cards/blob/main/ci/docker-compose.yml">docker-compose.yml</a>, the settings <a href="https://github.com/edgible-org/cards/blob/main/ci/card.env">card.env</a>, the card <a href="https://github.com/edgible-org/cards/blob/main/ci/card.yml">card.yml</a>, and the last test <a href="https://github.com/edgible-org/cards/blob/main/ci/test.yml">test.yml</a>.</p>
+<h2 id="how">How</h2>
+<p>Six steps. Edit <a href="https://github.com/edgible-org/cards/blob/main/ci/card.env">card.env</a> before you start.</p>
+<h3 id="1-fetch">1. Fetch</h3>
+<pre><code class="language-bash">mkdir -p ci
+curl -fsSL https://github.com/edgible-org/cards/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C ci cards-main/ci
+</code></pre>
+<p>On each machine that runs a place, fetch the card and set up <code>card.env</code> the same way: the places share its settings.</p>
+<h3 id="2-edit-cardenv">2. Edit card.env</h3>
+<p>Set <code>FORGE_DEVICE</code> and <code>RUNNER_DEVICE</code> to names <code>edgible device list</code> prints (the same name if both places are one machine), <code>ORG_LABEL</code> to the part after the app name in a hostname <code>edgible app list</code> prints, and <code>GITEA_ADMIN_EMAIL</code> to your address. The four secrets are generated in the next step. Copy the finished <code>card.env</code> to the runner's machine as well.</p>
+<pre><code class="language-bash">nano ci/card.env
+</code></pre>
+<h3 id="3-check">3. Check</h3>
+<pre><code class="language-bash">curl -fsSLo check-env.py https://raw.githubusercontent.com/edgible-org/card-kit/main/check-env.py
+python3 check-env.py ci
+</code></pre>
+<p>It fills each empty secret and moves a taken port, as lines to paste. Run it again until it says <code>no conflicts</code>.</p>
+<h3 id="4-start">4. Start</h3>
+<p>On the machine for place <code>forge</code>:</p>
+<pre><code class="language-bash">docker compose --env-file ci/card.env -f ci/docker-compose.yml pull
+docker compose --env-file ci/card.env -f ci/docker-compose.yml up -d --wait
+docker compose --env-file ci/card.env -f ci/docker-compose.yml ps
+</code></pre>
+<p>The first start downloads the app's images from the registries named in the Compose file: about 203 MB, a minute or two on a typical home connection. <code>pull</code> does that download on its own, so you can see it. The time is the download, not Edgible, and it happens once: later starts and upgrades reuse the images on the machine and fetch only what changed. <code>--wait</code> returns when each service is running, and healthy when it has a healthcheck. Then make the admin on place <code>forge</code>, before Publish:</p>
+<pre><code class="language-bash">sh ci/prepare.sh
+</code></pre>
+<p><a href="https://github.com/edgible-org/cards/blob/main/ci/prepare.sh">prepare.sh</a> is:</p>
+<pre><code class="language-sh">#!/bin/sh
+# Prepare for the ci card: make Gitea's admin on place forge, before Publish.
+# Run it on the forge machine after Start and before Publish, from the directory that holds ci/:
+#   sh ci/prepare.sh
+set -eu
+cd &quot;$(dirname &quot;$0&quot;)&quot;
+set -a; . ./card.env; set +a
+COMPOSE=${COMPOSE:-docker compose --env-file card.env -f docker-compose.yml}
+
+$COMPOSE exec -T -u git gitea \
+  gitea admin user create --admin --username gitadmin \
+  --password &quot;$GITEA_ADMIN_PASSWORD&quot; --email &quot;$GITEA_ADMIN_EMAIL&quot; --must-change-password=false
+</code></pre>
+<p>It prints <code>New user 'gitadmin' has been successfully created!</code> Gitea reserves the name <code>admin</code>, so the admin is <code>gitadmin</code>.</p>
+<h3 id="5-publish">5. Publish</h3>
+<pre><code class="language-bash">set -euo pipefail
+set -a
+. ci/card.env
+set +a
+device_id() {
+  edgible device list --json | jq -er --arg name &quot;$1&quot; '
+    map(select(.name == $name))
+    | if length == 1 then .[0].id
+      else error(&quot;need exactly one device named &quot; + $name + &quot; (&quot; + (map(.status + &quot; &quot; + .id) | join(&quot;, &quot;)) + &quot;)&quot;)
+      end
+  '
+}
+forge_id=$(device_id &quot;$FORGE_DEVICE&quot;)
+edgible app create existing \
+  --non-interactive \
+  --name gitea \
+  --port &quot;$GITEA_PORT&quot; \
+  --protocol https \
+  --auth-modes none \
+  --device-id &quot;$forge_id&quot;
+edgible app create existing \
+  --non-interactive \
+  --name gitea-ssh \
+  --port &quot;$GITEA_SSH_PORT&quot; \
+  --protocol tcp \
+  --auth-modes none \
+  --device-id &quot;$forge_id&quot;
+edgible app list
+</code></pre>
+<h3 id="6-start-the-runner">6. Start the runner</h3>
+<p>On the machine for place <code>runner</code>. Its services connect out to what Publish published, so they start now.</p>
+<pre><code class="language-bash">docker compose --env-file ci/card.env -f ci/runner-compose.yml pull
+docker compose --env-file ci/card.env -f ci/runner-compose.yml up -d --wait
+docker compose --env-file ci/card.env -f ci/runner-compose.yml ps
+</code></pre>
+<p>The runner registers with Gitea at the <code>gitea</code> hostname, with <code>GITEA_RUNNER_TOKEN</code>. It mounts the Docker socket, so it controls this machine's Docker: run it only on a machine where that is acceptable.</p>
+<h2 id="verify">Verify</h2>
+<p><code>gitea</code> uses <code>none</code>.</p>
+<pre><code class="language-bash">curl -sS -o /dev/null -w '%{http_code}\n' &quot;https://&lt;gitea hostname&gt;&quot;
+</code></pre>
+<p>That prints <code>200</code>. Sign in as <code>gitadmin</code> with <code>GITEA_ADMIN_PASSWORD</code>. Then check the runner, from any machine:</p>
+<pre><code class="language-bash">set -a; . ci/card.env; set +a
+sh ci/etc/verify-ci.sh runner
+sh ci/etc/verify-ci.sh workflow
+</code></pre>
+<p>The first says <code>a runner is online</code>. The second makes a private repository, <code>ci-check</code>, with a one-step workflow, and says <code>the workflow ran to success</code> once the runner has run it; give it a minute and run it again if it does not yet.</p>
+<p><code>gitea-ssh</code> is a TCP app on port <code>22222</code>, with no auth mode.</p>
+<p>Check it answers as an SSH server with `nc -w 5 <gitea-ssh hostname> 22222 </p>
+</article>
+
+</main>
+<footer><div class="wrap">
+<p>Built 2026-10-29 from <a href="https://github.com/edgible-org/cards">edgible-org/cards</a> at <a href="https://github.com/edgible-org/cards/commit/6d3b6cd5f5e346a74df78655ee84e961395cd3e5">6d3b6cd</a>. Cards are free to run and share under the repo's license. Test results come from the nightly regression, on a real Edgible serving device. Questions or ideas? <a href="https://www.edgible.ai/contact/">Contact us</a>.</p>
+</div></footer>
+</body>
+</html>

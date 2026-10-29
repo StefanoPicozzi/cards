@@ -70,6 +70,17 @@ That is welcome. The [edgible-cards skill](https://github.com/edgible-org/card-k
 
 An agent working on its own for the person who wrote the app can do every step: `check-app --json` until `ready` is true, the card, `test-card` on the person's own device, then the pull request from a fork. It asks the person for what is theirs to decide: the licence, and who the steward is.
 
+## Who stands behind a card
+
+An app can be written by a person, written with an AI's help, or generated entirely by an AI. A card does not label which, and it does not need to: what matters is that a person is responsible for the card being here. Every card has one behind it.
+
+- **An Edgible account** to run or test the app on, which a person creates in their own browser and signs the CLI in to. Without one, nothing can be run or tested on Edgible, so there is no app card, public or private.
+- **A GitHub account** that opens the pull request, owned by a person or an organisation. If an agent has an account of its own, someone owns it and answers for it.
+- **A maintainer** who reads the card, and runs the fleet test on their label, before it is listed.
+- **A steward** afterwards: the person or organisation that answers for the card, named in `metadata.steward`. An agent can do the work, but it cannot be the steward. A card may have none, and is then listed as having none.
+
+An agent working alone is a way of doing the work without a person at the keyboard. It is not a way of having nobody responsible.
+
 ## Licence
 
 This repository is [MIT](LICENSE). By contributing, you agree that your contribution is under the same licence. The apps a card runs keep their own licences.

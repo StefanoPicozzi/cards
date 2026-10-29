@@ -1,11 +1,11 @@
 tested: 2026-10-29
 result: pass
-card-kit: "f3b49c6"
+card-kit: "8974c1e"
 edgible-cli: 1.4.29
-files: sha256:d3f8999623fbbd67
+files: sha256:f4205c33e0a1ba12
 machine: darwin/arm64, docker 29.4.3
 images:
-  - ghcr.io/berriai/litellm:v1.106.5@sha256:7d6ae6c8d73d1b6aea4cb75d07c4a8a953f0809b0764522b8eab693734c5e905
+  - ghcr.io/berriai/litellm:v1.106.6@sha256:37e2dafb088a7723beb998590682957386dfc83ffea1848486f8e0e5cfac0b06
   - ghcr.io/edgible-org/card-secrets:0.1.2@sha256:5b55047b0bd9f99cdb00f883e105eede65857b7925f7b6913d9a64c7c89f1987
   - ghcr.io/edgible-org/edgible-mcp:0.7.22@sha256:e3ea9c89c43b0e66bdf87fac3efc53371e4625072db386587c6f167901b73a21
   - ghcr.io/openclaw/openclaw:2026.10.8@sha256:82b6ce63048e75ca749dbc250e872ee21f4b1c098fc6bff94636e357bcb64bf5
@@ -26,8 +26,8 @@ steps:
 fingerprint: {"sessions": 0, "workspace_files": 26}
 measured:
   agent:
-    memory: 2 GB
+    memory: 2.1 GB
     images: 2 GB
     data: 95 MB
-duration: 5m
+duration: 4m
 by: ci

@@ -1,0 +1,250 @@
+name: fleet-test
+
+# A card from someone else's pull request, tested on the fleet, but only after a maintainer has read it
+# and adds the label `run-fleet-test`. The fleet machines can publish apps and run what a card's Compose
+# file says, so nothing here starts on its own: the label is the maintainer saying "I read this commit".
+#
+#   run-fleet-test   added by a maintainer: test the pull request's head commit as it is right now.
+#   fleet-tested     added by this workflow when that exact commit passes.
+#
+# Any new push to the pull request removes both labels, so a pass never covers a commit nobody tested,
+# and the maintainer sees at merge time whether the label is still there. The commit that was tested is
+# named in the first comment: if it is not the one you read, remove the label.
+#
+# The workflow file runs from main (pull_request_target), never from the pull request. The pull request's
+# files are only fetched, as data, after these checks: the sender can write to the repository; the commit
+# is still the one labelled; it changes only card folders (never .github/ or anything at the top level),
+# at most three of them, each a Compose card (a native card installs on the machine itself, so it is
+# never run this way); and `check-cards --untrusted --fresh` passes on GitHub's own machine first.
+# It commits nothing to the pull request. After a merge, the nightly regression tests the card on main
+# and its status on the site comes from there.
+
+on:
+  pull_request_target:
+    types: [labeled, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+# One test per pull request at a time; a new label waits for a running test. A new push is its own group, so
+# removing the labels never waits behind a long test.
+concurrency:
+  group: fleet-${{ github.event.pull_request.number }}-${{ github.event.action }}
+  cancel-in-progress: false
+
+env:
+  CARD_KIT_REF: main
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  reset:
+    # A new push: whatever was tested is no longer the head.
+    if: github.event.action == 'synchronize'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Remove the labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          for label in run-fleet-test fleet-tested; do
+            gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --remove-label "$label" 2>/dev/null || true
+          done
+
+  plan:
+    if: github.event.action == 'labeled' && github.event.label.name == 'run-fleet-test'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      jobs: ${{ steps.plan.outputs.jobs }}
+      cards: ${{ steps.check.outputs.cards }}
+    env:
+      PR: ${{ github.event.pull_request.number }}
+      SHA: ${{ github.event.pull_request.head.sha }}
+      BASE: ${{ github.event.pull_request.base.sha }}
+      SENDER: ${{ github.event.sender.login }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: cards
+          fetch-depth: 0
+
+      - name: Check who asked, and that the commit is still the one labelled
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          say() { gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$1" || true; }
+          perm=$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$SENDER/permission" --jq .permission || echo none)
+          case "$perm" in admin|write|maintain) ;; *)
+            say "The fleet test was not run: the label was added by someone without write access."
+            gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --remove-label run-fleet-test || true
+            exit 1 ;; esac
+          cd cards
+          git fetch -q origin "pull/$PR/head"
+          [ "$(git rev-parse FETCH_HEAD)" = "$SHA" ] || {
+            say "The pull request changed after the label was added, so nothing was run. Read the new commit, then add the label again."
+            gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --remove-label run-fleet-test || true
+            exit 1; }
+          say "Fleet test started on commit \`${SHA:0:12}\`. If that is not the commit you read, remove the label \`run-fleet-test\`. The run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+      - name: Check what the pull request changes
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          say() { gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "$1" || true; }
+          refuse() { say "The fleet test was not run: $1"; gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --remove-label run-fleet-test || true; exit 1; }
+          cd cards
+          changed=$(git diff --name-only "$BASE" "$SHA")
+          [ -n "$changed" ] || refuse "the pull request changes no files."
+          top=$(printf '%s\n' "$changed" | awk -F/ 'NF == 1 { print "(top level)"; next } { print $1 }' | sort -u)
+          printf '%s\n' "$top" | grep -qx '(top level)' && refuse "it changes a file at the top level of the repository, which only a maintainer may change."
+          printf '%s\n' "$top" | grep -qx '.github' && refuse "it changes files under .github/, which only a maintainer may change."
+          printf '%s\n' "$top" | grep -qvE '^[a-z0-9][a-z0-9-]*$' && refuse "a changed path is not in a folder named like a card (lower case letters, digits and hyphens)."
+          [ "$(printf '%s\n' "$top" | wc -l)" -le 3 ] || refuse "it changes more than three folders."
+          for d in $top; do
+            git cat-file -e "$SHA:$d/card.yml" 2>/dev/null || refuse "\`$d/\` has no card.yml in the pull request, so it is not a card to test."
+            git show "$SHA:$d/card.yml" | grep -qE '^\s+native:' && refuse "\`$d\` is a native card: it installs software on the machine itself, so it is never run this way."
+          done
+          for d in $top; do git checkout -q "$SHA" -- "$d"; done
+          echo "cards=$(printf '%s ' $top)" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch card-kit
+        run: git clone -q --depth 1 --branch "$CARD_KIT_REF" https://github.com/edgible-org/card-kit.git card-kit
+
+      - name: Static checks on the card, on GitHub's machine
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CARDS: ${{ steps.check.outputs.cards }}
+        run: |
+          set -euo pipefail
+          cd cards
+          paths=""; for d in $CARDS; do paths="$paths $d/card.yml"; done
+          if ! ../card-kit/run check-cards --fresh --untrusted $paths > ../check.log 2>&1; then
+            {
+              echo "The fleet test was not run: \`check-cards --fresh --untrusted\` failed."
+              echo
+              echo '```'
+              tail -c 1500 ../check.log
+              echo '```'
+            } > ../comment.md
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file ../comment.md || true
+            gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --remove-label run-fleet-test || true
+            exit 1
+          fi
+
+      - name: List the fleet machines online
+        env:
+          GH_TOKEN: ${{ secrets.FLEET_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$GH_TOKEN" ]; then echo "no FLEET_TOKEN secret: planning without knowing the machines"; exit 0; fi
+          gh api "repos/$GITHUB_REPOSITORY/actions/runners" --paginate \
+            --jq '.runners[] | select(.status == "online") | [.labels[].name]' | jq -s . > machines.json
+
+      - name: Plan
+        id: plan
+        env:
+          CARDS: ${{ steps.check.outputs.cards }}
+        run: |
+          set -euo pipefail
+          W=$PWD
+          mkdir -p status
+          args=(--status "$W/status" --plan "$W/plan.json")
+          [ -f machines.json ] && args+=(--machines "$W/machines.json")
+          read -ra names <<< "$CARDS"
+          (cd cards && python3 "$W/card-kit/test-cards.py" "${args[@]}" --only "${names[@]}")
+          echo "matrix=$(cat plan.json)" >> "$GITHUB_OUTPUT"
+          echo "jobs=$(jq '.include | length' plan.json)" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: plan
+    if: needs.plan.outputs.jobs != '0'
+    name: ${{ matrix.cards }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ${{ matrix.labels }}
+    timeout-minutes: 120
+    env:
+      PR: ${{ github.event.pull_request.number }}
+      SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: cards
+
+      - name: Fetch the card's files, and card-kit
+        env:
+          CARDS: ${{ matrix.cards }}
+        run: |
+          set -euo pipefail
+          rm -rf card-kit result
+          cd cards
+          git fetch -q origin "pull/$PR/head"
+          [ "$(git rev-parse FETCH_HEAD)" = "$SHA" ] || { echo "the pull request moved since the label" >&2; exit 2; }
+          for d in $CARDS; do git checkout -q "$SHA" -- "$d"; done
+          cd ..
+          git clone -q --depth 1 --branch "$CARD_KIT_REF" https://github.com/edgible-org/card-kit.git card-kit
+          echo "cards main $(git -C cards rev-parse --short HEAD) with $CARDS from ${SHA:0:12}, card-kit $(git -C card-kit rev-parse --short HEAD)"
+
+      - name: Test ${{ matrix.cards }}
+        id: test
+        env:
+          CARDS: ${{ matrix.cards }}
+          FALLBACK_DEVICE: ${{ vars.TEST_DEVICE }}
+        run: |
+          set -euo pipefail
+          DEVICE=${TEST_DEVICE:-$FALLBACK_DEVICE}
+          [ -n "$DEVICE" ] || { echo "set TEST_DEVICE in the runner's .env, or the repository variable TEST_DEVICE" >&2; exit 2; }
+          read -ra names <<< "$CARDS"
+          cd cards
+          python3 ../card-kit/test-cards.py --device "$DEVICE" --status ../result --by ci --only "${names[@]}" 2>&1 | tee ../test.log \
+            && echo "passed=true" >> "$GITHUB_OUTPUT" || echo "passed=false" >> "$GITHUB_OUTPUT"
+
+      - name: Say how it went
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CARDS: ${{ matrix.cards }}
+          PASSED: ${{ steps.test.outputs.passed }}
+        run: |
+          set -euo pipefail
+          lines=$(sed -n '/^result:/,$p' test.log 2>/dev/null | head -25 || true)
+          # Names of devices and hosts are the maintainer's, and the comment is public.
+          lines=$(printf '%s\n' "$lines" | sed -E 's#https://[A-Za-z0-9.-]+#https://<host>#g')
+          now=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid)
+          if [ "$now" != "$SHA" ]; then
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "The fleet test for $CARDS ran on commit \`${SHA:0:12}\`, but the pull request has moved on since, so it is not labelled. Read the new commit and add \`run-fleet-test\` again."
+            exit 0
+          fi
+          if [ "$PASSED" = true ]; then
+            gh label create fleet-tested --repo "$GITHUB_REPOSITORY" --color 0E8A16 --description "Tested on Edgible's fleet at the pull request's head commit" 2>/dev/null || true
+            gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-label fleet-tested || true
+            head="Fleet test passed for $CARDS at commit \`${SHA:0:12}\`. A new push removes the \`fleet-tested\` label."
+          else
+            head="Fleet test did not pass for $CARDS at commit \`${SHA:0:12}\`."
+          fi
+          {
+            echo "$head"
+            echo
+            echo '```'
+            echo "$lines"
+            echo '```'
+            echo "The run, with every step: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > comment.md
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file comment.md
+          [ "$PASSED" = true ]
+
+      - name: Clean up
+        if: always()
+        run: rm -rf result test.log comment.md

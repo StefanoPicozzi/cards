@@ -62,7 +62,7 @@ Use the same steps from 2: fork, branch, change, `test-card`, `check-cards --fre
 
 ## What happens next
 
-A maintainer reviews the checklist, the parts a test cannot judge, and runs `test-card` on an Edgible device before merging a new or changed card that carries `test.yml`. Lifecycle tests never run on a pull request. The merge is the publish. After it, the nightly `test-cards` run tests the card whenever it or Edgible changes. When it fails, it gets an issue.
+A maintainer reviews the checklist and the parts a test cannot judge, then adds the label `run-fleet-test` to your pull request, which tests the card on Edgible's own devices at the commit they read (a comment says which). A pass adds `fleet-tested`. Any new push removes both labels, so they never cover a commit nobody tested. Lifecycle tests never run on a pull request. The merge is the publish. After it, the nightly `test-cards` run tests the card whenever it or Edgible changes. When it fails, it gets an issue.
 
 ## Made with an AI agent
 
